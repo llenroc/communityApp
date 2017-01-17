@@ -1,0 +1,97 @@
+﻿@using PagedList.Mvc;
+@using PagedList;
+@model RatiusCommunityApp.Models.MemberAndChatDTO
+<div>
+    <table id="report" class=" table table-bordered MessageTable" style="text-align:center;border: 1px solid #f4f4f4;">
+        <thead>
+            <tr id="head1" style="background-color:#1d486a;border-color:#1d486a;color:#fff">
+                <th><center style="margin-left:-15px;    width: 146%;">User ID</center></th>
+                <th></th>
+                <th colspan="3"><center>Message</center></th>
+                <th><center>Date</center></th>
+            </tr>
+
+        </thead>
+        <tbody id="tableBody">
+            @foreach (var item in Model.PagedlistChatDTO)
+            {
+
+
+                <tr id="@("unexpanded_"+item.chat.userFrom.userID)" name="@item.chat.chatMessageID" class="unexpanded" style=" background-color:#fff;cursor: pointer;">
+                    <td style="border-color: transparent;border-bottom-color: #dddddd;border-bottom-width: 2px;width: 112px;border-left: 2px solid #dddddd">
+                        <a id="@("profileLink"+item.chat.chatMessageID)" style="float:left;    margin-left: 17px;cursor: pointer;" class="profileLink" rel="popover" data-toggle="popover" data-content="" title="Popover with image" onmouseover="initializeUserDetail('@item.chat.chatMessageID', '@item.chat.userFrom.image', '@(item.chat.userFrom.firstName+" "+item.chat.userFrom.lastName)', '@item.chat.userFrom.userType', '@item.chat.userFrom.emailID', '@item.chat.userFrom.contact', '@(item.member.streetFloor+" "+item.member.streetFloor)')" onclick="showUserDetail('@item.chat.chatMessageID', '@item.chat.userFrom.image', '@(item.chat.userFrom.firstName+" "+item.chat.userFrom.lastName)', '@item.chat.userFrom.userType', '@item.chat.userFrom.emailID', '@item.chat.userFrom.contact', '@(item.member.streetFloor+" "+item.member.streetFloor)')">@item.chat.userFrom.firstName&nbsp;@item.chat.userFrom.lastName</a>
+                    </td>
+                    @if (item.chat.image != null)
+                    {
+                        <td style="border-color: transparent;border-bottom-color: #dddddd;border-bottom-width: 2px;width: 1px;">@*<i class="glyphicon glyphicon-paperclip" style="color: #868A8A;"></i>*@</td>
+                    }
+                    else
+                    {
+                        <td style="border-color: transparent;border-bottom-color: #dddddd;border-bottom-width: 2px;width: 1px;"></td>
+                    }
+                    <td style="border-color: transparent;border-bottom-color: #dddddd;border-bottom-width: 2px;width: 70%;" colspan="3">
+                        @if (item.chat.desc != "")
+                        {<p id="@("Message_" + item.chat.userFrom.userID)" style="    float: left;margin-left: 20px;cursor:pointer"> @item.chat.desc</p>}
+                        else
+                        {<img src="@item.chat.image" class="" id="" style="width:20px;float:left;" />}@if (item.chat.isRead == false)
+                        {<p id="@("NewMessage_" + item.chat.userFrom.userID)" style=" float: left;    margin-left: 10px !important;display:block;    width: 35px;background-color:red;color:white">New</p> }
+                        else
+                        {<p id="@("NewMessage_" + item.chat.userFrom.userID)" style=" float: left;display:none;    margin-left: 10px !important;    width: 35px;background-color:red;color:white">New</p>  }
+                    </td>
+
+                    @*<td style="border-color: transparent;">
+                            <select id=@("changestatus_"+item.chatMessageID) onchange="ChangeMessageStatus(this.id)" class="dropdown" style="color:#ffffff; width:75%; background-color:#1d486a">
+                                @if (item.isRead == true)
+                                {
+                                    <option style="color:#000; background-color:#fff" value="Read">Read</option>
+                                    <option style="color:#000; background-color:#fff" value="Unread">Unread</option>
+                                }
+                                else
+                                {
+                                    <option style="color:#000; background-color:#fff" value="Unread">Unread</option>
+                                    <option style="color:#000; background-color:#fff" value="Read">Read</option>
+
+                                }
+
+                            </select>
+                        </td>*@
+
+
+
+
+                    <td style="border-color: transparent;border-bottom-color: #dddddd;border-bottom-width: 2px;border-right: 2px solid #dddddd">@(item.chat.Date.Day + "-" + item.chat.Date.Month + "-" + item.chat.Date.Year)</td>
+                </tr>
+    <tr class=" expanded expandedChatRow" id="@("expandedChatRow"+item.chat.userFrom.userID)" style="background-color:#fff;display:none">
+        <td colspan="6">
+            <div id="@("SildeExpanded"+item.chat.userFrom.userID)" class="SlideExpanded" style="display: none">
+                <div id="@("expanded_" + item.chat.userFrom.userID)" style="overflow-y: scroll; overflow-x: hidden; max-height: 140px;    border-top: 1.9px solid #1d486a;width: 101.4%;margin-left: -7px;margin-top: -9px;    height: 140px;">
+
+                </div>
+                <div id=@("loaderExpanded" + item.chat.userFrom.userID) style="display:none">
+                    <p style="margin-top: -95px !important;margin-bottom: 43px !important;">Loading...</p>
+                    <img src="~/images/ajax-loader (1).gif" style="     margin-top: -85px;" />
+                </div>
+                <div id="@("chat_" + item.chat.userFrom.userID)">
+
+                </div>
+            </div>
+        </td>
+    </tr>
+
+
+            }
+
+
+        </tbody>
+    </table>
+</div>
+<div class="row" align="center">
+    @*<div class="col col-xs-4">
+            Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+        </div>*@
+    <div class=" ">
+        <ul class="pagination hidden-xs">
+            @Html.PagedListPager((IPagedList)Model.PagedlistChatDTO, page => Url.Action("Messages", new { page, sortingOption = TempData["SortingOption"].ToString() }))
+        </ul>
+    </div>
+</div>

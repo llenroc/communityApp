@@ -1,0 +1,189 @@
+﻿@model RatiusCommunityApp.Models.Community
+@*<div class="jumbotron">
+    <h1>ASP.NET</h1>
+    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS, and JavaScript.</p>
+    <p><a href="http://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
+</div>
+<div class="row">
+    <div class="col-md-4">
+        <h2>Getting started</h2>
+        <p>ASP.NET Web API is a framework that makes it easy to build HTTP services that reach
+        a broad range of clients, including browsers and mobile devices. ASP.NET Web API
+        is an ideal platform for building RESTful applications on the .NET Framework.</p>
+        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301870">Learn more &raquo;</a></p>
+    </div>
+    <div class="col-md-4">
+        <h2>Get more libraries</h2>
+        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
+        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301871">Learn more &raquo;</a></p>
+    </div>
+    <div class="col-md-4">
+        <h2>Web Hosting</h2>
+        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
+        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301872">Learn more &raquo;</a></p>
+    </div>
+</div>*@
+
+<style>
+    @@font-face {
+    font-family: Roboto-Light;
+    src: url(../fonts/Roboto/Roboto-Light.ttf);
+}
+</style>
+
+<html>
+<head>
+    <title>Welcome to United Neighbourhoods</title>
+
+
+    <link href="~/Content/IndexStyleSheet.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <!-- Compiled and minified CSS -->
+  
+    <style type="text/css">
+        .row{
+    margin-right: 0;
+    margin-left: 0;
+}
+
+    </style>
+    <link href="~/Scripts/css/jquery-ui.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css" />
+
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/Scripts/jquery-ui.min.js"></script>
+    <script src="~/Scripts/jquery.cookie.js"></script>
+    <script>
+
+    $(document).ready(function () {
+
+        var rememberMe = $.cookie('rememberMe');
+        if (rememberMe == 'true') {
+            var username = $.cookie('searchstring');
+            var password = $.cookie('password');
+            // autofill the fields
+            $('#searchstring').attr("value", username);
+            $('#password').attr("value", password);
+            $('#rememberMe').prop('checked', true);
+        }
+    });
+
+    function saveInCookies() {
+
+        if ($('#rememberMe').prop('checked', true)) {
+            var username = $('#searchstring').val();
+            var password = $('#password').val();
+            // set cookies to expire in 14 days
+            $.cookie('searchstring', username, { expires: 14 });
+            $.cookie('password', password, { expires: 14 });
+            $.cookie('rememberMe', true, { expires: 14 });
+          
+        } else {
+            // reset cookies
+            $.cookie('searchstring', null);
+            $.cookie('password', null);
+            $.cookie('rememberMe', null);
+        }
+    }
+    </script>
+    <script type="text/javascript">
+        $(function () {
+          
+            $("#searchstring").autocomplete({
+                
+                source: "@Url.Action("SearchCommunity", "Home")",
+                minLength: 1,
+                extraParams: { searchstring: $('#searchstring').val() }
+                //select: function (event, ui) {
+                //    if (ui.item) {
+                //        $("#searchstring").val(ui.item.value)
+                        
+                //    }
+               
+            });
+        });
+    </script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+</head>
+<body class="indexBody">
+    <div class="row indexheadingMargin" >
+        <center>
+            @*<div class="col-md-offset-4 col-md-8 col-sm-offset-3 col-sm-9">*@
+            <div >
+                <p class="indexHeading" style=" margin-left: 1%; font-family: Roboto-Light;letter-spacing: 1px;">Welcome to United Neighbourhoods!</p>
+            </div>
+        </center>
+    </div>
+    <br />
+    <div class="row">
+        <center>
+            @*<div class="col-md-offset-4 col-md-8 col-sm-offset-3 col-sm-9">*@
+            <div >
+                <p class="indexAdminParagraph" style=" font-family: Roboto-Light;">Please Sign In</p>
+            </div>
+            </center>
+</div>
+ 
+    @using (Html.BeginForm("index", "Home", FormMethod.Post))
+    {
+        if ( TempData["error"].ToString() != "Null")
+        { 
+        <div class="row">
+            <center>
+                <div>
+                    <span style="color:red;    font-family: Roboto-Light;" class="indexTextbox" >@TempData["error"].ToString()</span>
+                </div>
+            </center>
+        </div>
+        }
+        <div class="row">
+            <center>
+                <div>
+                    @Html.TextBoxFor(model => model.name, null, new { id = "searchstring", name = "searchstring", @class = "indexTextbox", placeholder = "Select Neighbourhood*", style = "    font-family: Roboto-Light;" })
+                </div>
+            </center>
+
+        </div>
+        <div class="row">
+            <center>
+                <div>
+                    @Html.PasswordFor(model => model.communityPassword, new { @class = "indexTextbox",id="password" ,placeholder = "Password", style = "    font-family: Roboto-Light;" })
+                </div>
+            </center>
+        </div>
+        <div class="row">
+            <center>
+                <div>
+                    <input type="submit" onclick="saveInCookies()" class="btn btn-info indexSignInButton" style="border-radius:0px; font-size: 17px;  font-family: Roboto-Light;    background-color: #0054a6;border-color: #0054a6;" value="Sign In " />
+                </div>
+            </center>
+        </div>
+    }
+  
+    @*<div class="row">
+        <div class="col-md-offset-4 col-md-2 col-sm-offset-3 col-sm-9">
+            <a class="indexhref" href="#" style=" font-family: Roboto-Light;text-decoration: initial;    margin-left: 12px;">Forgot your password?</a>
+        </div>
+        <div class="col-md-offset-0 col-md-3 col-sm-offset-3 col-sm-9" style="    padding-left: 88px;">
+            <input type="checkbox" name="RememberMe" id="rememberMe" value="RememberMe" /><span style="color:#ffffff;font-family: Roboto-Light;">&nbsp; Remember me</span>
+        </div>
+    </div>*@
+
+
+    <center>
+        <div style="height:40px;width:400px;">
+            <a class="indexhref" href="../Home/ForgotPassword" style="float:left; font-family: Roboto-Light;text-decoration: initial;margin-left: 0%;/ float: left; /">Forgot your password?</a>
+
+            <input type="checkbox" name="RememberMe" id="rememberMe" value="RememberMe" style="margin-left: 36%;"><span style="color:#ffffff;font-family: Roboto-Light;float:right;">&nbsp; Remember me</span>
+        </div>
+    </center>
+
+
+
+    @*<div class="row">
+        <div class="col-md-offset-4 col-md-8 col-sm-offset-3 col-sm-9">
+            <a class="indexhref" href="../Home/CreateCommunity">Create Community</a>
+        </div>
+    </div>*@
+</body>
+</html>

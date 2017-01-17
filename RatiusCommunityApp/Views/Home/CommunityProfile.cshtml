@@ -1,0 +1,1465 @@
+﻿@model RatiusCommunityApp.Models.CommunityCompleteDTO
+@{
+    ViewBag.Title = "Profile";
+    Layout = "~/Views/Shared/_communityLayout.cshtml";
+}
+@section NavbarAndSideMenu{
+
+    @{ Html.RenderAction("_CommunityAdminNavbarAndSideMenu"); }
+}
+<div class="">
+    <div id="MapModal" class="my-modal location-modal">
+        <div class="modal-inner">
+            <a   class="close-modal"><i class="fa fa-close"></i></a>
+            @*<h4>Drag and Drop pin to confirm the location</h4>*@
+            @*<div  id="contact-map" data-address="pakistan city" data-zoomlvl="13" data-maptype="HYBRID"></div>*@
+            <div id="dvMap" style="padding-bottom:20px;width:100%;height:350px;">  </div>
+
+
+            <div >
+                <input id="addressLongitude" type="text" style="display:block;width:100%;    margin-top: 10px;" placeholder="Lat" />
+            </div>
+            <div >
+                <input id="addressLatitude" type="text" style="display:block;width:100%;    margin-top: 10px;" placeholder="Lng" />
+            </div>
+
+
+            <center><button style="    width: 80px;margin-top: 8px;margin-bottom: 8px;    background-color: #1D486A;color: #ffffff;" onclick='$("#MapModal").css("display", "none");' type="button" class="btn">Ok</button></center>
+        </div>
+        </div>
+    </div>
+
+    <!--=========================
+     Header
+    ===========================-->
+    <div class="un-profile">
+        <h4>Neighbourhood Profile</h4>
+        <div class="cover-images-wrapper">
+            <figure id="build-thumb0" style="background-image:url(@Model.community.coverImage);">
+                <figcaption>
+                    <h4>@Model.community.name</h4>
+                </figcaption>
+            </figure>
+        </div>
+        <div class="profile-info-detail clearfix">
+            <div class="tabs-custome-wrapper">
+                <ul class="tabs-custome">
+                    <li class="active"><a href="#tab1">Add Basic Info</a></li>
+                    @*<li><a href="#tab2">Add Emergency Contact</a></li>*@
+                    <li><a href="#tab3">Add Street/Floor Details</a></li>
+                    <li><a href="#tab4">Add Secret Codes</a></li>
+                    <li><a href="#tab5">Add About Us</a></li>
+                </ul>
+                <div class="tab-custome-panel">
+                    <div class="tab-custome-pane active" id="tab1">
+                        <a   class="accorTrigger">Add Basic Info</a>
+                        <div class="accorContent">
+                            <div class="divide-unit">
+                                <div class="half-unit">
+                                    <header>
+                                        <h6>@Model.community.name</h6>
+
+                                    </header>
+                                    <div class="add-info">
+                                        <input type="text" value="@Model.community.communityAddress" id="addressWords" placeholder="Add Address">
+                                        <div class="edit-btns"><a   onclick="showGoogleMap();" class="map-trigger">Location</a></div>
+                                        <a  id="btn_UpdateAddress" class="btn-primary">Update</a>
+                                    </div>
+                                </div>
+                                <div class="half-unit">
+                                    <h6>Community Images</h6>
+                                    <div class="cover-upload style">
+                                        <h6>Add Cover Image</h6>
+                                        <div class="input-wrap image-upload style1">
+                                            <figure onclick="openCoverDialog()" id="build-thumb1" style="background-image:url(@Model.community.coverImage);"></figure>
+                                            <input id="coverImagefile" class="build-file1" onchange=" AddCoverImage();" type="file" accept="image/*" multiple>
+                                        </div>
+                                    </div>
+                                    <div class="cover-upload">
+                                        <h6>Add Featured Images</h6>
+@if (Model.communityFeaturesImage.Count == 0)
+{
+
+    <div class="input-wrap file-upload image-upload style1">
+        <div class="file-name">
+        </div>
+        <figure id="build-thumb2" onclick="openFeatureDialog(0)" style="background-image:url(../images/thumb.png);"></figure>
+        <input class="build-file2" id="image_0" type="file" accept="image/*" onchange="UpdateFeatureImage(0)" multiple>
+    </div>
+
+
+    <div class="input-wrap image-upload style1">
+        <figure id="build-thumb2" onclick="openFeatureDialog(-1)" style="background-image:url(../images/thumb.png);"></figure>
+        <input class="build-file2" id="image_-1" type="file" onchange="UpdateFeatureImage(-1)" accept="image/*" multiple>
+    </div>
+    <div class="input-wrap image-upload style1">
+        <figure id="build-thumb3" onclick="openFeatureDialog(-2)"  style="background-image:url(../images/thumb.png);"></figure>
+        <input class="build-file3" id="image_-2" type="file" onchange="UpdateFeatureImage(-2)" accept="image/*" multiple>
+    </div>
+}
+else
+{
+    int count = 0;
+    foreach (var item in Model.communityFeaturesImage)
+    {
+        count = count + 1;
+        <div class="input-wrap image-upload style1">
+            <figure id="build-thumb3" onclick="openFeatureDialog(@item.id)" style="background-image:url('@item.image');"></figure>
+            <input class="build-file3" id="@("FeatureImage_"+item.id)" type="file" onchange="UpdateFeatureImage(@item.id)" accept="image/*" multiple>
+        </div>
+    }
+    if (count < 3)
+    {
+        for (int i = count; i < 3; i++)
+        {
+            <div class="input-wrap image-upload style1">
+                <figure id="build-thumb3" onclick="openFeatureDialog(@("-"+i))" style="background-image:url('../images/thumb.png');"></figure>
+                <input class="build-file3" id=@("FeatureImage_-"+i) type="file" onchange="UpdateFeatureImage(@("-"+i))" accept="image/*" multiple>
+            </div>
+       
+        }
+    }
+}
+                                      
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-custome-pane" id="tab2">
+                        <a   class="accorTrigger">Add Emergency Contact</a>
+                        <div class="accorContent">
+                            <div class="divide-unit">
+                                <div class="half-unit">
+                                    <header>
+                                        <h6>Add Emergency Contact</h6>
+                                    </header>
+                                    <div class="add-info">
+                                        <input type="text" id="txt_AddEmergencyName" placeholder="Add Name">
+                                        <input type="tel" id="txt_AddEmergencyContact" placeholder="Add Number">
+                                        <h6>Add Operational Hours</h6>
+                                        <div class="custome-select width-40 clearfix">
+                                            <span id="spanOperationalFrom">To</span>
+                                            <select id="SelectedWorkinghoursFrom">
+                                                <option value="From" style="display:none"></option>
+                                                <option value="1">1am</option>
+                                                <option value="2">2am</option>
+                                                <option value="3">3am</option>
+                                                <option value="4">4am</option>
+                                                <option value="5">5am</option>
+                                                <option value="6">6am</option>
+                                                <option value="7">7am</option>
+                                                <option value="8">8am</option>
+                                                <option value="9">9am</option>
+                                                <option value="10">10am</option>
+                                                <option value="11">11am</option>
+                                                <option value="12">12am</option>
+                                                <option value="13">1pm</option>
+                                                <option value="14">2pm</option>
+                                                <option value="15">3pm</option>
+                                                <option value="16">4pm</option>
+                                                <option value="17">5pm</option>
+                                                <option value="18">6pm</option>
+                                                <option value="19">7pm</option>
+                                                <option value="20">8pm</option>
+                                                <option value="21">9pm</option>
+                                                <option value="22">10pm</option>
+                                                <option value="23">11pm</option>
+                                                <option value="24">12pm</option>
+                                            </select>
+                                        </div>
+                                        <div class="custome-select width-40 clearfix">
+                                            <span id="spanOperationalTo">From</span>
+                                            <select id="SelectedWorkinghoursTo">
+                                                <option value="To" style="display:none"></option>
+                                                <option value="1">1am</option>
+                                                <option value="2">2am</option>
+                                                <option value="3">3am</option>
+                                                <option value="4">4am</option>
+                                                <option value="5">5am</option>
+                                                <option value="6">6am</option>
+                                                <option value="7">7am</option>
+                                                <option value="8">8am</option>
+                                                <option value="9">9am</option>
+                                                <option value="10">10am</option>
+                                                <option value="11">11am</option>
+                                                <option value="12">12am</option>
+                                                <option value="13">1pm</option>
+                                                <option value="14">2pm</option>
+                                                <option value="15">3pm</option>
+                                                <option value="16">4pm</option>
+                                                <option value="17">5pm</option>
+                                                <option value="18">6pm</option>
+                                                <option value="19">7pm</option>
+                                                <option value="20">8pm</option>
+                                                <option value="21">9pm</option>
+                                                <option value="22">10pm</option>
+                                                <option value="23">11pm</option>
+                                                <option value="24">12pm</option>
+                                            </select>
+                                        </div>
+                                        <a class="btn-primary style" id="btn_AddEmergencyContact" >Add</a>
+                                        <a class="btn-primary style" style="display:none" id="btn_UpdateEditEmergencyContact"  >Update</a>
+                                    </div>
+
+                                </div>
+                                <div class="half-unit">
+                                    <header>
+                                        <h6>Added Emergency Contact</h6>
+                                    </header>
+                                    <div class="added-info added-info-scroll added-emergency-contact" data-mcs-theme="minimal-dark">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <td>Name and Contact</td>
+                                                    <td></td>
+                                                    <td>Operational Hours</td>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="communityEmergencyContacts">
+@foreach (var item in Model.communityEmergencyContacts)
+{
+    string workingHourStart;
+    string workingHourEnd;
+    if (Convert.ToInt32(item.workingHourStart) > 12)
+    {
+        workingHourStart = Convert.ToString(Convert.ToInt32(item.workingHourStart) - 12) + "pm";
+    }
+    else
+    {
+        workingHourStart = item.workingHourStart + "am";
+
+    }
+    if (Convert.ToInt32(item.workingHourEnd) > 12)
+    {
+        workingHourEnd = Convert.ToString(Convert.ToInt32(item.workingHourEnd) - 12) + "pm";
+    }
+    else
+    {
+        workingHourEnd = item.workingHourEnd + "am";
+
+    }
+    <tr id=@("EmergencyContact_" + item.id) class="table-body emergrncyContacts txt_emergencyContact">
+        <td><span class="name" id='@("txt_EmergencyContactName_" + item.id)'>@item.name</span><span id='@("txt_EmergencyContact_" + item.id)'>@item.contact</span></td>
+        <td></td>
+        <td><span class="workingHourTo" id='@("txt_workingHourFrom12Hrs_" + item.id)'>@workingHourStart</span><span id='@("txt_workingHourFrom_" + item.id)' style="display:none">@item.workingHourStart</span> - <span class="workingHourFrom" id='@("txt_workingHourTo12Hrs_" + item.id)'>@workingHourEnd </span><span style="display:none" id='@("txt_workingHourTo_" + item.id)'>@item.workingHourEnd</span></td>
+        <td>
+            <div class="edit-btns"><a   id='@("btn_EditEmergencyContact_" + item.id)' onclick="EditEmergencyContact(this.id)">Edit</a> - <a   id='@("btn_DeleteEmergencyContact_" + item.id)' onclick="DeleteEmergencyContact(this.id)" class="delete-item-trigger">Delete</a></div>
+        </td>
+    </tr>
+}
+                                          
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <a onclick="SaveEmergencyContacts()" class="btn-primary">Save</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-custome-pane" id="tab3">
+                        <a   class="accorTrigger">Add Street/Floor Details</a>
+                        <div class="accorContent">
+                            <div class="divide-unit">
+                                <div class="half-unit">
+                                    <header>
+                                        <h6>Add Street/ Floor</h6>
+                                    </header>
+                                    <div class="add-info add-street-floor">
+                                        <input id="txt_AddStreetFloor" class="cls_txt_AddStreetFloor" type="text" placeholder="Add Street/ Floor No.">
+                                        <a id="btn_AddStreetFloor" class="btn-primary cls_btn_AddStreetFloor" >Add</a>
+                                        <a id="btn_UpdateStreetFloor" style="display:none" class="btn-primary cls_btn_AddStreetFloor"  >Update</a>
+                                    </div>
+
+                                </div>
+                                <div class="half-unit">
+                                    <header>
+                                        <h6>Added Street/ Floor</h6>
+                                    </header>
+                                    <div class="added-info style added-info-scroll" data-mcs-theme="minimal-dark">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <td>Street/ Floor No</td>
+                                                    <td></td>
+                                                    <td></td>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="communityStreetFloor">
+@foreach (var item in Model.communityStreetFloor)
+{
+    <tr id=@("streetFloor_"+item.id) class="table-body">
+        <td id="@("txt_streetFloor_"+item.id)">@item.streetFloor</td>
+        <td></td>
+        <td>
+            <div class="edit-btns"><a id=@("btn_EditStreetFloor_"+item.id) onclick="EditStreetFloors(@item.id)">Edit</a> - <a  id=@("btn_DeleteStreetFloor_"+item.id) onclick="DeleteStreetFloors(@item.id)" class="delete-item-trigger">Delete</a></div>
+        </td>
+    </tr>
+}
+                                              
+                                              
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-custome-pane" id="tab4">
+                        <a   class="accorTrigger">Add Secret Codes</a>
+                        <div class="accorContent">
+                            <div class="divide-unit">
+                                <div class="half-unit">
+                                    <header>
+                                        <h6>Add Secret Codes</h6>
+                                    </header>
+                                    <div class="add-info">
+                                        <input id="txt_AddSecterKey" disabled style="    background-color: transparent;" type="text" placeholder="Secret Code">
+                                        <a id="btn_AddSecterKey" class="btn-primary"  >Add</a>
+                                    </div>
+
+                                </div>
+                                <div class="half-unit">
+                                    <header>
+                                        <h6>Added Secret Codes</h6>
+                                    </header>
+                                    <div class="added-info style added-info-scroll" data-mcs-theme="minimal-dark">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <td>Secret Code</td>
+                                                    <td></td>
+                                                    <td></td>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="communitySecretKeys">
+
+                                                @foreach (var item in Model.communitySecretKeys)
+                                                {
+                                                    <tr id=@("SecterKey_" + item.id) class="table-body">
+                                                        <td id=@("txt_SecterKey_" + item.id)>@item.secretCode</td>
+                                                        <td></td>
+                                                        <td>
+                                                            <div class="edit-btns"><a  id=@("btn_DeleteSecterKey_" + item.id) onclick="DeleteSecterKey(@item.id)" class="delete-item-trigger">Delete</a></div>
+                                                        </td>
+                                                    </tr>
+                                                }
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-custome-pane" id="tab5">
+                        <a   class="accorTrigger">Add About Us</a>
+                        <div class="accorContent">
+                            <div class="divide-unit">
+                                <div class="half-unit style">
+                                    <header>
+                                        <h6>Add About Us</h6>
+                                    </header>
+                                    <div class="col-md-6"><span id="textarea_CountCharacters" style="float: right;margin-right: -185px;font-size: 10px;margin-top: 2px;"></span></div>
+                                    <div class="add-info style">
+
+                                        <textarea id="aboutCommunity" onkeyup="EnableUpdateButton()" placeholder="Add About Us">@Model.community.about</textarea>
+                                        <a id="btn_AboutUpdate" disabled="disabled" class="btn-primary"  >Update</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--//header-->
+    <!--====================
+    Scripts
+    ======================-->
+
+  
+    @section mystyles{
+ 
+    <style>
+        #officername:placeholder-shown {
+            color: orange;
+        }
+
+        :-moz-placeholder {
+            color: #1d486a;
+        }
+
+        ::-webkit-input-placeholder {
+            text-align: left;
+        }
+
+        .table-hover {
+            color: #A8A8A8;
+        }
+
+        .table {
+            text-align: center;
+            border: 1px solid #1d486a;
+            background-color: #fff;
+            color: #A8A8A8;
+        }
+
+        .table-bordered {
+            border-left: 1px solid #1d486a;
+            border-right: 1px solid #1d486a;
+            color: #A8A8A8;
+            text-align: center;
+        }
+
+        #officername[placeholder] {
+            text-decoration-color: #1d486a;
+        }
+
+        #a {
+            border: 1px solid #1d486a;
+            font-size: large;
+            color: #A8A8A8;
+        }
+
+        #report th {
+            border: 1px solid #1d486a;
+            background-color: #1d486a;
+            color: #fff;
+        }
+
+        .btn-circle {
+            width: 40px;
+            height: 40px;
+            text-align: center;
+            padding: 2px 0px 0px 1px;
+            font-size: 15px;
+            line-height: 1.42;
+            border-radius: 30px;
+            color: #fff;
+            background-color: #1d486a;
+        }
+    </style>
+    }
+    @section myscripts{
+   
+
+    <script src="~/Scripts/sss.min.js"></script>
+
+    <script language="javascript" src="https://maps.googleapis.com/maps/api/js?v=3"></script>
+    <link href="~/Scripts/css/sss.css" rel="stylesheet" />
+
+    <script>
+        jQuery(function ($) {
+            $('.slider').sss({
+                slideShow: false, // Set to false to prevent SSS from automatically animating.
+                startOn: 0, // Slide to display first. Uses array notation (0 = first slide).
+                transition: 400, // Length (in milliseconds) of the fade transition.
+                speed: 3500, // Slideshow speed in milliseconds.
+                showNav: true // Set to false to hide navigation arrows.
+            });
+            
+            $(".sss").css("padding-bottom", "83%");
+        });
+    </script>
+        <script>
+            function GetRandomNumber() {
+                var randomNumber = randomString(6, '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+                $("#txt_AddSecterKey").val(randomNumber);
+            }
+
+
+            function randomString(length, chars) {
+                var result = '';
+                for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
+                return result;
+            }
+        </script>
+        <script>
+    function add() {
+        $("#report .row").css("background-color", "#FFFFFF");
+        $("#th .row").css("background-color", "#1d486a");
+        $("#th .row").css("color", "#FFFFFF");
+        $("#bt").css("background-color", "#000000");
+        $("#bt").css("color", "#FFF");
+        document.getElementById("viewsame").style.display = 'none';
+        document.getElementById("addNew").style.display = 'block';
+    }
+    //function edit() {
+
+    //    $("#coverphoto").css('-webkit-filter', 'brightness(30%)');
+    //    $("#profilephoto").css('-webkit-filter', 'brightness(30%)');
+
+    //    $("#btnChangeCover").css('display', 'block');
+
+    //    $("#btnChangePhoto").css('display', 'block');
+    //}
+
+    function EditCoverDialog() {
+        $("#coverImage").css('-webkit-filter', 'brightness(30%)');
+        $("#buttonCoverPhoto").css("display", "block");
+    }
+    function RemoveCoverDialog() {
+        $("#coverImage").css('-webkit-filter', 'brightness(100%)');
+        $("#buttonCoverPhoto").css("display", "none");
+    }
+    function EditFeatureDialog(elem) {
+        var id = elem.split("_")[1];
+        $("#image_"+id).css('-webkit-filter', 'brightness(30%)');
+        $("#button_"+id).css("display", "block");
+    }
+    function RemoveFeatureDialog(elem) {
+        var id = elem.split("_")[1];
+        $("#image_" + id).css('-webkit-filter', 'brightness(100%)');
+        $("#button_" + id).css("display", "none");
+
+    }
+    function openFeatureDialog(elem) {
+ 
+        $("#FeatureImage_" + elem).click();
+    }
+    function openAddFeature() {
+        $("#addFeatureImagefile").click();
+    }
+
+
+
+    function AddFeatureImage() {
+
+        var addFeatureImagefile = document.getElementById('addFeatureImagefile').files[0];
+        var fd = new FormData();
+        fd.append("addFeatureImagefile", addFeatureImagefile);
+        var item="";
+        $.ajax({
+            url: ' @Url.Action("AddFeatureImage", "home")',
+                    type: 'POST',
+                    data: fd,
+                    async: false,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    success: function (responce) {
+                      
+                        window.location.reload();
+                       
+                       
+                    }
+                });
+            }
+            function UpdateFeatureImage(elem) {
+                var Featurefile = document.getElementById('FeatureImage_' + elem).files[0];
+                var fd = new FormData();
+                fd.append("Featurefile", Featurefile);
+                fd.append("Id", elem);
+                $.ajax({
+                    url: ' @Url.Action("ChangeFeatureImage", "home")',
+            type: 'POST',
+            data: fd,
+            async: false,
+            cache: false,
+            contentType: false,
+            processData: false,
+            beforeSend: function () {
+                $.spin('true');
+            },
+            success: function (responce) {
+
+                document.getElementById('FeatureImage_' + elem).files[0] = null;
+                //$('#image_' + elem).attr("src",responce.CommunityResponse.model.image);
+                $('#image_' + elem).css('background-image', 'url(' + responce.CommunityResponse.model.image + ')');
+                $('#image_' + elem).attr("id","image_"+responce.CommunityResponse.model.id);
+                $('#FeatureImage_' + elem).attr("id","FeatureImage_"+responce.CommunityResponse.model.id);
+
+                window.location.reload();
+
+            }
+        });
+    }
+    //function save() {
+    //    document.getElementById("noneditable").style.display = 'block';
+    //    document.getElementById("editable").style.display = 'none';
+    //}
+    //function saved() {
+    //    $("#bt").css("background-color", "#1d486a");
+    //    $("#bt").css("color", "#FFF");
+    //    document.getElementById("viewsame").style.display = 'block';
+    //    document.getElementById("addNew").style.display = 'none';
+    //}
+        </script>
+    <link href="~/dist/flexslider.css" rel="stylesheet" />
+    <script src="~/dist/jquery.flexslider-min.js"></script>
+        <script>
+            $("#report .row").click(function () {
+                var color = $(this).css('backgroundColor');
+                //hexc(color);
+                //if (color == "rgb(211, 211, 211)") {
+                //    $(this).css("background-color", "#FFFFFF");
+                //}
+                //if (color == "rgb(211, 211, 211)") {
+                document.getElementById("viewsame").style.display = 'block';
+                document.getElementById("addNew").style.display = 'none';
+                document.getElementById("noneditable").style.display = 'block';
+                document.getElementById("editable").style.display = 'none';
+                $("#bt").css("background-color", "#1d486a");
+                $("#bt").css("color", "#FFF");
+                $("#report .row").css("background-color", "#FFFFFF");
+                $(this).css("background-color", "#d3d3d3");
+                $("#th .row").css("background-color", "#1d486a");
+                $("#th .row").css("color", "#FFFFFF");
+                //}
+            });
+          
+        </script>
+        <script type="text/javascript">
+
+    $(document).ready(function () {
+        GetRandomNumber()
+        var textbox = document.getElementById("aboutCommunity");
+        var text_min = 500;
+        var text_remaining = text_min - textbox.value.length;
+        if (textbox.value.length >= 500) {
+            $('#textarea_CountCharacters').html('(0 characters remaining)');
+        }
+        else {
+            $('#textarea_CountCharacters').html('(' + text_remaining + ' characters remaining)');
+        }
+        $("#Community_Profile").css("color", "#A8A8BB");
+
+
+        $('#btn_UpdateAddress').click(function () {
+            var address = $('#addressWords').val();
+            var lng = $('#addressLongitude').val();
+            var lat = $('#addressLatitude').val();
+            $.ajax({
+                url: '@Url.Action("CommunityChangeAddress", "Home")',
+                type: 'POST',
+                data: { "communityAddress": address, "lng": lng, "lat": lat },
+                dataType: 'json',
+
+                success: function (response) {
+                    if (response.success == "Success") {
+                        //$('#communityAddress').prop("disabled", true);
+                        //$('#btn_EditAddress').css("display", "inline");
+                        //$('#btn_DeleteAddress').css("display", "inline");
+                        //$('#btn_UpdateAddress').css("display", "none");
+                        //$('#communityAddress').css('width', '88%');
+                        //$('#communityAddress').css('background-color', '#EDEDED');
+                        //$('#addressDIV').css('background-color', '#EDEDED');
+                        //$.spin('false');
+
+                    }
+                },
+                error: function (error) {
+                }
+            });
+
+        });
+
+
+        $('#btn_DeleteAddress').click(function () {
+            $.spin('true');
+            var address = "";
+            $.ajax({
+                url: '@Url.Action("CommunityChangeAddress", "Home")',
+                type: 'POST',
+                data: { "communityAddress": address },
+                dataType: 'json',
+
+                success: function (response) {
+                    if (response.success == "Success") {
+                        $('#communityAddress').prop("disabled", true);
+                        $('#btn_EditAddress').css("display", "inline");
+                        $('#btn_DeleteAddress').css("display", "inline");
+                        $('#btn_UpdateAddress').css("display", "none");
+                        $('#communityAddress').css('width', '88%');
+                        $('#communityAddress').val('');
+                        $.spin('false');
+                    }
+                },
+                error: function (error) {
+                }
+            });
+
+        });
+
+
+
+
+
+
+
+
+
+
+
+
+        $('#btn_AboutUpdate').click(function () {
+            $.spin('true');
+            var communityAbout =document.getElementById("aboutCommunity").value;
+            $.ajax({
+                url: '@Url.Action("CommunityChangeAbout", "Home")',
+                type: 'POST',
+                data: { "communityAbout": communityAbout },
+                dataType: 'json',
+
+                success: function (response) {
+                    if (response.success == "Success") {
+                        //$("#aboutCommunity").prop("disabled", true);
+                        //$("#glyph_Update").css("color", "#C4C3C3");
+                        //$("#aboutCommunity").css("background-color", "#EBEBE4");
+                        //$("#btn_AboutUpdate").prop("disabled", true);
+                        //$('#textarea_CountCharacters').css("display", "none");
+                        //document.getElementById("aboutCommunity").value = communityAbout;
+                        $.spin('false');
+                    }
+                },
+                error: function (error) {
+                }
+            });
+
+        });
+
+
+
+
+    });
+
+
+
+
+
+
+
+    //function EditCommunityAddress() {
+    //    $('#communityAddress').prop("disabled", false);
+    //    $('#btn_EditAddress').css("display", "none");
+    //    $('#btn_DeleteAddress').css("display", "none");
+    //    $('#btn_UpdateAddress').css("display", "block");
+    //    $('#communityAddress').css('width', '93%');
+    //    $('#communityAddress').css('background-color', '#ffffff');
+    //    $('#addressDIV').css('background-color', '#ffffff');
+    //}
+    function EnableUpdateButton() {
+        $('#textarea_CountCharacters').css("display","block");
+        var textbox = document.getElementById("aboutCommunity");
+
+
+
+
+
+        if (textbox.value.length >= 500) {
+
+            $('#textarea_CountCharacters').html('(0 characters remaining)');
+            $("#btn_AboutUpdate").attr('disabled', false);
+
+            $("#glyph_Update").css('color', '#000000');
+        }
+        else {
+            var text_min = 500;
+            var text_remaining = text_min - textbox.value.length;
+
+            $('#textarea_CountCharacters').html('('+text_remaining + ' characters remaining)');
+            $("#glyph_Update").css("color", "#C4C3C3");
+            $("#btn_AboutUpdate").attr('disabled', true);
+
+        }
+    }
+    function EditCommunityAbout() {
+        $('#textarea_CountCharacters').css("display", "block");
+        var textbox = document.getElementById("aboutCommunity");
+
+        if (textbox.value.length >= 500) {
+            $('#textarea_CountCharacters').html('(0 characters remaining)');
+            $("#btn_AboutUpdate").attr('disabled', false);
+            $("#glyph_Update").css('color', '#000000');
+        }
+        else {
+            text_min = 500;
+            var text_remaining = text_min - textbox.value.length;
+
+            $('#textarea_CountCharacters').html('('+text_remaining + ' characters remaining)');
+            $("#glyph_Update").css("color", "#C4C3C3");
+            $("#btn_AboutUpdate").attr('disabled', true);
+
+        }
+        $("#aboutCommunity").prop("disabled", false);
+        //$("#glyph_Update").css("color", "#C4C3C3");
+        $("#aboutCommunity").css("background-color", "#ffffff");
+        //$("#btn_AboutUpdate").attr("disabled", true);
+    }
+    function openCoverDialog() {
+        $("#coverImagefile").click();
+    }
+    function AddCoverImage() {
+        $.spin('true');
+        var coverfile = document.getElementById('coverImagefile').files[0];
+        var fd = new FormData();
+        fd.append("coverfile", coverfile);
+
+        $.ajax({
+            url: ' @Url.Action("ChangeCommunityCover", "home")',
+            type: 'POST',
+            data: fd,
+            async: false,
+            cache: false,
+            contentType: false,
+            processData: false,
+            beforeSend: function () {
+
+            },
+            success: function (responce) {
+
+                document.getElementById('coverImagefile').files[0] = null;
+                //$("#coverImage").attr("src", responce.ImageString);
+                $('#coverImage').css('background-image', 'url(' + responce.ImageString + ')');
+
+
+            },
+        });
+        $.spin('false');
+    }
+
+
+
+
+    //--------------------------------------------------------------CommunityStreerFloor----------------------------------------------------------
+    $(document).ready(function () {
+        $("#txt_AddStreetFloor").keyup(function (e) {
+            if (e.keyCode == 13) {
+                $('#btn_AddStreetFloor').click();
+            }
+        });
+
+
+        $('#btn_AddStreetFloor').click(function () {
+
+            var StreerFloor = $('#txt_AddStreetFloor').val();
+            var item = "";
+            if ($('#txt_AddStreetFloor').val() != "")
+            {
+                $.ajax({
+                    url: '@Url.Action("AddCommunityStreetFloor", "Home")',
+                    type: 'POST',
+                    data: { "StreetFloor": StreerFloor },
+                    dataType: 'json',
+
+                    success: function (response) {
+                        item = "<tr id=streetFloor_" + response.ResponceCommunityStreetFloor.model.id + " class='table-body'>" +
+                                                "<td id='txt_streetFloor_"+response.ResponceCommunityStreetFloor.model.id +"'>" + response.ResponceCommunityStreetFloor.model.streetFloor + "</td>" +
+                                                "<td></td>"+
+                                                "<td>"+
+                                                    "<div class='edit-btns'><a id='btn_EditStreetFloor_" + response.ResponceCommunityStreetFloor.model.id + "' onclick=EditStreetFloors(" + response.ResponceCommunityStreetFloor.model.id + ")  >Edit</a> - <a   'btn_DeleteStreetFloor_" + response.ResponceCommunityStreetFloor.model.id + "' onclick=DeleteStreetFloors(" + response.ResponceCommunityStreetFloor.model.id + ") class='delete-item-trigger'>Delete</a></div>" +
+                                                "</td>"+
+                                            "</tr>";
+
+                        $("#communityStreetFloor").prepend(item);
+                        $('#txt_AddStreetFloor').val("");
+                        $('#txt_AddStreetFloor').focus();
+
+                    },
+                    error: function (error) {
+                    }
+                });
+            }
+        });
+        $('#btn_UpdateStreetFloor').click(function () {
+            var elem = editStreetFloorId;
+            var StreerFloor = $('#txt_AddStreetFloor').val();
+            var item = "";
+            $.ajax({
+                url: '@Url.Action("UpdateCommunityStreetFloor", "Home")',
+                type: 'POST',
+                data: { "StreetFloor": StreerFloor, "Id": elem },
+                dataType: 'json',
+
+                success: function (response) {
+                    if (response.success == "Success") {
+                        $('#txt_streetFloor_' + elem).text($('#txt_AddStreetFloor').val());
+                        //$('#txt_streetFloor_' + elem).attr('id', 'txt_AddStreetFloor');
+                        //$('#btn_UpdateStreetFloor_' + elem).attr('id', 'btn_AddStreetFloor');
+                        //$('#btn_AddStreetFloor').html("Add");
+                        $("#btn_AddStreetFloor").show();
+                        $("#btn_UpdateStreetFloor").hide();
+                        $('#txt_AddStreetFloor').val("");
+                        $('#txt_AddStreetFloor').focus();
+                    }
+                },
+                error: function (error) {
+                }
+            });
+
+        });
+
+    });
+
+    var editStreetFloorId;
+    function EditStreetFloors(elem) {
+        editStreetFloorId = elem;
+        $('#txt_AddStreetFloor').val($('#txt_streetFloor_' + elem).text());
+        //$('.cls_txt_AddStreetFloor').attr('id', 'txt_streetFloor_' + elem);
+        //$(".cls_btn_AddStreetFloor").removeClass("cls_btn_AddStreetFloor").addClass("cls_btn_UpdateStreetFloor");
+        //$('#btn_AddStreetFloor').html("Update");
+        //$('.cls_btn_AddStreetFloor').attr('id', 'btn_UpdateStreetFloor_' + elem);
+        $("#btn_AddStreetFloor").hide();
+        $("#btn_UpdateStreetFloor").show();
+
+    }
+
+
+    function DeleteStreetFloors(elem) {
+
+        $.ajax({
+            url: '@Url.Action("DeleteCommunityStreetFloor", "Home")',
+            type: 'POST',
+            data: { "Id": elem },
+            dataType: 'json',
+
+            success: function (response) {
+                if (response.success == "Success") {
+                    $("#streetFloor_" + elem).remove();
+
+                }
+            },
+            error: function (error) {
+            }
+        });
+
+    }
+
+    //--------------------------------------------------------------CommunitySecretKeys----------------------------------------------------------
+    $(document).ready(function () {
+        $("#txt_AddSecterKey").keyup(function (e) {
+            if (e.keyCode == 13) {
+                $('#btn_AddSecterKey').click();
+            }
+        });
+        $('#btn_AddSecterKey').click(function () {
+            var SecterKey =$("#txt_AddSecterKey").val();
+            //var SecterKey = randomString(6, '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+            var item = "";
+            if ($('#txt_AddSecterKey').val() != "") {
+                $.ajax({
+                    url: '@Url.Action("AddCommunitySecterKey", "Home")',
+                    type: 'POST',
+                    data: { "SecterKey": SecterKey },
+                    dataType: 'json',
+
+                    success: function (response) {
+                        if (response.Status == "Success") {
+                            item = "<tr id=SecterKey_" + response.ResponceCommunitySecretKeys.model.id + " class='table-body'>"+
+                                                "<td id='txt_SecterKey_" + response.ResponceCommunitySecretKeys.model.id + "'>"+response.ResponceCommunitySecretKeys.model.secretCode+"</td>"+
+                                                "<td></td>"+
+                                                "<td>"+
+                                                    "<div class='edit-btns'><a   id='btn_DeleteSecterKey_" + response.ResponceCommunitySecretKeys.model.id + "' onclick=DeleteSecterKey(" + response.ResponceCommunitySecretKeys.model.id + ") class='delete-item-trigger'>Delete</a></div>"+
+                                                "</td>"+
+                                            "</tr>";
+
+                            $("#communitySecretKeys").prepend(item);
+                            //$('#txt_AddSecterKey').val("");
+                            GetRandomNumber();
+                        }
+                        else {
+                            $("#txt_AddSecterKey").css("display","none");
+                            $("#btn_AddSecterKey").css("display","none");
+
+                            $("#SecretKeyError").css("display", "block");
+
+                            $("#SecretKeyError").delay(2000).fadeOut();
+                            GetRandomNumber();
+                            $("#txt_AddSecterKey").delay(2300).fadeIn();
+                            $("#btn_AddSecterKey").delay(2300).fadeIn();
+
+                        }
+
+                    },
+                    error: function (error) {
+                    }
+                });
+            }
+        });
+    });
+
+    function EditSecterKey(elem) {
+        $(".txt_SecterKey").prop("disabled", true);
+        $('.btn_EditSecterKey').css("display", "inline");
+        $('.btn_DeleteSecterKey').css("display", "inline");
+        $('.btn_UpdateSecterKey').css("display", "none");
+        $('.txt_SecterKey').css('width', '91%');
+
+
+        $('#txt_SecterKey_' + elem).prop("disabled", false);
+        $('#btn_EditSecterKey_' + elem).css("display", "none");
+        $('#btn_DeleteSecterKey_' + elem).css("display", "none");
+        $('#btn_UpdateSecterKey_' + elem).css("display", "block");
+        $('#txt_SecterKey_' + elem).css('width', '93.785%');
+        $('#txt_SecterKey_' + elem).css('background', '#ffffff');
+    }
+    function UpdateSecterKey(elem) {
+
+        var SecterKey = $('#txt_SecterKey_' + elem).val();
+        var item = "";
+        $.ajax({
+            url: '@Url.Action("UpdateCommunitySecterKey", "Home")',
+            type: 'POST',
+            data: { "SecterKey": SecterKey, "Id": elem },
+            dataType: 'json',
+
+            success: function (response) {
+                if (response.success == "Success") {
+                    $('#txt_SecterKey_' + elem).prop("disabled", true);
+                    $('#btn_EditSecterKey_' + elem).css("display", "inline");
+                    $('#btn_DeleteSecterKey_' + elem).css("display", "inline");
+                    $('#btn_UpdateSecterKey_' + elem).css("display", "none");
+                    $('#txt_SecterKey_' + elem).css('width', '91%');
+                    $('#txt_SecterKey_' + elem).css('background', '#ededed');
+                    rgb(235, 235, 228)
+                }
+            },
+            error: function (error) {
+            }
+        });
+
+    }
+    function DeleteSecterKey(elem) {
+
+        $.ajax({
+            url: '@Url.Action("DeleteCommunitySecterKey", "Home")',
+            type: 'POST',
+            data: { "Id": elem },
+            dataType: 'json',
+
+            success: function (response) {
+                if (response.success == "Success") {
+                    $("#SecterKey_" + elem).remove();
+
+                }
+            },
+            error: function (error) {
+            }
+        });
+
+    }
+//--------------------------------------------------------------CommunityEmergencyContacts----------------------------------------------------------
+    var number;
+    $(document).ready(function () {
+        $("#txt_AddEmergencyContact").click(function() {
+
+            $("#txt_AddEmergencyContact").mask("+60?9999999999");
+
+
+        });
+        $("#txt_AddEmergencyContact").focus(function () {
+
+            $("#txt_AddEmergencyContact").mask("+60?9999999999");
+
+
+        });
+        $("#txt_AddEmergencyContact").keyup(function (e) {
+            if (e.keyCode == 13) {
+
+                $('#btn_AddEmergencyContact').click();
+            }
+        });
+        
+     
+        $('#btn_AddEmergencyContact').click(function () {
+            var EmergencyContactsLength = $('.txt_emergencyContact').length;
+            var EmergencyContact = $('#txt_AddEmergencyContact').val();
+            var EmergencyContactName = $('#txt_AddEmergencyName').val();
+            var select1 = document.getElementById("SelectedWorkinghoursTo");
+            var option1 = select1.options[select1.selectedIndex];
+            var select2 = document.getElementById("SelectedWorkinghoursFrom");
+            var option2 = select2.options[select2.selectedIndex];
+            var SelectedWorkinghoursTo = option1.value;
+            var SelectedWorkinghoursFrom = option2.value;
+            if (EmergencyContactName == "") {
+                alert("Please Add Name");
+                return false;
+            }
+            if (EmergencyContact == "") {
+                alert("Please Add Number");
+                return false;
+            }
+            if (SelectedWorkinghoursTo == "To") {
+                alert("Please Select To");
+                return false;
+            }
+            if (SelectedWorkinghoursFrom == "From") {
+                alert(SelectedWorkinghoursFrom);
+                return false;
+            }
+
+          
+            var item = "";
+         
+            if ($('#txt_AddEmergencyContact').val() != "" && $('#txt_AddEmergencyName').val() != "")
+            {
+               
+
+
+                var workingHourStart;
+                var workingHourEnd;
+                if (parseInt(SelectedWorkinghoursFrom) > 12) {
+                    workingHourStart = (parseInt(SelectedWorkinghoursFrom) - 12).toString() + "pm";
+                }
+                else {
+                    workingHourStart = SelectedWorkinghoursFrom + "am";
+
+                }
+                if (parseInt(SelectedWorkinghoursTo) > 12) {
+                    workingHourEnd = (parseInt(SelectedWorkinghoursTo) - 12).toString() + "pm";
+                }
+                else {
+                    workingHourEnd = SelectedWorkinghoursTo + "am";
+
+                }
+                var randomNumber = randomString(6, 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
+                item = " <tr id=EmergencyContact_" + randomNumber + " class='table-body emergrncyContacts'>" +
+                    "<td><span class='name' id='txt_EmergencyContactName_" + randomNumber + "'>" + EmergencyContactName + "</span><span id='txt_EmergencyContact_" + randomNumber + "'>" + EmergencyContact + "</span></td>" +
+                    "<td></td>" +
+                    "<td><span class='workingHourTo' id='txt_workingHourFrom12Hrs_" + randomNumber + "'>" + workingHourStart + "</span> <span id='txt_workingHourFrom_" + randomNumber + "' style='display:none'>" + SelectedWorkinghoursFrom + "</span>" + "- <span id='txt_workingHourTo12Hrs_" + randomNumber + "' class='workingHourFrom' >" + workingHourEnd + "</span><span id='txt_workingHourTo_" + randomNumber + "' style='display:none'>" + SelectedWorkinghoursTo + "</span>" + "</td>" +
+                    "<td>" +
+                        "<div class='edit-btns'><a   id='btn_EditEmergencyContact_" + randomNumber + "' onclick=EditEmergencyContact(this.id)>Edit</a> - <a   id='btn_DeleteEmergencyContact_" + randomNumber + "' onclick=DeleteEmergencyContact(this.id) class='delete-item-trigger'>Delete</a></div>" +
+                    "</td>" +
+                "</tr>";
+
+
+
+                $("#communityEmergencyContacts").prepend(item);
+                $('#txt_AddEmergencyContact').val("");
+                $('#txt_AddEmergencyName').val("");
+                $('#txt_AddEmergencyName').focus();
+                $("#spanOperationalFrom").text("From");
+                $("#spanOperationalTo").text("To");
+                $("#SelectedWorkinghoursTo").val("To");
+                $("#SelectedWorkinghoursFrom").val("From");
+            }
+        });
+
+        $('#btn_UpdateEditEmergencyContact').click(function () {
+            var id = EditEmergencyContactID;
+            var select1 = document.getElementById("SelectedWorkinghoursTo");
+            var option1 = select1.options[select1.selectedIndex];
+            var select2 = document.getElementById("SelectedWorkinghoursFrom");
+            var option2 = select2.options[select2.selectedIndex];
+            var SelectedWorkinghoursTo = option1.value;
+            var SelectedWorkinghoursFrom = option2.value;
+            $("#txt_EmergencyContactName_" + id).text($("#txt_AddEmergencyName").val());
+            $("#txt_EmergencyContact_" + id).text($("#txt_AddEmergencyContact").val());
+            $("#txt_workingHourFrom12Hrs_" + id).text($("#SelectedWorkinghoursFrom option:selected").text());
+            $("#txt_workingHourTo12Hrs_" + id).text($("#SelectedWorkinghoursTo option:selected").text());
+            $("#txt_workingHourTo_" + id).text(SelectedWorkinghoursTo);
+            $("#txt_workingHourFrom_" + id).text(SelectedWorkinghoursFrom);
+            $("#btn_UpdateEditEmergencyContact").css("display", "none");
+            $("#btn_AddEmergencyContact").css("display", "");
+
+
+
+
+            $('#txt_AddEmergencyContact').val("");
+            $('#txt_AddEmergencyName').val("");
+            $('#txt_AddEmergencyName').focus();
+            $("#spanOperationalFrom").text("From");
+            $("#spanOperationalTo").text("To");
+            $("#SelectedWorkinghoursTo").val("To");
+            $("#SelectedWorkinghoursFrom").val("From");
+          
+        });
+    });
+            function SaveEmergencyContacts() {
+                var availableHoursFlag =new Array();
+                for (var i = 1; i <= 24; i++) {
+                    availableHoursFlag[i] = "false";
+                }
+                $(".emergrncyContacts").each(function () {
+
+                    var id = this.id.split("_")[1];
+                    //var select1 = document.getElementById("SelectedWorkinghoursTo");
+                    //var option1 = select1.options[select1.selectedIndex];
+                    //var select2 = document.getElementById("SelectedWorkinghoursFrom");
+                    //var option2 = select2.options[select2.selectedIndex];
+
+                    var SelectedWorkinghoursTo = $("#txt_workingHourTo_" + id).text();
+                    var SelectedWorkinghoursFrom = $("#txt_workingHourFrom_" + id).text();
+                    var IntSelectedWorkinghoursFrom = parseInt(SelectedWorkinghoursFrom);
+                    var IntSelectedWorkinghoursTo = parseInt(SelectedWorkinghoursTo)
+                    if (IntSelectedWorkinghoursFrom == IntSelectedWorkinghoursTo) {
+                        for (var i = 1; i <= 24; i++) {
+                            availableHoursFlag[i] = "true";
+                        }
+                    }
+                    else if (IntSelectedWorkinghoursFrom < IntSelectedWorkinghoursTo) {
+                        for (var j = IntSelectedWorkinghoursFrom ; j <= IntSelectedWorkinghoursTo ; j++) {
+                            IntSelectedWorkinghoursFrom = j;
+                            if (j > 24) {
+                                IntSelectedWorkinghoursFrom = j-24;
+                            }
+                            availableHoursFlag[IntSelectedWorkinghoursFrom] = "true";
+                        }
+                    }
+                    else {
+                        IntSelectedWorkinghoursTo = IntSelectedWorkinghoursTo + 24;
+                        for (var j = IntSelectedWorkinghoursFrom ; j <= IntSelectedWorkinghoursTo ; j++) {
+                            IntSelectedWorkinghoursFrom = j;
+                            if (j > 24) {
+                                IntSelectedWorkinghoursFrom = j - 24;
+                            }
+                            availableHoursFlag[IntSelectedWorkinghoursFrom] = "true";
+                        }
+                    }
+                 
+                });
+                var hoursFlag = true;
+                for (var i = 1; i <= 24; i++) {
+                    if (availableHoursFlag[i] == "false") {
+                        hoursFlag = false;
+                    }
+                }
+                if (hoursFlag == true) {
+                    $(".emergrncyContacts").each(function () {
+                        var id = this.id.split("_")[1];
+                        //var select1 = document.getElementById("SelectedWorkinghoursTo");
+                        //var option1 = select1.options[select1.selectedIndex];
+                        //var select2 = document.getElementById("SelectedWorkinghoursFrom");
+                        //var option2 = select2.options[select2.selectedIndex];
+
+                        var SelectedWorkinghoursTo = $("#txt_workingHourTo_" + id).text();
+                        var SelectedWorkinghoursFrom = $("#txt_workingHourFrom_" + id).text();
+
+
+                        var EmergencyContactsLength = $('.txt_emergencyContact').length;
+                        var EmergencyContact = $("#txt_EmergencyContact_" + id).text();
+                        var EmergencyContactName = $("#txt_EmergencyContactName_" + id).text();
+                        var item = "";
+
+
+                        var val = id.toString();
+                        var matches = val.match(/\d+/g);
+                        if (matches == null) {
+                            $.ajax({
+                                url: '@Url.Action("AddCommunityEmergencyContact", "Home")',
+                                type: 'POST',
+                                data: { "SelectedWorkinghoursFrom": SelectedWorkinghoursFrom, "SelectedWorkinghoursTo": SelectedWorkinghoursTo, "EmergencyContact": EmergencyContact, "EmergencyContactsLength": EmergencyContactsLength, "EmergencyContactName": EmergencyContactName },
+                                dataType: 'json',
+
+                                success: function (response) {
+                                    if (response.Status == "Success") {
+                                        $("#txt_workingHourTo_" + id).attr("id", "txt_workingHourTo_" + response.ResponceCommunityEmergencyContact.model.id);
+                                        $("#txt_workingHourFrom_" + id).attr("id", "txt_workingHourFrom_" + response.ResponceCommunityEmergencyContact.model.id);
+                                        $("#txt_EmergencyContact_" + id).attr("id", "txt_EmergencyContact_" + response.ResponceCommunityEmergencyContact.model.id);
+                                        $("#txt_EmergencyContactName_" + id).attr("id", "txt_EmergencyContactName_" + response.ResponceCommunityEmergencyContact.model.id);
+                                        $("#btn_EditEmergencyContact_" + id).attr("id", "btn_EditEmergencyContact_" + response.ResponceCommunityEmergencyContact.model.id);
+                                        $("#btn_DeleteEmergencyContact_" + id).attr("id", "txt_EmergencyContactName_" + response.ResponceCommunityEmergencyContact.model.id);
+                                        $("#EmergencyContact_" + id).attr("id", "EmergencyContact_" + response.ResponceCommunityEmergencyContact.model.id);
+
+
+                                    }
+                                    else {
+                                        //$("#EmergencyContactError").fadeIn("slow");
+                                        //$("#EmergencyContactError").fadeOut(7000);
+                                        alert("limited Range Reached");
+                                    }
+
+                                },
+                                error: function (error) {
+                                }
+                            });
+                        }
+                        else {
+                            UpdateEmergencyContact(id);
+                        }
+                    });
+                }
+                else {
+                    alert("24 hours did not complete")
+                }
+
+        $("#communityEmergencyContacts").prepend(item);
+        $('#txt_AddEmergencyContact').val("");
+        $('#txt_AddEmergencyName').val("");
+        $('#txt_AddEmergencyName').focus();
+    }
+           var EditEmergencyContactID;
+    function EditEmergencyContact(id) {
+        id = id.split("_")[2];
+
+        $("#txt_AddEmergencyName").val($("#txt_EmergencyContactName_" + id).text());
+        $("#txt_AddEmergencyContact").val($("#txt_EmergencyContact_" + id).text());
+        $("#spanOperationalFrom").text($("#txt_workingHourFrom12Hrs_" + id).text());
+        $("#spanOperationalTo").text($("#txt_workingHourTo12Hrs_" + id).text());
+        $("#SelectedWorkinghoursTo").val($("#txt_workingHourTo_" + id).text());
+        $("#SelectedWorkinghoursFrom").val($("#txt_workingHourFrom_" + id).text());
+        EditEmergencyContactID = id;
+        $("#btn_UpdateEditEmergencyContact").css("display", "");
+        $("#btn_AddEmergencyContact").css("display", "none");
+        //$("#EmergencyContact_" + id).attr("id", "EmergencyContact_" + id+"Updated");
+
+    }
+
+
+
+
+    function UpdateEmergencyContact(elem) {
+        id = elem;
+        var SelectedWorkinghoursTo = $("#txt_workingHourTo_" + id).text();
+        var SelectedWorkinghoursFrom = $("#txt_workingHourFrom_" + id).text();
+
+
+        var EmergencyContactsLength = $('.txt_emergencyContact').length;
+        var EmergencyContact = $("#txt_EmergencyContact_" + id).text();
+        var EmergencyContactName = $("#txt_EmergencyContactName_" + id).text();
+        var item = "";
+        $.ajax({
+            url: '@Url.Action("UpdateCommunityEmergencyContact", "Home")',
+            type: 'POST',
+            data: { "SelectedWorkinghoursFrom": SelectedWorkinghoursFrom, "SelectedWorkinghoursTo": SelectedWorkinghoursTo, "EmergencyContact": EmergencyContact, "Id": elem, "EmergencyContactName": EmergencyContactName },
+            dataType: 'json',
+
+            success: function (response) {
+                if (response.success == "Success") {
+                    //EmergencyContact = EmergencyContact.split("+")[1];
+                    //$('#EmergencyContact_' + elem).css('background', '#ededed');
+                    //$('#txt_EmergencyContact_' + elem).val(EmergencyContact);
+                    //$('#txt_EmergencyContact_' + elem).prop("disabled", true);
+
+                    //$('#txt_EmergencyContactName_' + elem).val(EmergencyContactName);
+                    //$('#txt_EmergencyContactName_' + elem).prop("disabled", true);
+
+                    //$('#btn_EditEmergencyContact_' + elem).css("display", "inline");
+                    //$('#btn_DeleteEmergencyContact_' + elem).css("display", "inline");
+                    //$('#btn_UpdateEmergencyContact_' + elem).css("display", "none");
+
+                    //$('#txt_EmergencyContact_' + elem).css('width', '44.9%');
+                    //$('#txt_EmergencyContact_' + elem).css('background', '#ededed');
+
+                    //$('#txt_EmergencyContactName_' + elem).css('width', '44.9%');
+                    //$('#txt_EmergencyContactName_' + elem).css('background', '#ededed');
+
+                }
+            },
+            error: function (error) {
+            }
+        });
+
+
+    }
+    function DeleteEmergencyContact(elem) {
+        elem = elem.split("_")[2];
+        var val=   elem.toString();
+        var matches = val.match(/\d+/g);
+        if (matches!=null) {
+            $.ajax({
+                url: '@Url.Action("DeleteEmergencyContact", "Home")',
+                type: 'POST',
+                data: { "Id": elem },
+                dataType: 'json',
+
+                success: function (response) {
+                    if (response.success == "Success") {
+                        $("#EmergencyContact_" + elem).remove();
+
+                    }
+                },
+                error: function (error) {
+                }
+            });
+        }
+        else {
+
+            $("#EmergencyContact_" + elem).remove();
+        }
+
+
+    }
+
+
+
+    // Can also be used with $(document).ready()
+    $(window).load(function () {
+        $('.flexslider').flexslider({
+            animation: "slide"
+        });
+    });
+
+        </script>
+
+    <script type="text/javascript">
+
+    function isNumberKey(evt, obj) {
+
+        var charCode = (evt.which) ? evt.which : event.keyCode
+        var value = obj.value;
+        var dotcontains = value.indexOf(".") != -1;
+        if (dotcontains)
+            if (charCode == 46) return false;
+        if (charCode == 46) return true;
+        if (charCode > 31 && (charCode < 48 || charCode > 57))
+            return false;
+        return true;
+    }
+
+
+
+    </script>
+
+    <script language="javascript" src="https://maps.googleapis.com/maps/api/js?v=3"></script>
+    <script type="text/javascript">
+        function showGoogleMap() {
+            $('#MapModal').css('display', 'inline');
+            //google.maps.event.addListenerOnce('dvMap', 'idle', function () { google.maps.event.trigger('dvMap', 'resize'); });
+            map();
+        }
+        function map() {
+            var mapOptions = {
+                center: new google.maps.LatLng(33.700828, 73.065033),
+                zoom: 12,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            };
+            var infoWindow = new google.maps.InfoWindow();
+            var latlngbounds = new google.maps.LatLngBounds();
+            var map = new google.maps.Map(document.getElementById("dvMap"), mapOptions);
+            google.maps.event.trigger(map, 'resize');
+            google.maps.event.addListener(map, 'click', function (e) {
+                var latlng = new google.maps.LatLng(e.latLng.lat(), e.latLng.lng());
+                var geocoder = geocoder = new google.maps.Geocoder();
+                geocoder.geocode({ 'latLng': latlng }, function (results, status) {
+                    if (status == google.maps.GeocoderStatus.OK) {
+                        if (results[1]) {
+                            var address = results[1].formatted_address;
+                            //document.getElementById("addressWords").value=address.substring(0, 25)+"...";
+                            document.getElementById("addressWords").value = address;
+                            $("#addressWords").attr("disabled", false);
+                            document.getElementById("addressLongitude").value = e.latLng.lng();
+                            document.getElementById("addressLatitude").value = e.latLng.lat();
+                            //$("#MapModal").css("display", "none");
+
+
+
+                            //alert("Location: " + results[1].formatted_address + "\r\nLatitude: " + e.latLng.lat() + "\r\nLongitude: " + e.latLng.lng());
+                        }
+                    }
+                });
+
+            });
+        }
+        //$(document).ready(function () {
+
+        //});
+
+    </script>
+
+    }
+
+ 
+
+</div>
+
+
+

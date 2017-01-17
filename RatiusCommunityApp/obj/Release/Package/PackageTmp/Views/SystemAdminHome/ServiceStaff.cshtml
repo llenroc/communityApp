@@ -1,0 +1,643 @@
+﻿@model RatiusCommunityApp.Models.ServiceStaffDTO
+@{
+    ViewBag.Title = "ServiceStaff";
+    Layout = "~/Views/Shared/_communityLayout.cshtml";
+}
+@section NavbarAndSideMenu{
+
+@{ Html.RenderAction("_SystemAdminNavbarAndSideMenu"); }
+}
+
+<script>
+
+    $(document).ready(function () {
+
+
+
+        var element = document.getElementById("report");
+        if (element.offsetHeight < element.scrollHeight) {
+
+
+            $("#scrollingUsers").hover(function () {
+                $("#scrollingUser").addClass("mCustomScrollbar");
+                $("#mCSB_1").addClass("mCustomScrollBox");
+                $("#mCSB_1").css("position", "relative");
+
+            }, function () {
+                $("#mCSB_1").css("position", "relative");
+                $("#mCSB_1").removeClass("mCustomScrollBox");
+
+            });
+
+
+
+        }
+
+    });
+
+    function hovering(elem) {
+        $(elem).css("margin-right", "0px");
+    }
+
+    function hovered(elem) {
+        $(elem).css("margin-right", "-6px");
+    }
+</script>
+
+<div >
+    <div class="row">
+        <div class="col-md-4 pull-left">
+            <h1 style="font-family:Roboto-Light;    font-size: 24px;color:#1d486a">
+                @*Security Services*@
+                @Model.serviceName
+            </h1>
+        </div>
+        <div class="col-md-7"></div>
+        <div class="col-md-1 pull-right">
+            <br>
+            @*<button id="bt" class="btn btn-circle" onclick="add()" style="margin-left:17%;">
+                <i class="glyphicon glyphicon-plus"></i>
+            </button>*@
+            <button id="bt" class="btn btn-link"  onclick="add()" style="    margin-left: -35px;
+    font-size: 18px;color:#1d486a">
+               +Add New
+            </button>
+        </div>
+    </div>
+    <br />
+    <div class="row" style="margin-top:-6px;">
+        <div class="col-md-6" style="background-color:transparent">
+@if (Model.serviceStaffList.Count != 0)
+            {
+            <div id="report" class="table-responsive" style="height:450px;overflow:hidden;border:transparent">
+                <div id="th" class="header" style="background-color:#1d486a;color:#fff">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <center style="font-family:Roboto-Light;height: 29px;margin-top: 18%;margin-left:25%;text-transform:uppercase">&nbsp;No</center>
+                        </div>
+                        <div class="col-md-5">
+                            <center style="font-family:Roboto-Light;height: 29px;margin-top: 5%;text-align:left;text-transform:uppercase">Name</center>
+                        </div>
+                        <div class="col-md-5">
+                            <center style="font-family:Roboto-Light;height: 29px;margin-top: 5%;margin-left:-24%;text-transform:uppercase">Description</center>
+                        </div>
+                    </div>
+                </div>
+                <div class="mCustomScrollbar" id="scrollingUsers" onmouseover="hovering(this)" onmouseout="hovered(this)">
+                    <div id="abc" style="background-color:#fff;cursor:pointer">
+                        @foreach (var item in Model.serviceStaffList)
+                        {
+                            <div id="a" class="row" onclick="ShowStaffMember(@item.id)" style="border:1px solid #f4f4f4;">
+                                <div id=@("emailID_"+item.id) style="display:none">@item.emailID</div>
+                                <div id=@("image_"+item.id) style="display:none">@item.image</div>
+                                @if (item.isActive == true)
+                                {
+                                    <div id=@("btnIsActive_"+item.id) name="True" style="display:none">Active</div>
+                                }
+                                else
+                                {
+                                    <div id=@("btnIsActive_"+item.id) name="False" style="display:none">UnActive</div>
+                                }
+                                <div id=@("ContactNumber"+item.id) style="display:none">@item.contactNumber</div>
+                                <center>  <div id=@("id_"+item.id) class="col-md-2 staffId" style="color: #000000;border-right:2px solid #f4f4f4; font-family:Roboto-Light;   border-left: 2px solid #f4f4f4;font-size: 13px;padding-top: 5px;">@item.id</div></center>
+                                <div id=@("name_"+item.id) class="col-md-5 staffNameId" style="color: #000000;border-right:2px solid #f4f4f4;font-family:Roboto-Light;font-size: 13px;padding-top: 5px;">@item.name</div>
+                                <div id=@("staffRole_"+item.id) class="col-md-5 staffRole" style="min-height:26px; color: #000000;border-right:16px solid #f4f4f4;font-family:Roboto-Light;font-size: 13px;    height: auto;padding-top: 5px;text-align:center;">@item.staffRole</div>
+                            </div>
+                        }
+
+
+
+                    </div>
+                </div>
+            </div>
+}
+            @if (Model.serviceStaffList.Count == 0)
+            {
+                <div id=unexpanded class="unexpanded" style="margin-top: -1%;">
+                    <div name="temp" class="row" style="padding-right:3%;padding-left:3%;">
+                        <br />
+                        <div style="background-color:#ffffff;height:auto" class="row">
+                            <div class="col-md-4" style="margin-top:1.5%">
+
+                            </div>
+                            @*<div class="col-md-5" style="margin-top:1.5%">
+
+                        </div>*@
+
+
+
+                            <div class="col-md-7">
+                                <h3 style="text-transform:none"> NO Service Staff</h3>
+
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="col-md-2">
+
+        </div>
+        <div id="addNew" class="col-md-6" style="height:450px;background-color:#fff;width:46%;display:block;border:1px solid #1d486a;border-top:none;border-top:1px solid #80B4E6;display:none;margin-left:24px;">
+            <div class="row" style="margin-top:3%">
+
+            </div>
+            <form id="PostAnnouncement" action="../SystemAdminHome/AddServicesStaffFromModel" method="post" enctype="multipart/form-data">
+                <div style="margin-top:10%;">
+                    <div class="row">
+                        <div id="logodiv" style="margin-top:-10px;">
+                            <center><a href="#" onclick="opendialog()"><div @*src="~/images/NoUserImage.png"*@ id="Img" class="img-circle" alt="User Image" style="background-image:url('../images/NoUserImage.png'); background-size: cover;background-position: center;background-repeat: no-repeat; z-index: 5; height: 150px; width: 150px; border: 3px solid; border-color: transparent; border-color: rgba(63, 12, 12, 0.2);"></div></a></center>
+                            @Html.TextBoxFor(model => model.serviceStaff.image, null, new { type = "file", name = "file", @class = "form-control", id = "file", style = "display: none", accept = "image/*", })
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <center>
+                            <span style="color:red; display:none;font-family: Roboto-Light;" id="addAnnouncementError"></span>
+                            @Html.TextBoxFor(model => model.serviceStaff.name, null, new { id = "AddStaffMember", type = "text", @class = "form-control", style = "height:100%;font-size:150%;color:#1d486a;width:50%;border-style:none;text-align:center;font-family:Roboto-Light", placeholder = "NAME" })
+                            @* <input id="officername" type=text class="form-control" style="height:100%;font-size:32px;color:#1d486a;width:50%;border-style:none;text-align:center;margin-top:-14px;" placeholder="Officer Name" />*@
+                        </center>
+                    </div>
+                    <div class="row">
+                        <center>
+                            @Html.TextBoxFor(model => model.serviceStaff.staffRole, null, new { id = "AddStaffRole", type = "text", @class = "form-control", style = "height:100%;font-size:100%;width:50%;border-style:none;text-align:center;font-family:Roboto-Regular;margin-top:2px;", placeholder = "DESCRIPTION" })
+                            @*<input type=text class="form-control" style="color:#333;height:100%;font-size:32px;width:50%;border-style:none;text-align:center;" placeholder="Designation" />*@
+                        </center>
+                    </div>
+                    <div class="row">
+                        <center>
+                            @Html.TextBoxFor(model => model.serviceStaff.contactNumber, null, new { id = "AddStaffContact", type = "text", @class = "form-control", style = "margin-top:-5px;font-size:large;color:#000;width:50%;height:100%;font-size:100%;border-style:none;text-align:center;font-family:Roboto-Light", placeholder = "CONTACT NUMBER" })
+                            @*<input type="text" class="form-control" style="font-size:large;color:#000;width:50%;height:100%;font-size:100%;border-style:none;text-align:center;margin-top:-5px;" placeholder="Contact" />*@
+                            @Html.TextBoxFor(model => model.serviceStaff.emailID, null, new { id = "AddStaffEmail", type = "text", @class = "form-control", style = "margin-top:-8px;font-size:large;color:#000;width:50%;border-style:none;height:100%;font-size:100%;text-align:center;font-family:Roboto-Light;    text-transform: lowercase;", placeholder = "E-MAIL" })
+                            @*<input type="text" class="form-control" style="font-size:large;color:#000;width:50%;border-style:none;height:100%;font-size:100%;text-align:center;margin-top:-8px;" placeholder="Email ID" />*@
+                        </center>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <center><button class="btn btn-block btn-sm" style="color:#fff;background-color:#1d486a;width:25%;margin-top:-3px;" type="button" onclick="saved()">UPDATE</button></center>
+                    </div>
+                </div>
+            </form>
+
+            <br />
+        </div>
+
+
+        <div id="viewsame" class="col-md-6" style="height:450px;background-color:#fff;width:46%;display:block;border:1px solid #1d486a;border-top:none;border-top:1px solid #80B4E6; margin-left:24px;">
+            <div class="row" style="margin-top:3%">
+                @if (Model.serviceStaffList.Count != 0)
+                {  <button class="btn-link" id="DeleteID" name=@("DeleteStaff_"+Model.serviceStaffList.FirstOrDefault().id) onclick="DeleteStaffMember(this.name);" style="font-family:Roboto-Light; background-color:#ffffff;padding-left:20px;"><i class="glyphicon glyphicon-trash"></i></button>
+                    <button class="btn-link" style="background-color:#ffffff;font-family:Roboto-Light" id="EditID" name="StaffEditName" onclick="edit(this.name);"><i style="padding-right:25%" class="glyphicon glyphicon-pencil"></i></button>}
+                <p class="pull-right" id="StaffID" style="font-size:large; padding-right:20px;font-family:Roboto-Light">
+                    @if (Model.serviceStaffList.Count != 0)
+                    {@Model.serviceStaffList.FirstOrDefault().id}
+                </p>
+            </div>
+            <div id="noneditable" style="display:block;">
+                <div class="row">
+                    <div id="logodiv">
+                        @if (Model.serviceStaffList.Count != 0)
+                        {   <center><div id="StaffImage" @*src=""*@ class="img-circle" alt="User Image" style="background-image:url('@Model.serviceStaffList.FirstOrDefault().image'); background-size: cover;background-position: center;background-repeat: no-repeat; z-index: 5; height: 145px; width: 145px; border: 3px solid; border-color: transparent; border-color: rgba(63, 12, 12, 0.2);"></div></center>}
+                    </div>
+                </div>
+                <div class="row">
+                    <center><h1 id="StaffName" style="color:#1d486a;font-family: Roboto-Light;font-size:150%;">@if (Model.serviceStaffList.Count != 0){@Model.serviceStaffList.FirstOrDefault().name}</h1></center>
+                </div>
+                <div class="row">
+                    <center><h4 id="StaffRole" style="font-family: Roboto-Regular;font-size:100%;">@if (Model.serviceStaffList.Count != 0){@Model.serviceStaffList.FirstOrDefault().staffRole}</h4></center>
+                </div>
+                <div class="row">
+                    <center>
+                        <p style="font-size:115%;color:#A8A8A8;font-family:Roboto-Light"><span id="StaffContactNumber" style="color:#6F6D75;"> @if (Model.serviceStaffList.Count != 0){@Model.serviceStaffList.FirstOrDefault().contactNumber}</span><br />
+                            <span id="StaffEmailID" style="color:#6F6D75;">@if (Model.serviceStaffList.Count != 0){@Model.serviceStaffList.FirstOrDefault().emailID}</span>
+                        </p>
+                    </center>
+                </div>
+                <br />
+                <div class="row">
+                    @if (Model.serviceStaffList.Count != 0)
+                    { 
+                        <center>
+                            @if (Model.serviceStaffList.FirstOrDefault().isActive == true)
+                            {
+
+                                <button id="@(Model.serviceStaffList.FirstOrDefault().id + "_Blocked_True")"  onclick="BlockUser(this.id)" class="btn btn-block btn-sm isActive" style="font-family:Roboto-Light;color:#fff;background-color:#1d486a;width:25%;margin-top:4px;">
+                                    Active
+                                </button>
+                            }
+                            else
+                            {
+                                    <button id="@(Model.serviceStaffList.FirstOrDefault().id + "_Blocked_False")" onclick="BlockUser(this.id)" class="btn btn-block btn-sm isActive" style="font-family:Roboto-Light;color:#fff;background-color:#A4A0A0;width:25%;margin-top:4px;">
+                                        UnActive
+                                    </button>
+                            
+
+                            }                </center>
+                    }
+                </div>
+            </div>
+
+
+
+
+
+            <form id="EditAnnouncement" method="post" action="../SystemAdminHome/EditServicesStaffFromModel" enctype="multipart/form-data">
+                <div id="editable" style="display:none;">
+                    <div class="row">
+                        <div id="logodiv">
+                            @Html.TextBoxFor(model => model.serviceStaff.id, null, new { id = "EditStaffID", style = "display:none;font-family:Roboto-Light" })
+                            <center><a href="#" onclick="openEditdialog()"><div id="EditStaffImage" @*src="~/images/NoUserImage.png"*@ class="img-circle" alt="User Image" style="background-image:url('~/images/NoUserImage.png'); background-size: cover;background-position: center;background-repeat: no-repeat; z-index: 5; height: 145px; width: 145px; border: 3px solid;font-family:Roboto-Light; border-color: transparent; border-color: rgba(63, 12, 12, 0.2);"></div></a></center>
+                            @*@Html.TextBoxFor(model => model.serviceStaff.image, null, new { type = "file", name = "Editfile", @class = "form-control", id = "Editfile", style = "display: none", accept = "image/*" })*@
+                            <input type="file" name="Editfile" class="form-control" id="Editfile" style="display: none" accept="image/*" />
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <center><span style="color:red; display:none;font-family: Roboto-Light;" id="editAnnouncementError"></span>@Html.TextBoxFor(model => model.serviceStaff.name, null, new { id = "EditStaffName", type = "text", @class = "form-control", style = "font-family:Roboto-Light;height:100%;font-size:150%;margin-top: -9px;color:#1d486a;width:100%;border-style:none;text-align:center;", placeholder = "NAME" })</center>
+                    </div>
+                    <div class="row">
+                        <center>    @Html.TextBoxFor(model => model.serviceStaff.staffRole, null, new { id = "EditStaffRole", type = "text", @class = "form-control", style = "font-family: Roboto-Regular;height:100%;color:#333;font-size:100%;width:100%;border-style:none;text-align:center;margin-top:2px;", placeholder = "DESCRIPTION" })</center>
+                    </div>
+                    <div class="row">
+
+                        <center>    @Html.TextBoxFor(model => model.serviceStaff.contactNumber, null, new { id = "EditStaffContactNumber", type = "text", @class = "form-control", style = "font-family:Roboto-Light;font-size:115%;color:#6F6D75;width:100%;height:100%;border-style:none;text-align:center;margin-top: -5px;", placeholder = "CONTACT NUMBER" })</center>
+                        <center>    @Html.TextBoxFor(model => model.serviceStaff.emailID, null, new { id = "EditStaffEmailID", type = "text", @class = "form-control", style = "font-family:Roboto-Light;font-size:115%;width:100%;border-style:none;height:100%;color:#6F6D75;margin-top:-13px;;text-align:center;    text-transform: lowercase;", placeholder = "E-MAIL" })</center>
+
+                    </div>
+                    <br />
+                    <div class="row">
+                        <center><button class="btn btn-block btn-sm" style="color:#fff;background-color:#1d486a;width:25%;    margin-top: 10px;" type="button" onclick="save()">UPDATE</button></center>
+                    </div>
+                </div>
+            </form>
+            <br />
+        </div>
+
+    </div>
+
+
+
+
+</div>
+
+@section mystyles{
+
+    <style>
+        #EditStaffName:placeholder-shown {
+            color: orange;
+        }
+
+        :-moz-placeholder {
+            color: #1d486a;
+        }
+
+        ::-webkit-input-placeholder {
+            text-align: center;
+        }
+
+        .table-hover {
+            color: #A8A8A8;
+        }
+
+        .table {
+            text-align: center;
+            border: 1px solid #1d486a;
+            background-color: #fff;
+            color: #A8A8A8;
+        }
+
+        .table-bordered {
+            border-left: 1px solid #1d486a;
+            border-right: 1px solid #1d486a;
+            color: #A8A8A8;
+            text-align: center;
+        }
+
+        #EditStaffName[placeholder] {
+            text-decoration-color: #1d486a;
+        }
+
+        #a {
+            border: 1px solid #80B4E6;
+            font-size: large;
+            color: #A8A8A8;
+        }
+
+        #report th {
+            border: 1px solid #1d486a;
+            background-color: #1d486a;
+            color: #fff;
+        }
+
+        .btn-circle {
+            width: 40px;
+            height: 40px;
+            text-align: center;
+            padding: 2px 0px 0px 1px;
+            font-size: 15px;
+            line-height: 1.42;
+            border-radius: 30px;
+            color: #fff;
+            background-color: #1d486a;
+        }
+    </style>
+
+}
+@section myscripts{
+    <script>
+        $(document).ready(function () {
+            $(".staffRole").each(function (index) {
+                var id = $(this).attr('id');
+                var height = $("#" + id).height();
+                var staffId = id.split("_")[1];
+                $("#staffRole_" + staffId).css("height", height + 8);
+                $("#id_" + staffId).css("height", height+8);
+                $("#name_" + staffId).css("height", height+8);
+            });
+            $("#StaffRole").html();
+        });
+        $("#report .row").click(function () {
+            var color = $(this).css('backgroundColor');
+            //hexc(color);
+            //if (color == "rgb(211, 211, 211)") {
+            //    $(this).css("background-color", "#FFFFFF");
+            //}
+            //if (color == "rgb(211, 211, 211)") {
+            document.getElementById("viewsame").style.display = 'block';
+            document.getElementById("addNew").style.display = 'none';
+            document.getElementById("noneditable").style.display = 'block';
+            document.getElementById("editable").style.display = 'none';
+            $("#bt").css("background-color", "#1d486a");
+            $("#bt").css("color", "#FFF");
+            $("#report .row").css("background-color", "#FFFFFF");
+            $(this).css("background-color", "#d3d3d3");
+            $("#th .row").css("background-color", "#1d486a");
+            $("#th .row").css("color", "#FFFFFF");
+            //}
+        });
+        (function ($) {
+
+            $(window).load(function () {
+                $(".content").mCustomScrollbar();
+                $(selector).mCustomScrollbar({ setHeight: 20, axis: "y" });
+            });
+
+        })(jQuery);
+    </script>
+    <script>
+        function add() {
+            $("#report .row").css("background-color", "#FFFFFF");
+            $("#th .row").css("background-color", "#1d486a");
+            $("#th .row").css("color", "#FFFFFF");
+            //$("#bt").css("background-color", "#000000");
+            //$("#bt").css("color", "#FFF");
+            document.getElementById("viewsame").style.display = 'none';
+            document.getElementById("addNew").style.display = 'block';
+            $("#AddStaffMember").val('');
+            //$("#EditStaffImage").attr("src", '');
+            $("#AddStaffRole").val('');
+            //$("#AddStaffContact").val('');
+            //$("#AddStaffContact").val('');
+            //$("#AddStaffContact").mask("+609999999999");
+            $("#AddStaffEmail").val('');
+        }
+        function edit(elem) {
+            document.getElementById("noneditable").style.display = 'none';
+            document.getElementById("editable").style.display = 'block';
+            var id = elem.split("_")[1];
+            //var imageSrc = $("#StaffImage").attr("src");
+            var imageSrc = $("#StaffImage").css('background-image');
+            imageSrc = imageSrc.split("(")[1];
+            imageSrc = imageSrc.split(")")[0];
+
+            $("#EditStaffImage").css('background-image', 'url(' + imageSrc + ')');
+
+            $("#EditStaffID").val($("#StaffID").html());
+
+
+            //$("#EditStaffImage").attr("src", imageSrc);
+            $("#EditStaffName").val($("#StaffName").html());
+            $("#EditStaffRole").val($("#StaffRole").html());
+            $("#EditStaffContactNumber").val($("#StaffContactNumber").html());
+            //$("#EditStaffContactNumber").mask("+609999999999");
+            $("#EditStaffEmailID").val($("#StaffEmailID").html());
+
+
+        }
+        function save() {
+            var email = document.getElementById('EditStaffEmailID');
+            var filter = /^([a-zA-Z0-9_\.\-])+\@@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+            var number = document.getElementById('EditStaffContactNumber')
+         
+            if (number.value.trim() == "" && email.value.trim() == "") {
+                $("#editAnnouncementError").text("Please Enter Contact Number or Email");
+                $("#editAnnouncementError").css("display", "block");
+                $("EditAnnouncement").submit(function (e) { e.preventDefault(); });
+            }
+            else if ($("#EditStaffName").val().trim() == "") {
+                $("#editAnnouncementError").text("Please Enter Officer Name");
+                $("#editAnnouncementError").css("display", "block");
+                $("EditAnnouncement").submit(function (e) { e.preventDefault(); });
+            }
+            else if (email.value != "") {
+                if (!filter.test(email.value)) {
+                    $("#editAnnouncementError").text("Please Enter Valid Email");
+                    $("#editAnnouncementError").css("display", "block");
+                    $("EditAnnouncement").submit(function (e) { e.preventDefault(); });
+                }
+                else {
+                    //$("#bt").css("background-color", "#1d486a");
+                    //$("#bt").css("color", "#FFF");
+                    document.getElementById("noneditable").style.display = 'block';
+                    document.getElementById("editable").style.display = 'none';
+                    var id = $("#EditStaffID").val();
+                    ShowStaffMember(id);
+                    $("#EditAnnouncement").submit();
+                    $.spin('true');
+                }
+            }
+            else {
+                //$("#bt").css("background-color", "#1d486a");
+                //$("#bt").css("color", "#FFF");
+                document.getElementById("noneditable").style.display = 'block';
+                document.getElementById("editable").style.display = 'none';
+                var id = $("#EditStaffID").val();
+                ShowStaffMember(id);
+                $("#EditAnnouncement").submit();
+                $.spin('true');
+            }
+          
+        }
+        function saved() {
+            var email = document.getElementById('AddStaffEmail');
+            var number = document.getElementById('AddStaffContact');
+            var filter = /^([a-zA-Z0-9_\.\-])+\@@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+            if (number.value.trim() == "" && email.value.trim() == "") {
+                $("#addAnnouncementError").text("Please Enter Contact Number or Email");
+                $("#addAnnouncementError").css("display", "block");
+                $("PostAnnouncement").submit(function (e) { e.preventDefault(); });
+            }
+            else if ($("#AddStaffMember").val().trim() == "") {
+                $("#addAnnouncementError").text("Please Enter Officer Name");
+                $("#addAnnouncementError").css("display", "block");
+                $("PostAnnouncement").submit(function (e) { e.preventDefault(); });
+            }
+            else if(email.value != "")
+            { if (!filter.test(email.value)) {
+                $("#addAnnouncementError").text("Please Enter Valid Email");
+                $("#addAnnouncementError").css("display", "block");
+                $("PostAnnouncement").submit(function (e) { e.preventDefault(); });
+            }
+            else {
+                //$("#bt").css("background-color", "#1d486a");
+                //$("#bt").css("color", "#FFF");
+                document.getElementById("viewsame").style.display = 'block';
+                document.getElementById("addNew").style.display = 'none';
+                $("#PostAnnouncement").submit();
+       
+                $.spin('true');
+            }
+            }
+            else {
+                //$("#bt").css("background-color", "#1d486a");
+                //$("#bt").css("color", "#FFF");
+                document.getElementById("viewsame").style.display = 'block';
+                document.getElementById("addNew").style.display = 'none';
+                $("#PostAnnouncement").submit();
+       
+                $.spin('true');
+            }
+        
+        }
+    </script>
+
+    <script type="text/javascript">
+
+
+        function BlockUser(elem) {
+            var id = elem.split("_")[0];
+            var isBlocked = elem.split("_")[2];
+            $.ajax({
+                url: '@Url.Action("ChangeServiceStaffStatus", "SystemAdminHome")',
+                type: 'POST',
+                data: { "staffID": id, "isBlocked": isBlocked },
+                dataType: 'json',
+
+                beforeSend: function () {
+                    $("#" + elem).css("background-color", "#1d486a");
+                    $("#" + elem).text("Updating...");
+                    $("#" + elem).css("disabled", true);
+                },
+                success: function (response) {
+                    if (isBlocked == "True") {
+                        $("#" + elem).css("background-color", "#A4A0A0");
+                        $("#" + elem).text("UnActive");
+                        $("#" + elem).attr("id", id + "_UnBlock_False");
+                        $("#" + elem).css("disabled", false);
+                    }
+                    else {
+                        $("#" + elem).css("background-color", "#1d486a");
+                        $("#" + elem).text("Active");
+                        $("#" + elem).attr("id", id + "_Blocked_True");
+                        $("#" + elem).css("disabled", false);
+                    }
+
+
+
+
+                },
+                error: function (error) {
+                }
+            });
+        }
+
+
+
+
+
+
+
+
+        function ShowStaffMember(elem) {
+            $("#addNew").hide();
+            document.getElementById("noneditable").style.display = 'block';
+            document.getElementById("editable").style.display = 'none';
+            $("#viewsame").show();
+
+
+            var imageSrc = $("#image_" + elem).html();
+
+            $("#StaffID").html($("#id_" + elem).html());
+            //$("#StaffImage").attr("src", imageSrc);
+            $("#StaffImage").css('background-image', 'url(' + imageSrc + ')');
+            $("#EditID").attr("name", "Edit_" + elem);
+            $("#DeleteID").attr("name", "Delete_" + elem);
+            $("#StaffName").html($("#name_" + elem).html());
+            $("#StaffRole").html($("#staffRole_" + elem).html());
+            $("#StaffContactNumber").html($("#ContactNumber" + elem).html());
+            $("#StaffEmailID").html($("#emailID_" + elem).html());
+
+            $(".isActive").html($("#btnIsActive_" + elem).html());
+            if ($("#btnIsActive_" + elem).attr("name") == "False") {
+                $(".isActive").css("background-color", "rgb(164, 160, 160)");
+            }
+            $(".isActive").attr("id",elem+"_Blocked_"+$("#btnIsActive_" + elem).attr("name"));
+        }
+
+        function opendialog() {
+            $("#file").click();
+
+        }
+        function openEditdialog() {
+            $("#Editfile").click();
+
+        }
+        function DeleteStaffMember(elem) {
+            $.spin('true');
+            var id = elem.split("_")[1];
+            alert
+            $.ajax({
+                url: '@Url.Action("DeleteServicesStaffwithMemberID", "SystemAdminHome")',
+                type: 'POST',
+                data: { "StaffMemberID": id },
+                dataType: 'json',
+
+                success: function (response) {
+                    window.location.reload();
+                },
+                error: function (error) {
+                }
+            });
+        }
+        $(function () {
+
+            $('#file').change(function (event) {
+
+                var tmppath = URL.createObjectURL(event.target.files[0]);
+                //$("#Img").fadeIn("fast").attr('src', tmppath);
+                $("#Img").css('background-image', 'url(' + tmppath + ')');
+                $("#Img").css("display", "block");
+            });
+            $('#Editfile').change(function (event) {
+
+                var tmppath = URL.createObjectURL(event.target.files[0]);
+                //$("#EditStaffImage").fadeIn("fast").attr('src', tmppath);
+                $("#EditStaffImage").css('background-image', 'url(' + tmppath + ')');
+                $("#EditStaffImage").css("display", "block");
+
+            });
+        });
+    </script>
+    <script type="text/javascript">
+    @*set  sidebar selected tab color*@
+        $(document).ready(function () {
+            $("#SystemAmdin_Directory").css("background-color", "#ffffff");
+            $("#Directory").css("color", "#000000");
+        });
+    </script>
+
+
+}
+

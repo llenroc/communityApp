@@ -1,0 +1,1623 @@
+﻿@using PagedList.Mvc;
+@using PagedList;
+@model RatiusCommunityApp.Models.MemberAndChatDTO
+
+
+@{
+    ViewBag.Title = "Messages";
+    Layout = "~/Views/Shared/_communityLayout.cshtml";
+}
+@section NavbarAndSideMenu{
+
+    @{ Html.RenderAction("_CommunityAdminNavbarAndSideMenu"); }
+}
+@*<script type="text/javascript">
+
+    $(function () {
+       
+        $('.MessageTable').DataTable({
+            "columnDefs": [{
+                "defaultContent": "-",
+                "targets": "_all"
+            }],
+            // it will display 15 rows (2 rows is equal to 1 row one is expanded and other is unexpanded)
+            "iDisplayLength": 30,
+            "paging": true,
+            "lengthChange": false,
+            "searching": false,
+            "ordering": false,
+            "info": true,
+            "autoWidth": false,
+             "destroy": true,
+        });
+    });
+</script>
+<style>
+    .dataTables_paginate {
+        margin-left: auto;
+        margin-right: auto;
+        margin: auto;
+        width: 20%;
+        /* border: 3px solid #73AD21; */
+        padding: 10px;
+    }
+
+    .dataTables_info {
+        display: none !important;
+    }
+</style>*@
+<style>
+    .ui-autocomplete{
+            height: 160px !important;
+    }
+     .modal-header{
+       background: #1d486a !important;
+    }
+    .close{
+        color: #FFFFFF;
+    opacity: 1;
+    }
+    .popover-title {
+        display: none;
+    }
+
+    #profileName {
+            font-weight: normal;
+    }
+
+    #profileAddress {
+           font-weight: normal;
+    }
+
+    #profileNo {
+            font-weight: normal;
+    }
+
+    .popover {
+        /*width: 300px;
+        height: 300px;*/
+        width: 200px;
+        height: auto;
+    }
+</style>
+<style>
+    .ui-autocomplete {
+        cursor: pointer;
+        height: 120px;
+        overflow-y: scroll;
+    }
+</style>
+
+
+<script>
+
+    //$(document).ready(function () {
+
+    //    var image = '<div class="profilePopover" style=""><center><div class="profilepic" style="margin-top:2%;width:120px;height:120px;border-radius:60px;border:2px solid #ebebeb;"><img src="" width:100% height:100%;/></div></center>'
+    //          + '<center><label id="profileName" style="font-family:Roboto-Regular;font-size:18px;margin-top:1%;">Taylor Phillipi</label><br></center>' +
+    //          '<center><label id="profileOwner" style="font-family:Roboto-Light;font-size:14px;;margin-top:6%;">Owner</label><br></center>' +
+    //          '<center><label id="profileEmail" style="font-family:Roboto-Light;font-size:14px;margin-top:2%;">Email ID</label><br></center>' +
+    //          '<center><label id="profileNo"  style="font-family:Roboto-Light;font-size:14px;margin-top:2%;">Mobile Number</label><br>' +
+    //          '<center><label id="profileAddress"  style="font-family:Roboto-Light;font-size:14px;margin-top:2%;margin-bottom:2%;">Address</label><br></center>' +
+    //          '</div> ';
+    //    $('.profileLink').popover({ placement: 'right', content: image, html: true });
+
+    //});
+
+
+
+  
+    $('[data-toggle="popover"]').popover();
+
+    $('body').on('click', function (e) {
+        $('[data-toggle="popover"]').each(function () {
+            //the 'is' for buttons that trigger popups
+            //the 'has' for icons within a button that triggers a popup
+            if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
+                $(this).popover('hide');
+            }
+        });
+    });
+
+
+    $(document).ready(function () {
+        $("#newChatButtonLink").click(function () {
+            $("#newChat").slideToggle( "slow" );
+        });
+    });
+</script>
+
+
+<div >
+    <input id="hiddenSortingOption" type="hidden" value="@TempData["SortingOption"].ToString()" />
+    <div class="row">
+
+        <div class="col-md-2 col-sm-2  col-xs-3 pull-left">
+            <h1 style="font-family:Roboto-Light;    font-size: 24px;color:#1d486a">
+                Messages
+            </h1>
+        </div>
+        <div class="col-md-5 col-sm-10  col-xs-9 SortMessageDiv  pull-right">
+            <br />
+            @*<button class="btn btn-link">Inbox</button>
+            <button class="btn btn-link">Suggestions</button>
+            <button class="btn btn-link">Feedback</button>
+            <button class="btn btn-link">Enquire</button>*@
+
+            <select onchange="Sort()" id="sort" class="dropdown SortMessageDropdown" style="font-size:12px;color:black; width:26%; background-color:white;float:right">
+                &nbsp;&nbsp;
+                <option value="sort" style="font-size:10px;">Sort</option>
+
+                <option value="ByDate" style="font-size:10px;">Sort by Latest</option>
+            </select>
+            <button id="newChatButtonLink" class="btn btn-link" style="      margin-right: 18px;  font-size: 12px;width: 18%;background-color: white;float: right;margin-top: -6px">+New Chat</button>
+        </div>
+    </div>
+    <br />
+
+    @*<div class="table-responsive">*@
+    <div id="newChat" style="display: none;">
+        <table id="NewChatTable" class=" table table-bordered" style="text-align:center;border: 1px solid #f4f4f4;">
+            <thead>
+                <tr id="head2" style="border-color: #1d486a; color: rgb(255, 255, 255); display: table-row; background-color: #1d486a;">
+                    <th><center style="margin-left:-15px;    width: 146%;">User ID</center></th>
+                    <th></th>
+                    <th colspan="3"><center>Message</center></th>
+                    <th><center>Date</center></th>
+                </tr>
+            </thead>
+            <tbody id="tableBody1">
+                <tr id="unexpanded" name="168" class="unexpanded odd" style="cursor: pointer; font-weight: bold; background-color: rgb(237, 237, 237);">
+                     <td style="border-color: transparent;border-bottom-color: #dddddd;border-bottom-width: 2px;width: 112px;border-left: 2px solid #dddddd">
+                        @*<select id="NewUserChat" onchange="getChatForNewUser()">
+                            <option value="-1">Select User</option>
+                            @foreach (var item in Model.communityMembers)
+                            {
+                                <option value="@item.userId">@item.user.firstName&nbsp;@item.user.lastName</option>
+                            }
+                        </select>*@
+                        <input type="text" id="NewUserChat" onchange="getChatForNewUser()"  onkeyup="    getChatForNewUser()" />
+                    </td>
+                    <td style="border-color: transparent;border-bottom-color: #dddddd;border-bottom-width: 2px;width: 1px;"></td>
+                    <td style="border-color: transparent;border-bottom-color: #dddddd;border-bottom-width: 2px;width: 70%;" colspan="3">
+                        <p id="NewchatLastMessage" style="    float: left;margin-left: 20px;cursor:pointer">Please Enter User Name</p><p id="NewMessage_30" style=" float: left;display:none;    margin-left: 10px !important;    width: 35px;background-color:red;color:white">New</p>
+                    </td>
+
+
+
+
+
+
+                    <td id="NewchatLastMessageDate" style="border-color: transparent;border-bottom-color: #dddddd;border-bottom-width: 2px;border-right: 2px solid #dddddd"></td>
+                </tr>
+                <tr class=" expandedNew" style="display: table-row; background-color: rgb(255, 255, 255);">
+                    <td colspan="6">
+                         <div id="NewChatexpanded" style="overflow-y: scroll; overflow-x: hidden; max-height: 140px;    border-top: 1.9px solid #1d486a;width: 101.4%;margin-left: -7px;margin-top: -9px;    height: 140px;">
+                            
+                  
+                           
+                             </div>
+                     
+                        <div id="loader" style="display:none">
+                            <p style="margin-top: -95px !important;margin-bottom: 43px !important;">Loading...</p>
+                            <img src="~/images/ajax-loader (1).gif" style="     margin-top: -85px;" />
+                        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        <div  id="NewchatMessage">
+
+                            <div style="background-color: #ededed;margin-top:1%; margin-bottom: -1%;    margin-left: -8px;margin-right: -8px;" class="row"><div class="col-md-1 " style="margin-top:2%;padding-right: 0%;"><b style="margin-left: 18px;float: left;">You</b><br><small style="margin-left: 19px;float: left;">now</small></div><div class="col-md-8" style="text-align:left"><textarea disabled id="message" class="form-control" placeholder="Please Enter User Name" style="    background: #E0E0E0;width: 100%;margin-top:2%;margin-bottom:2%;    border-radius: 5px;resize: none;    margin-left: 9%;" rows="3"></textarea></div><div style="margin-top: 52px;" class="col-md-3"><div class="col-md-3"><button disabled class="btn-link" style="background-color: #ecf0f5;    margin-top: 8px; margin-right: -175%; "><i class="glyphicon glyphicon-paperclip" style="color: #B9B9B9;"></i></button><input type="file"  id="file" name="file" style="display:none" accept="image/*"></div><div class="col-md-9"><div id="uploadlImage"></div><button id="closeButton" type="button"  style="display:none;height: 22px;margin-bottom: 3px;margin-top: -29px;margin-left: 120px;">×</button><button class="btn btn-block" style="background-color:#B9B9B9;color:#ffffff;margin-top: 0px;" disabled onclick="">Send</button></div></div></div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div> 
+@if (Model.listChatDTO.Count != 0) {
+    <div id="MessagePartialView">
+    @Html.Partial("MessagesbyDate", Model)
+        </div>
+}
+    @if (Model.listChatDTO.Count == 0)
+    {
+        <div id=unexpanded class="unexpanded" style="margin-top: -1%;">
+            <div name="temp" class="row" style="padding-right:3%;padding-left:3%;">
+                <br />
+                <div style="background-color:#ffffff;height:auto" class="row">
+                    <div class="col-md-4" style="margin-top:1.5%">
+
+                    </div>
+                    @*<div class="col-md-5" style="margin-top:1.5%">
+
+                        </div>*@
+
+
+
+                    <div class="col-md-7">
+                        <h3 style="text-transform:none"> NO MESSAGE in COMMUNITY</h3>
+
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    }
+    <input type="hidden" id="userIDSession" data-value=@Session["loginUserID"].ToString() />
+</div>
+@section mystyles{
+    <style>
+        p {
+            margin: 0px !important;
+        }
+
+        #report td {
+            border-bottom: 1px solid #1d486a;
+        }
+
+        #report th {
+            border: 1px solid #1d486a;
+        }
+
+        .userModallabel {
+            margin-top: 10px;
+        }
+
+        #report > tbody > tr > td, #report > tbody > tr > th, #report > tfoot > tr > td, #report > tfoot > tr > th, #report > thead > tr > td, #report > thead > tr > th {
+            vertical-align: middle !important;
+        }
+
+
+
+
+        
+        #NewChatTable td {
+            border-bottom: 1px solid #1d486a;
+        }
+
+       #NewChatTable th {
+            border: 1px solid #1d486a;
+        }
+
+      
+
+       #NewChatTable> tbody > tr > td, #report > tbody > tr > th, #report > tfoot > tr > td, #report > tfoot > tr > th, #report > thead > tr > td, #report > thead > tr > th {
+            vertical-align: middle !important;
+        }
+    </style>
+}
+@section myscripts{
+<link href="~/Scripts/css/jquery-ui.min.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-ui.min.js"></script>
+<script>
+    $(document).ready(function () {
+        var option=$("#hiddenSortingOption").val();
+        //alert(option);
+            $('#sort').val(option);
+        
+    });
+</script>
+    <script type="text/javascript">
+
+
+        var lastMessageID;
+
+    var communityMemberArray = [];
+    $(document).ready(function () {
+        BindControls();
+    });
+
+    function BindControls() {
+
+        @foreach(var item in Model.communityMembers){
+                <text>
+        @*{"@item.user.firstName"+" "+"@item.user.lastName",},*@
+        communityMemberArray.push(@item.userId,"@(item.user.firstName+" "+item.user.lastName)")
+        </text>
+            };
+
+        $('#NewUserChat').autocomplete({
+            source: communityMemberArray,
+            minLength: 0,
+            scroll: true,
+            select: function(event, ui) {
+                $('#NewUserChat').val(ui.item.value);
+                getChatForNewUser();
+                return false;}
+        }).focus(function () {
+            $(this).autocomplete("search", $(this).val());
+        });
+
+    }
+
+
+
+
+
+    function getChatForNewUser() {
+
+        //var select1 = document.getElementById("NewUserChat").value;
+        //var option1 = select1.options[select1.selectedIndex];
+        var userIDSession = $("#userIDSession").data('value');
+        var userName= document.getElementById("NewUserChat").value
+        //var userid = option1.value;
+        var userIndex = communityMemberArray.indexOf(userName);
+        var userid = communityMemberArray[userIndex-1];
+        //alert(userid);
+        var id = userid;
+        if (userid == -1) {
+            $("#NewChatexpanded").children().remove();
+
+        }
+        else {
+
+            var items = "";
+            $.ajax({
+                url: '@Url.Action("GetUsersMessages", "Home")',
+                type: 'POST',
+                data: { "UserID": userid },
+                dataType: 'json',
+                beforeSend: function() {
+                    $("#NewChatexpanded").children().remove();
+                    $("#loader").css("display","");
+                },
+                success: function (response) {
+                    //var length = response.ChatUserResponce.length - 1;
+
+                    //lastMessageID = response.ChatUserResponce[length].chatMessageID;
+                    $("#NewChatexpanded").children().remove();
+                    $("#NewchatMessage").children().remove();
+
+                    $("#NewchatLastMessage").html("");
+                    $("#NewchatLastMessageDate").html("");
+                    var length = response.ChatUserResponce.length - 1;
+                    if (length != -1) {
+                        lastMessageDescription = response.ChatUserResponce[length].desc;
+
+                        var date = new Date(parseInt(response.ChatUserResponce[length].Date.substr(6)));
+                        var myDate = new Date(date);
+                        lastMessageDate = date.getDate() + "-" + (date.getUTCMonth() + 1) + "-" + date.getFullYear();
+
+
+
+                        $("#NewchatLastMessage").html(lastMessageDescription);
+                        $("#NewchatLastMessageDate").html(lastMessageDate);
+                    }
+
+                    $.each(response.ChatUserResponce, function (i, item) {
+                        var date = timeSince(item.Date)
+                        items = "<div class='row'>" +
+
+                               "<div class='col-md-1 col-xs-2' style='width:11%'>";
+                        if (userIDSession == item.userFrom.userID) {
+                            items += "<b style='     color: #A5A5A5;   margin-left: 22px;float: left;'>" + "You" + "</b><br />";
+                        }
+                        else {
+                            items += "<b style='    margin-left: 22px;float: left;'>" + item.userFrom.firstName + "</b><br />";
+                        }
+                        items += "</div>" +
+              "<div class='col-md-9 col-xs-7' style='    margin-left: 0.9%;'>" +
+                   "<p class='chatMessage' style=''>" + item.desc + "</p>";
+                        if (item.image != null) {
+                            items += "<a data-toggle='modal' href=" + "#Modal" + item.chatMessageID + " id=" + "ahref" + item.userFrom.userID + " ><img src=" + item.image + " class=ImagePreviewBox1 id=" + "image" + item.userFrom.userID + " style='width:40px;margin-top:1%;margin-bottom:2%;' /></a>";
+                            items += "<div class=modal fade id=Modal" + item.chatMessageID + " role=dialog>" +
+                                                "<div class=modal-dialog modal-xs>" +
+                                                    "<div class=modal-content>" +
+                                                       "<div class=modal-header id=header style=background:#367fa9>" +
+                                                            "<button type=button class=close data-dismiss=modal>&times;</button>" +
+                                                            "<h4 style=margin-left:20px;color:white;margin-bottom:0px><strong>Uploaded Image</strong></h4>" +
+                                                        "</div>" +
+
+                                                        "<div class=modal-body id=modal-style>" +
+                                                            "<img src=" + item.image + " id=" + "modalImage_" + item.userFrom.userID + " style='height:50%;width:50%'>" +
+                                                        "</div></div></div></div>";
+                        }
+
+                        items += "</div>" +
+                               "<div class='col-md-1 col-xs-3'>" +
+                               "<small>" + date + "</small>" +
+                               "</div>" +
+                       "</div>";
+                        $("#NewChatexpanded").append(items);
+                    });
+
+
+                    items = "<div style='background-color: #ededed;margin-top:1%; margin-bottom: -1%;    margin-left: -8px;margin-right: -8px;' class='row'>" +
+                          //"<div class='col-md-1'>" +
+                          //"</div>" +
+                          "<div class='col-md-1 col-xs-1 MessageYouDiv' style='margin-top:2%;padding-right: 0%;'>" +
+                          "<b style='margin-left: 18px;float: left;' >You</b><br><small style='margin-left: 19px;float: left;'>now</small>" +
+                          "</div>" +
+                          "<div class='col-md-8 col-xs-12 messageTextArea'  style='text-align:left'>" +
+                          "<textarea onkeyup='if (event.keyCode == 13 && !event.shiftKey)sendMessageFromNewChat(" + id + ");' id='newMessage" + id + "' class='messageTextArea form-control' style='width: 100%;margin-top:2%;margin-bottom:2%;    border-radius: 5px;resize: none;' rows='3'>" +
+                          "</textarea>" +
+                           //"<img src='' id=uploadlImage_" + id + " style='display:none;height:5px;width:5px'>" +
+                          "</div>" +
+                          "<div style='margin-top: 52px;' class='col-md-3'>" +
+                          "<div class='MessagePaperGlyphIcon col-md-3 col-xs-2'>" +
+                           "<button onclick='newChatopenfiledialog(" + id + ")' class='btn-link MessageAttachment' style='background-color: #ecf0f5;    margin-top: 8px; '><i class='glyphicon glyphicon-paperclip' style='color: #000000;'></i></button>" +
+                           "<input type='file' onchange=chatNewImage(" + id + ") id='newChatfile" + id + "' name='file' style='display:none' accept='image/*' />" +
+                          "</div>" +
+                          "<div class='col-md-9 col-xs-10'>" +
+                          "<div class='AttachmentAddress' id=newChatUploadlImage_" + id + " ></div>" +
+                           "<button class='deleteAttachmentbutton' id=newChatCloseButton_" + id + " type=button onclick=newChatRemoveImage(" + id + "); style='display:none;height: 22px;margin-bottom: 3px;margin-top: -29px;margin-left: 120px;'>&times;</button>" +
+                          "<button class='btn btn-block MessageSendbutton' style='background-color:#1d486a;color:#ffffff;margin-top: 0px;' onclick='sendMessageFromNewChat(" + id + ");'>Send</button>" +
+                          "</div>" +
+                          "</div>" +
+                          "</div>";
+
+
+
+
+
+
+
+
+        
+    
+                    $("#NewchatMessage").append(items);
+        
+                    //latestMessages(id, lastMessageID);
+                    $("#message" + id).focus();
+                    $("#loader").css("display","none");
+                },
+                error: function (error) {
+                },
+                complete: function () {
+                    var container = document.getElementById("NewChatexpanded");
+
+                    container.scrollTop = container.scrollHeight;
+                },
+
+            }).done(function() {     var container = document.getElementById("NewChatexpanded");
+
+                container.scrollTop = container.scrollHeight;});
+        }
+    }
+    var btnPopoverID = null;
+    function showUserDetail(id, userImage, name, userType, emailID, contact, address) {
+
+        btnPopoverID = id;
+        var image = '<div class="profilePopover" style=""><center><div class="profilepic" style="margin-top:2%;width:112px;height:100px;border-radius:60px;"><img src=' + userImage + ' style="object-fit: cover;width: 100px;    height: 100px;" class="img-circle" /></div></center>'
+     + '<center><label id="profileName" style="font-family:Roboto-Regular;font-size:16px;margin-top:5%;">' + name + '</label><br></center>' +
+     //'<center><label id="profileOwner" style="font-family:Roboto-Light;font-size:14px;;margin-top:6%;">' + userType + '</label><br></center>' +
+     //'<center><label id="profileEmail" style="font-family:Roboto-Light;font-size:14px;margin-top:2%;">' + emailID + '</label><br></center>' +
+     '<center><label id="profileAddress"  style="font-family:Roboto-Light;font-size:14px;margin-top:2%;margin-bottom:-1%;">' + address + '</label><br></center>' +
+     '<center><label id="profileNo"  style="font-family:Roboto-Light;font-size:14px;margin-top:-1%;">' + contact + '</label><br>' +
+     '</div> ';
+        $('#profileLink' + id).popover({ placement: 'right', content: image, html: true });
+    }
+
+    function initializeUserDetail(id, userImage, name, userType, emailID, contact, address) {
+        btnPopoverID = id;
+        var image = '<div class="profilePopover" style=""><center><div class="profilepic" style="margin-top:2%;width:100px;height:100px;border-radius:60px;"><img src=' + userImage + ' style="object-fit: cover;width: 100px;    height: 100px;" class="img-circle" /></div></center>'
+     + '<center><label id="profileName" style="font-family:Roboto-Regular;font-size:16px;margin-top:5%;">' + name + '</label><br></center>' +
+     //'<center><label id="profileOwner" style="font-family:Roboto-Light;font-size:14px;;margin-top:6%;">' + userType + '</label><br></center>' +
+     //'<center><label id="profileEmail" style="font-family:Roboto-Light;font-size:14px;margin-top:2%;">' + emailID + '</label><br></center>' +
+     '<center><label id="profileAddress"  style="font-family:Roboto-Light;font-size:14px;margin-top:2%;margin-bottom:-1%;">' + address + '</label><br></center>' +
+     '<center><label id="profileNo"  style="font-family:Roboto-Light;font-size:14px;margin-top:-1%;">' + contact + '</label><br>' +
+     '</div> ';
+        $('#profileLink' + id).popover({ placement: 'right', content: image, html: true }).prop("");
+    }
+
+
+    function showUserDetailJavaScript(id, userImage, firstName, lastName, userType, emailID, contact, addressArray, StreetFloorArray) {
+        var address;
+        var StreetFloor;
+        if (addressArray == undefined) {
+            address = "";
+        }
+        else {
+            var addressSplitArray = addressArray.split(",");
+            address = addressSplitArray[0];
+            for (i = 1; i < addressSplitArray.length; i++) {
+
+                address = address + " " + addressSplitArray[i];
+            }
+        }
+
+
+        if (StreetFloorArray == undefined) {
+            StreetFloor = "";
+        }
+        else {
+            var streetFloorSplitArray = StreetFloorArray.split(",");
+            StreetFloor = streetFloorSplitArray[0];
+            for (i = 1; i < streetFloorSplitArray.length; i++) {
+
+                StreetFloor = StreetFloor + " " + streetFloorSplitArray[i];
+            }
+
+        }
+
+        btnPopoverID = id;
+        var image = '<div class="profilePopover" style=""><center><div class="profilepic" style="margin-top:2%;width:100px;height:100px;border-radius:60px;"><img src=' + userImage + ' style="object-fit: cover;width: 100px;    height: 100px;" class="img-circle" /></div></center>'
+     + '<center><label id="profileName" style="font-family:Roboto-Regular;font-size:16px;margin-top:5%;">' + firstName + ' ' + lastName + '</label><br></center>' +
+     //'<center><label id="profileOwner" style="font-family:Roboto-Light;font-size:14px;;margin-top:6%;">' + userType + '</label><br></center>' +
+     //'<center><label id="profileEmail" style="font-family:Roboto-Light;font-size:14px;margin-top:2%;">' + emailID + '</label><br></center>' +
+     '<center><label id="profileAddress"  style="font-family:Roboto-Light;font-size:14px;margin-top:2%;margin-bottom:-1%;">' + address + ' , ' + StreetFloor + '</label><br></center>' +
+     '<center><label id="profileNo"  style="font-family:Roboto-Light;font-size:14px;margin-top:-1%;"> ' + contact + '</label><br>' +
+     '</div> ';
+        $('#profileLink' + id).popover({ placement: 'right', content: image, html: true });
+    }
+
+    function initializeUserDetailJavaScript(id, userImage, firstName, lastName, userType, emailID, contact, addressArray, StreetFloorArray) {
+
+        var address;
+        var StreetFloor;
+        if (addressArray == undefined) {
+            address = "";
+        }
+        else {
+            var addressSplitArray = addressArray.split(",");
+            address = addressSplitArray[0];
+            for (i = 1; i < addressSplitArray.length; i++) {
+
+                address = address + " " + addressSplitArray[i];
+            }
+        }
+
+
+        if (StreetFloorArray == undefined) {
+            StreetFloor = "";
+        }
+        else {
+            var streetFloorSplitArray = StreetFloorArray.split(",");
+            StreetFloor = streetFloorSplitArray[0];
+            for (i = 1; i < streetFloorSplitArray.length; i++) {
+
+                StreetFloor = StreetFloor + " " + streetFloorSplitArray[i];
+            }
+
+        }
+
+        btnPopoverID = id;
+        var image = '<div class="profilePopover" style=""><center><div class="profilepic" style="margin-top:2%;width:100px;height:100px;border-radius:60px;"><img src=' + userImage + ' style="object-fit: cover;width: 100px;    height: 100px;" class="img-circle" /></div></center>'
+     + '<center><label id="profileName" style="font-family:Roboto-Regular;font-size:16px;margin-top:5%;">' + firstName + ' ' + lastName + '</label><br></center>' +
+     //'<center><label id="profileOwner" style="font-family:Roboto-Light;font-size:14px;;margin-top:6%;">' + userType + '</label><br></center>' +
+     //'<center><label id="profileEmail" style="font-family:Roboto-Light;font-size:14px;margin-top:2%;">' + emailID + '</label><br></center>' +
+     '<center><label id="profileAddress"  style="font-family:Roboto-Light;font-size:14px;margin-top:2%;margin-bottom:-1%;">' + address + ' , ' + StreetFloor + '</label><br></center>' +
+     '<center><label id="profileNo"  style="font-family:Roboto-Light;font-size:14px;margin-top:-1%;"> ' + contact + '</label><br>' +
+     '</div> ';
+        $('#profileLink' + id).popover({ placement: 'right', content: image, html: true });
+    }
+
+
+    
+    function Sort() {
+        $.spin('true');
+
+        var select1 = document.getElementById("sort");
+        var option1 = select1.options[select1.selectedIndex];
+
+
+        var sortingOption = option1.value;
+        var items = "";
+
+        if (sortingOption == 'ByDate') {
+         
+            window.location.href = ('@Url.Action("Messages", "home")?page=1&sortingOption=ByDate');
+            $.spin('false');
+            @*$.ajax({
+                url: '@Url.Action("MessagesbyDate", "Home")',
+                type: 'POST',
+                //data: { "complaintCatagoryID": ComplaintsCatagory },
+                dataType: 'json',
+                success: function (response) {
+
+                    $('#tableBody').children().remove();
+                    $.each(response.ChatUserResponce, function (i, item) {
+                        var addressArray;
+                        var streetFloorArray;
+                        if (item.member.address == null) {
+                            addressArray = " ";
+                        }
+                        else {
+                            addressArray = item.member.address.split(" ");
+                        }
+                        if (item.member.streetFloor == null) {
+                            streetFloorArray = " ";
+                        }
+                        else {
+                            streetFloorArray = item.member.streetFloor.split(" ");
+                        }
+
+
+                        if (item.chat.userFrom.image == null) {
+                            item.chat.userFrom.image = "";
+                        }
+                        if (item.chat.userFrom.firstName == null) {
+                            item.chat.userFrom.firstName = "";
+                        }
+                        if (item.chat.userFrom.lastName == null) {
+                            item.chat.userFrom.lastName = "";
+                        }
+                        if (item.chat.userFrom.userType == null) {
+                            item.chat.userFrom.userType = "";
+                        }
+                        if (item.chat.userFrom.emailID == null) {
+                            item.chat.userFrom.emailID = "";
+                        }
+                        if (item.chat.userFrom.contact == null) {
+                            item.chat.userFrom.contact = "";
+                        }
+                        items = "<tr id='unexpanded_" + item.chat.userFrom.userID + "' name=" + item.chat.chatMessageID + " class='unexpanded' style=' background-color:#fff;    cursor: pointer;'>" +
+
+                            "<td style='border-color: transparent;border-bottom-color: #dddddd;border-bottom-width: 2px;width: 112px;border-left: 2px solid #dddddd'>" + "<a id='profileLink" + item.chat.chatMessageID + "' style='float:left;    margin-left: 17px;cursor: pointer;' class='profileLink' rel='popover' data-toggle='popover' data-content='' title='Popover with image' onmouseover=initializeUserDetailJavaScript('" + item.chat.chatMessageID + "','" + item.chat.userFrom.image + "','" + item.chat.userFrom.firstName.replace(/ /g, '') + "','" + item.chat.userFrom.lastName.replace(/ /g, '') + "','" + item.chat.userFrom.userType.replace(/ /g, '') + "','" + item.chat.userFrom.emailID.replace(/ /g, '') + "','" + item.chat.userFrom.contact.replace(/ /g, '') + "','" + addressArray + "','" + streetFloorArray + "')  onclick=showUserDetailJavaScript('" + item.chat.chatMessageID + "','" + item.chat.userFrom.image + "','" + item.chat.userFrom.firstName.replace(/ /g, '') + "','" + item.chat.userFrom.lastName.replace(/ /g, '') + "','" + item.chat.userFrom.userType.replace(/ /g, '') + "','" + item.chat.userFrom.emailID.replace(/ /g, '') + "','" + item.chat.userFrom.contact.replace(/ /g, '') + "','" + addressArray + "','" + streetFloorArray + "') >" + item.chat.userFrom.firstName + " " + item.chat.userFrom.lastName + "</a>"
+                   + "</td>";
+                        if (item.chat.image != null) {
+                            items += "<td style='border-color: transparent;border-bottom-color: #dddddd;border-bottom-width: 2px;width: 1px;'></td>";
+                        }
+                        else {
+                            items += "<td style='border-color: transparent;border-bottom-color: #dddddd;border-bottom-width: 2px;width: 1px;'></td>";
+                        }
+                        items += "<td style='border-color: transparent;border-bottom-color: #dddddd;border-bottom-width: 2px;width: 70%;' colspan='3'>" ;
+                           if (item.chat.desc != "")
+                           {
+                               items +="<p id='Message_" + item.chat.userFrom.userID+"' style='float: left;margin-left: 20px;cursor:pointer'>"+item.chat.desc+"</p>";
+                           }
+                        else
+                           {
+                               items +="<img src="+item.chat.image+" class='' id='' style='width:20px;float:left;' />";
+                           }
+                            "<p id='Message_" + item.chat.userFrom.userID + "' style='float: left;margin-left: 20px;cursor:pointer'>" + item.chat.desc + "</p>"; if (item.chat.isRead == false)
+                            { items += "<p id='NewMessage_" + item.chat.userFrom.userID + "' style='float: left;    margin-left: 10px !important;width: 35px;display:block;background-color:red;color:white'>New</p>"; }
+                            else { items += "<p id='NewMessage_" + item.chat.userFrom.userID + "' style='float: left;    margin-left: 10px !important;width: 35px;;display:none;background-color:red;color:white'>New</p>"; }
+
+                        items += "</td>";
+
+
+                        var date = new Date(parseInt(item.chat.Date.substr(6)));
+                        var myDate = new Date(date);
+
+                        //alert(formattedDate)
+                        //var Day = formattedDate.split("/")[1];
+                        //var Monty = formattedDate.split("/")[0];
+                        //var Year = formattedDate.split("/")[2];
+
+                        items += "<td style='border-color: transparent;border-bottom-color: #dddddd;border-bottom-width: 2px;border-right: 2px solid #dddddd'>" + date.getDate() + "-" + (date.getUTCMonth() + 1) + "-" + date.getFullYear() + "</td>" +
+                "</tr>" +
+                "<tr class='expanded' style='background-color:#fff;'>" +
+                    "<td colspan='6'>" +
+                        "<div id='expanded_" + item.chat.userFrom.userID + "' style='overflow-y: scroll; overflow-x: hidden; max-height: 140px; border-top: 1.0px solid #1d486a;width: 101.4%;margin-left: -7px;margin-top: -9px;    height: 140px;'>" +
+
+                          "<div id='loaderExpanded + "+item.chat.userFrom.userID+"' style='display:none'>"+
+                                "<p style='margin-top: -95px !important;margin-bottom: 43px !important;'>Loading...</p>"+
+                                "<img src='~/images/ajax-loader (1).gif' style='margin-top: -85px;' />"+
+                            "</div>"+
+
+                        "</div>" +
+                        "<div id='chat_" + item.chat.userFrom.userID + "'>" +
+
+                        "</div>" +
+                    "</td>" +
+                "</tr>";
+
+
+
+
+
+                        $('#tableBody').append(items);
+                    });
+                    startup();
+                    $.spin('false');
+                }
+
+            });*@
+
+        }
+        else {
+            $.spin('true');
+            //window.location.reload();
+            window.location.href = ('@Url.Action("Messages", "home")?page=1&sortingOption=sort');
+            $.spin('false');
+        }
+
+    }
+
+
+
+    function startup() {
+        btnPopoverID = null;
+        $("#report tr:odd").addClass("odd");
+        $("#report tr:not(.odd)").hide();
+        $("#report tr:first-child").show();
+        function hexc(colorval) {
+            var parts = colorval.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+            delete (parts[0]);
+            for (var i = 1; i <= 3; ++i) {
+                parts[i] = parseInt(parts[i]).toString(16);
+                if (parts[i].length == 1) parts[i] = '0' + parts[i];
+            }
+            color = '#' + parts.join('');
+
+        }
+
+
+
+
+        var userIDSession = $("#userIDSession").data('value');
+
+
+        $("#report tr.odd").click(function () {
+            if (btnPopoverID == null) {
+                var color = $(this).css('backgroundColor');
+                hexc(color);
+                if (color == "rgb(255, 255, 255)") {
+                    //alert();
+                    //$(".expanded").hide();
+                    $(".expandedChatRow").fadeOut();
+                    
+                    $(".unexpanded").css("background-color", "#FFFFFF");
+                    $(".unexpanded").css("font-weight", "initial");
+                    $(".SlideExpanded").slideUp("slow");
+                    
+                    $(this).css("background-color", "#ededed");
+                    $(this).css("font-weight", "Bold");
+                    
+
+                    var rowid = $(this).attr("id");
+                    id = $(this).attr("id").split("_")[1];
+                    expandedChatRow="#expandedChatRow"+id,
+                    expandedRowID = "#expanded_" + id;
+                    unexpandedRowID = "#unexpanded_" + id;
+                    sildeExpanded = "#SildeExpanded" + id;
+                    chatRowID = "#chat_" + id;
+
+                  
+                  
+                    var messageID = $(unexpandedRowID).attr("name");
+                    ChangeMessageStatus(messageID);
+                    $("#NewMessage_" + id).css('display', 'none');
+
+                    var items = "";
+                    $.ajax({
+                        url: '@Url.Action("GetUsersMessages", "Home")',
+                        type: 'POST',
+                        data: { "UserID": id },
+                        dataType: 'json',
+                        beforeSend: function() {
+                            $(expandedRowID).children().remove();
+                            $("#loaderExpanded"+id).css("display","");
+
+                        },
+                        success: function (response) {
+                            var length = response.ChatUserResponce.length - 1;
+
+                            lastMessageID = response.ChatUserResponce[length].chatMessageID;
+                            $(expandedRowID).children().remove();
+                            $(chatRowID).children().remove();
+                            $.each(response.ChatUserResponce, function (i, item) {
+                                var date = timeSince(item.Date)
+                                items = "<div class='row'>" +
+
+                                       "<div class='col-md-1 col-xs-2' style='width:11%'>";
+                                if (userIDSession == item.userFrom.userID) {
+                                    items += "<b style='     color: #A5A5A5;   margin-left: 22px;float: left;'>" + "You" + "</b><br />";
+                                }
+                                else {
+                                    items += "<b style='    margin-left: 22px;float: left;'>" + item.userFrom.firstName + "</b><br />";
+                                }
+                                items += "</div>" +
+                      "<div class='col-md-9 col-xs-7' style='    margin-left: 0.9%;'>" +
+                           "<p class='chatMessage' style=''>" + item.desc + "</p>";
+                                if (item.image != null) {
+                                    items += "<a data-toggle='modal' href=" + "#Modal" + item.chatMessageID + " id=" + "ahref" + item.userFrom.userID + " ><img src=" + item.image + " class=ImagePreviewBox1 id=" + "image" + item.userFrom.userID + " style='width:40px;margin-top:1%;margin-bottom:2%;' /></a>";
+                                    items += "<div class=modal fade id=Modal" + item.chatMessageID + " role=dialog>" +
+                                                        "<div class=modal-dialog modal-xs>" +
+                                                            "<div class=modal-content>" +
+                                                               "<div class=modal-header id=header style=background:#367fa9>" +
+                                                                    "<button type=button class=close data-dismiss=modal>&times;</button>" +
+                                                                    "<h4 style=margin-left:20px;color:white;margin-bottom:0px><strong>Uploaded Image</strong></h4>" +
+                                                                "</div>" +
+
+                                                                "<div class=modal-body id=modal-style>" +
+                                                                    "<img src=" + item.image + " id=" + "modalImage_" + item.userFrom.userID + " style='height:50%;width:50%'>" +
+                                                                "</div></div></div></div>";
+                                }
+
+                                items += "</div>" +
+                                       "<div class='col-md-1 col-xs-3'>" +
+                                       "<small>" + date + "</small>" +
+                                       "</div>" +
+                               "</div>";
+                                $(expandedRowID).append(items);
+                            });
+                            items = "<div style='background-color: #ededed;margin-top:1%; margin-bottom: -1%;    margin-left: -8px;margin-right: -8px;' class='row'>" +
+                                    //"<div class='col-md-1'>" +
+                                    //"</div>" +
+                                    "<div class='col-md-1 col-xs-1 MessageYouDiv' style='margin-top:2%;padding-right: 0%;'>" +
+                                    "<b style='margin-left: 18px;float: left;' >You</b><br><small style='margin-left: 19px;float: left;'>now</small>" +
+                                    "</div>" +
+                                    "<div class='col-md-8 col-xs-12 messageTextArea'  style='text-align:left'>" +
+                                    "<textarea onkeyup='if (event.keyCode == 13 && !event.shiftKey)sendMessage(" + id + ");' id='message" + id + "' class='messageTextArea form-control' style='width: 100%;margin-top:2%;margin-bottom:2%;    border-radius: 5px;resize: none;' rows='3'>" +
+                                    "</textarea>" +
+                                     //"<img src='' id=uploadlImage_" + id + " style='display:none;height:5px;width:5px'>" +
+                                    "</div>" +
+                                    "<div style='margin-top: 52px;' class='col-md-3'>" +
+                                    "<div class='MessagePaperGlyphIcon col-md-3 col-xs-2'>" +
+                                     "<button onclick='opendialog(" + id + ")' class='btn-link MessageAttachment' style='background-color: #ecf0f5;    margin-top: 8px; '><i class='glyphicon glyphicon-paperclip' style='color: #000000;'></i></button>" +
+                                     "<input type='file' onchange=EditImage(" + id + ") id='file" + id + "' name='file' style='display:none' accept='image/*' />" +
+                                    "</div>" +
+                                    "<div class='col-md-9 col-xs-10'>" +
+                                    "<div class='AttachmentAddress' id=uploadlImage_" + id + " ></div>" +
+                                     "<button class='deleteAttachmentbutton' id=closeButton_" + id + " type=button onclick=removeImage(" + id + "); style='display:none;height: 22px;margin-bottom: 3px;margin-top: -29px;margin-left: 120px;'>&times;</button>" +
+                                    "<button class='btn btn-block MessageSendbutton' style='background-color:#1d486a;color:#ffffff;margin-top: 0px;' onclick='sendMessage(" + id + ");'>Send</button>" +
+                                    "</div>" +
+                                    "</div>" +
+                                    "</div>";
+                            $(chatRowID).append(items);
+                            latestMessages(id, lastMessageID);
+                            $(expandedChatRow).css("display","");
+                            $(this).next("tr").css("display","");
+                            $(sildeExpanded).slideDown();
+                            $("#message" + id).focus();
+                            $("#loaderExpanded"+id).css("display","none");
+                          
+                     
+                        },
+                        error: function (error) {
+                        },
+                        complete: function () {
+                            var expended = expandedRowID.split('#')[1];
+                            var container = document.getElementById(expended);
+
+                            container.scrollTop = container.scrollHeight;
+                        }
+                    }).done(function() {     var expended = expandedRowID.split('#')[1];
+                        var container = document.getElementById(expended);
+
+                        container.scrollTop = container.scrollHeight;});
+
+
+                }
+                else {
+                    $(this).css("background-color", "#FFFFFF");
+                    $(this).css("font-weight", "initial");
+                    $(this).next("tr").hide();
+
+                    //$(".expanded").hide();
+                }
+            }
+
+            else {
+                btnPopoverID = null;
+            }
+            //$(this).next("tr").toggle();
+            //$(this).find(".arrow").toggleClass("up");
+        });
+
+
+
+
+
+
+
+
+        function latestMessages(userID, lastMessageID) {
+            setInterval(function () {
+                var items = "";
+                $.ajax({
+                    url: '@Url.Action("GetLatestUsersMessages", "Home")',
+                    type: 'POST',
+                    data: { "UserID": id, "messageID": lastMessageID },
+                    dataType: 'json',
+
+                    success: function (response) {
+                        var length = response.ChatUserResponce.length - 1;
+
+                        if (length != -1) {
+                              
+                            if (response.ChatUserResponce[length].chatMessageID > lastMessageID) {
+
+                                lastMessageID = response.ChatUserResponce[length].chatMessageID;
+                                $.each(response.ChatUserResponce, function (i, item) {
+                                    var date = timeSince(item.Date)
+                                    items = "<div class='row'>" +
+
+                                    "<div class='col-md-1' style='width:11%'>";
+                                    if (userIDSession == item.userFrom.userID) {
+                                        items += "<b style='    color: #A5A5A5;    margin-left: 22px;float: left;'>" + "You" + "</b><br />";
+                                    }
+                                    else {
+                                        items += "<b style='    margin-left: 22px;float: left;'>" + item.userFrom.firstName + "</b><br />";
+                                    }
+                                    items += "</div>" +
+                               "<div class='col-md-9' style='    margin-left: 0.9%;'>" +
+                                    "<p style='text-align:left'>" + item.desc + "</p>";
+                                    if (item.image != null) {
+                                        items += "<a data-toggle='modal' href=" + "#Modal" + item.chatMessageID + " id=" + "ahref" + item.userFrom.userID + " ><img src=" + item.image + " class=ImagePreviewBox id=" + "image" + item.userFrom.userID + " style='width:40px;margin-top:1%;margin-bottom:2%;float:left;' /></a>";
+                                        items += "<div class=modal fade id=Modal" + item.chatMessageID + " role=dialog>" +
+                                                            "<div class=modal-dialog modal-xs>" +
+                                                                "<div class=modal-content>" +
+                                                                   "<div class=modal-header id=header style=background:#367fa9>" +
+                                                                        "<button type=button class=close data-dismiss=modal>&times;</button>" +
+                                                                        "<h4 style=margin-left:20px;color:white;margin-bottom:0px><strong>Uploaded Image</strong></h4>" +
+                                                                    "</div>" +
+
+                                                                    "<div class=modal-body id=modal-style>" +
+                                                                        "<img src=" + item.image + " id=" + "modalImage_" + item.userFrom.userID + " style='height:50%;width:50%'>" +
+                                                                    "</div></div></div></div>";
+                                    }
+
+                                    items += "</div>" +
+                                           "<div class='col-md-1'>" +
+                                           "<small>" + date + "</small>" +
+                                           "</div>" +
+                                   "</div>";
+                                    $(expandedRowID).append(items);
+                                });
+                                var expended = expandedRowID.split('#')[1];
+                                var container = document.getElementById(expended);
+
+                                container.scrollTop = container.scrollHeight;
+                            }
+                        }
+                    },
+                    error: function (error) {
+                    }
+                })
+            }, 5000); //15 seconds
+
+        }
+
+
+
+
+    }
+
+
+    var id;
+    var expandedRowID;
+    var chatRowID;
+    var expandedChatRow;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    function ChangeMessageStatus(elem) {
+        //var select1 = document.getElementById(elem);
+        //var option1 = select1.options[select1.selectedIndex];
+        //var status = option1.value;
+        var status = "Read";
+
+        var messageID = elem;
+        $.ajax({
+            url: '@Url.Action("ChangeMessageStatus", "Home")',
+            type: 'POST',
+            data: { "messageID": messageID, "status": status },
+            dataType: 'json',
+
+            success: function (response) {
+                $('#' + elem).val(status);
+            },
+            error: function (error) { }
+        });
+    }
+
+
+
+
+        function convertUTCDateToLocalDate(date) {
+            var newDate = new Date(date.getTime()+date.getTimezoneOffset()*60*1000);
+
+            var offset = date.getTimezoneOffset() / 60;
+            var condi=-1*offset
+            var hours = date.getHours();
+           
+            newDate.setHours(hours + offset);
+            if(hours<condi){
+                var day=newDate.getDate()+1;
+                newDate.setDate(day);
+            }
+            return newDate;   
+        }
+
+        function timeSince(date) {
+
+
+            // create Date object for current location
+            var d = new Date();
+
+            // convert to msec
+            // add local time zone offset
+            // get UTC time in msec
+            var utc = d.getTime() + (d.getTimezoneOffset() * 60000);
+
+            // create new Date object for different city
+            // using supplied offset
+            var offset=8 //here we set 8 because malaysia GMT is +8 (malaysia GMT+8)
+            var malayDate = new Date(utc + (3600000*offset));
+            var malayDate1=Date.parse(malayDate);
+
+        date = date.split("(")[1];
+        date = date.split(")")[0];
+       
+        var newdate=new Date(parseInt(date)).toUTCString()
+        var dd = convertUTCDateToLocalDate(new Date(newdate));
+        var dd1=Date.parse(dd);
+        var seconds = Math.floor((malayDate1 - dd1) / 1000);
+
+        var interval = Math.floor(seconds / 31536000);
+
+        if (interval >= 1) {
+            return interval + " years";
+        }
+        interval = Math.floor(seconds / 2592000);
+        if (interval >= 1) {
+            return interval + " months";
+        }
+        interval = Math.floor(seconds / 86400);
+        if (interval >= 1) {
+            return interval + " days";
+        }
+        interval = Math.floor(seconds / 3600);
+        if (interval >= 1) {
+            return interval + " hours";
+        }
+        interval = Math.floor(seconds / 60);
+        if (interval >= 1) {
+            return interval + " minutes";
+        }
+        return Math.floor(seconds) + " seconds";
+    }
+
+
+
+    function opendialog(elem) {
+        $("#file" + elem).click();
+
+    }
+    function newChatopenfiledialog(elem) {
+        $("#newChatfile" + elem).click();
+
+    }
+    function removeImage(elem) {
+        document.getElementById('file' + elem).files[0] = null;
+        document.getElementById('file' + elem).value = null;
+        $("#uploadlImage_" + elem).html('');
+        $("#uploadlImage_" + elem).css("background-color", "transparent");
+        $("#uploadlImage_" + elem).css("display", "none");
+        $("#closeButton_" + elem).css("display", "none");
+    }
+    function newChatRemoveImage(elem) {
+        document.getElementById('newChatfile' + elem).files[0] = null;
+        document.getElementById('newChatfile' + elem).value = null;
+        $("#newChatUploadlImage_" + elem).html('');
+        $("#newChatUploadlImage_" + elem).css("background-color", "transparent");
+        $("#newChatUploadlImage_" + elem).css("display", "none");
+        $("#newChatCloseButton_" + elem).css("display", "none");
+    }
+    function EditImage(elem) {
+        var filename = event.target.files[0].name;
+
+        //var tmppath = URL.createObjectURL(event.target.files[0]);
+        //$("#uploadlImage_" + elem).fadeIn("fast").attr('src', tmppath);
+        //$("#uploadlImage_" + elem).css("display", "block");
+
+
+
+        $("#uploadlImage_" + elem).html(filename);
+        $("#uploadlImage_" + elem).css("display", "");
+        $("#uploadlImage_" + elem).css("margin-top", "-29px");
+        $("#uploadlImage_" + elem).css("background-color", "#ebebeb");
+        $("#uploadlImage_" + elem).css("color", "#2d2d2d");
+        $("#uploadlImage_" + elem).css("min-width", "100px");
+        $("#uploadlImage_" + elem).css("overflow", "hidden");
+        $("#uploadlImage_" + elem).css("width", "100px");
+        $("#uploadlImage_" + elem).css("height", "22px");
+        $("#uploadlImage_" + elem).css("float", "left");
+        $("#closeButton_" + elem).css("display", "block");
+        $("#closeButton_" + elem).css("margin-left", "100px");
+
+    }
+    function chatNewImage(elem) {
+        var filename = event.target.files[0].name;
+
+        //var tmppath = URL.createObjectURL(event.target.files[0]);
+        //$("#uploadlImage_" + elem).fadeIn("fast").attr('src', tmppath);
+        //$("#uploadlImage_" + elem).css("display", "block");
+
+
+
+        $("#newChatUploadlImage_" + elem).html(filename);
+        $("#newChatUploadlImage_" + elem).css("display", "");
+        $("#newChatUploadlImage_" + elem).css("margin-top", "-29px");
+        $("#newChatUploadlImage_" + elem).css("background-color", "#ebebeb");
+        $("#newChatUploadlImage_" + elem).css("color", "#2d2d2d");
+        $("#newChatUploadlImage_" + elem).css("min-width", "100px");
+        $("#newChatUploadlImage_" + elem).css("overflow", "hidden");
+        $("#newChatUploadlImage_" + elem).css("width", "100px");
+        $("#newChatUploadlImage_" + elem).css("height", "22px");
+        $("#newChatUploadlImage_" + elem).css("float", "left");
+        $("#newChatCloseButton_" + elem).css("display", "block");
+        $("#newChatCloseButton_" + elem).css("margin-left", "100px");
+
+    }
+
+    //$("#message"+id).keyup(function (e) {
+    //    if (e.keyCode == 13) {
+    //        sendMessage(id);
+    //    }
+    //});
+    //function sendMessageOnEnterey(elem) {
+    //    if (e.keyCode == 13) {
+    //        sendMessage(elem);
+    //    }
+    //}
+
+    function sendMessageFromNewChat(elem) {
+
+        var msg = document.getElementById("newMessage" + elem).value;
+        var message = msg.substring(0, msg.length);
+        //alert(message);
+        var file = document.getElementById('newChatfile' + elem).files[0];
+        if (file == undefined && message == "") {
+            $("#newMessage" + elem).focus();
+        }
+        else {
+            var userIDSession = $("#userIDSession").data('value');
+            var id = elem;
+            var fd = new FormData();
+            fd.append("files", file);
+            fd.append("message", message);
+            fd.append("userId", elem);
+            $.ajax({
+                url: ' @Url.Action("SendMessage", "home")',
+                type: 'POST',
+                data: fd,
+                async: false,
+                cache: false,
+                contentType: false,
+                processData: false,
+                beforeSend: function () {
+                    $.spin('true');
+                },
+                success: function (response) {
+                    if(response.status=="Success"){
+                    document.getElementById('newChatfile' + elem).files[0] = null;
+                    //var length = response.ChatUserResponce.length - 1;
+
+                    //lastMessageID = response.ChatUserResponce[length].chatMessageID;
+                    $("#NewChatexpanded").children().remove();
+                    $("#NewchatMessage").children().remove();
+                    $("#NewchatLastMessage").html("");
+                    $("#NewchatLastMessageDate").html("");
+                    var length = response.ChatUserResponce.length - 1;
+                    if (length != -1) {
+                        lastMessageDescription = response.ChatUserResponce[length].desc;
+
+                        var date = new Date(parseInt(response.ChatUserResponce[length].Date.substr(6)));
+                        var myDate = new Date(date);
+                        lastMessageDate = date.getDate() + "-" + (date.getUTCMonth() + 1) + "-" + date.getFullYear();
+
+
+
+                        $("#NewchatLastMessage").html(lastMessageDescription);
+                        $("#NewchatLastMessageDate").html(lastMessageDate);
+                    }
+
+
+
+
+
+                    $.each(response.ChatUserResponce, function (i, item) {
+                        var date = timeSince(item.Date)
+                        items = "<div class='row'>" +
+
+                               "<div class='col-md-1 col-xs-2' style='width:11%'>";
+                        if (userIDSession == item.userFrom.userID) {
+                            items += "<b style='     color: #A5A5A5;   margin-left: 22px;float: left;'>" + "You" + "</b><br />";
+                        }
+                        else {
+                            items += "<b style='    margin-left: 22px;float: left;'>" + item.userFrom.firstName + "</b><br />";
+                        }
+                        items += "</div>" +
+              "<div class='col-md-9 col-xs-7' style='    margin-left: 0.9%;'>" +
+                   "<p class='chatMessage' style=''>" + item.desc + "</p>";
+                        if (item.image != null) {
+                            items += "<a data-toggle='modal' href=" + "#Modal" + item.chatMessageID + " id=" + "ahref" + item.userFrom.userID + " ><img src=" + item.image + " class=ImagePreviewBox1 id=" + "image" + item.userFrom.userID + " style='width:40px;margin-top:1%;margin-bottom:2%;' /></a>";
+                            items += "<div class=modal fade id=Modal" + item.chatMessageID + " role=dialog>" +
+                                                "<div class=modal-dialog modal-xs>" +
+                                                    "<div class=modal-content>" +
+                                                       "<div class=modal-header id=header style=background:#367fa9>" +
+                                                            "<button type=button class=close data-dismiss=modal>&times;</button>" +
+                                                            "<h4 style=margin-left:20px;color:white;margin-bottom:0px><strong>Uploaded Image</strong></h4>" +
+                                                        "</div>" +
+
+                                                        "<div class=modal-body id=modal-style>" +
+                                                            "<img src=" + item.image + " id=" + "modalImage_" + item.userFrom.userID + " style='height:50%;width:50%'>" +
+                                                        "</div></div></div></div>";
+                        }
+
+                        items += "</div>" +
+                               "<div class='col-md-1 col-xs-3'>" +
+                               "<small>" + date + "</small>" +
+                               "</div>" +
+                       "</div>";
+                        $("#NewChatexpanded").append(items);
+                    });
+
+                   
+                    items = "<div style='background-color: #ededed;margin-top:1%; margin-bottom: -1%;    margin-left: -8px;margin-right: -8px;' class='row'>" +
+                          //"<div class='col-md-1'>" +
+                          //"</div>" +
+                          "<div class='col-md-1 col-xs-1 MessageYouDiv' style='margin-top:2%;padding-right: 0%;'>" +
+                          "<b style='margin-left: 18px;float: left;' >You</b><br><small style='margin-left: 19px;float: left;'>now</small>" +
+                          "</div>" +
+                          "<div class='col-md-8 col-xs-12 messageTextArea'  style='text-align:left'>" +
+                          "<textarea onkeyup='if (event.keyCode == 13 && !event.shiftKey)sendMessageFromNewChat(" + id + ");' id='newMessage" + id + "' class='messageTextArea form-control' style='width: 100%;margin-top:2%;margin-bottom:2%;    border-radius: 5px;resize: none;' rows='3'>" +
+                          "</textarea>" +
+                           //"<img src='' id=uploadlImage_" + id + " style='display:none;height:5px;width:5px'>" +
+                          "</div>" +
+                          "<div style='margin-top: 52px;' class='col-md-3'>" +
+                          "<div class='MessagePaperGlyphIcon col-md-3 col-xs-2'>" +
+                           "<button onclick='newChatopenfiledialog(" + id + ")' class='btn-link MessageAttachment' style='background-color: #ecf0f5;    margin-top: 8px; '><i class='glyphicon glyphicon-paperclip' style='color: #000000;'></i></button>" +
+                           "<input type='file' onchange=chatNewImage(" + id + ") id='newChatfile" + id + "' name='file' style='display:none' accept='image/*' />" +
+                          "</div>" +
+                          "<div class='col-md-9 col-xs-10'>" +
+                          "<div class='AttachmentAddress' id=newChatUploadlImage_" + id + " ></div>" +
+                           "<button class='deleteAttachmentbutton' id=newChatCloseButton_" + id + " type=button onclick=newChatRemoveImage(" + id + "); style='display:none;height: 22px;margin-bottom: 3px;margin-top: -29px;margin-left: 120px;'>&times;</button>" +
+                          "<button class='btn btn-block MessageSendbutton' style='background-color:#1d486a;color:#ffffff;margin-top: 0px;' onclick='sendMessageFromNewChat(" + id + ");'>Send</button>" +
+                          "</div>" +
+                          "</div>" +
+                          "</div>";
+    
+                    $("#NewchatMessage").append(items);
+                    //latestMessages(id, lastMessageID);
+                 
+                    }
+
+                },
+                error: function (error) {
+                },
+                complete: function () {
+                    $("#newChat").slideUp();
+                    //$("#NewChatTable").css("display","none");
+                    var container = document.getElementById("NewChatexpanded");
+
+                    container.scrollTop = container.scrollHeight;
+                    $.spin('false');
+
+                }
+
+            }).done(function() {        var container = document.getElementById("NewChatexpanded");
+
+                container.scrollTop = container.scrollHeight;});
+        }
+        $("#newMessage" + elem).focus();
+    }
+
+
+
+
+
+    function sendMessage(elem) {
+
+        var msg = document.getElementById("message" + elem).value;
+        var message = msg.substring(0, msg.length);
+        //alert(message);
+        var file = document.getElementById('file' + elem).files[0];
+        if (file == undefined && message == "") {
+            $("#message" + elem).focus();
+        }
+        else {
+            var userIDSession = $("#userIDSession").data('value');
+
+            var fd = new FormData();
+            fd.append("files", file);
+            fd.append("message", message);
+            fd.append("userId", elem);
+            $.ajax({
+                url: ' @Url.Action("SendMessage", "home")',
+                type: 'POST',
+                data: fd,
+                async: false,
+                cache: false,
+                contentType: false,
+                processData: false,
+                beforeSend: function () {
+                    $.spin('true');
+                },
+                success: function (response) {
+                    if(response.status=="Success"){
+                    document.getElementById('file' + elem).files[0] = null;
+                    $(expandedRowID).children().remove();
+                    $(chatRowID).children().remove();
+                    $.each(response.ChatUserResponce, function (i, item) {
+                        var date = timeSince(item.Date)
+                        items = "<div class='row'>" +
+
+                               "<div class='col-md-1 col-xs-2' style='width:11%'>";
+                        if (userIDSession == item.userFrom.userID) {
+                            items += "<b style='     color: #A5A5A5;   margin-left: 22px;float: left;'>" + "You" + "</b><br />";
+                        }
+                        else {
+                            items += "<b style='    margin-left: 22px;float: left;'>" + item.userFrom.firstName + "</b><br />";
+                        }
+                        items += "</div>" +
+              "<div class='col-md-9 col-xs-7' style='    margin-left: 0.9%;'>" +
+                   "<p class='chatMessage' style=''>" + item.desc + "</p>";
+                        if (item.image != null) {
+                            items += "<a data-toggle='modal' href=" + "#Modal" + item.chatMessageID + " id=" + "ahref" + item.userFrom.userID + " ><img src=" + item.image + " class=ImagePreviewBox1 id=" + "image" + item.userFrom.userID + " style='width:40px;margin-top:1%;margin-bottom:2%;' /></a>";
+                            items += "<div class=modal fade id=Modal" + item.chatMessageID + " role=dialog>" +
+                                                "<div class=modal-dialog modal-xs>" +
+                                                    "<div class=modal-content>" +
+                                                       "<div class=modal-header id=header style=background:#367fa9>" +
+                                                            "<button type=button class=close data-dismiss=modal>&times;</button>" +
+                                                            "<h4 style=margin-left:20px;color:white;margin-bottom:0px><strong>Uploaded Image</strong></h4>" +
+                                                        "</div>" +
+
+                                                        "<div class=modal-body id=modal-style>" +
+                                                            "<img src=" + item.image + " id=" + "modalImage_" + item.userFrom.userID + " style='height:50%;width:50%'>" +
+                                                        "</div></div></div></div>";
+                        }
+
+                        items += "</div>" +
+                               "<div class='col-md-1 col-xs-3'>" +
+                               "<small>" + date + "</small>" +
+                               "</div>" +
+                       "</div>";
+                        $(expandedRowID).append(items);
+                    });
+                    items = "<div style='background-color: #ededed;margin-top:1%; margin-bottom: -1%;    margin-left: -8px;margin-right: -8px;' class='row'>" +
+                            //"<div class='col-md-1'>" +
+                            //"</div>" +
+                            "<div class='col-md-1 col-xs-1 MessageYouDiv' style='margin-top:2%;padding-right: 0%;'>" +
+                            "<b style='margin-left: 18px;float: left;' >You</b><br><small style='margin-left: 19px;float: left;'>now</small>" +
+                            "</div>" +
+                            "<div class='col-md-8 col-xs-12 messageTextArea'  style='text-align:left'>" +
+                            "<textarea onkeyup='if (event.keyCode == 13 && !event.shiftKey)sendMessage(" + id + ");' id='message" + id + "' class='messageTextArea form-control' style='width: 100%;margin-top:2%;margin-bottom:2%;    border-radius: 5px;resize: none;' rows='3'>" +
+                            "</textarea>" +
+                             //"<img src='' id=uploadlImage_" + id + " style='display:none;height:5px;width:5px'>" +
+                            "</div>" +
+                            "<div style='margin-top: 52px;' class='col-md-3'>" +
+                            "<div class='MessagePaperGlyphIcon col-md-3 col-xs-2'>" +
+                             "<button onclick='opendialog(" + id + ")' class='btn-link MessageAttachment' style='background-color: #ecf0f5;    margin-top: 8px; '><i class='glyphicon glyphicon-paperclip' style='color: #000000;'></i></button>" +
+                             "<input type='file' onchange=EditImage(" + id + ") id='file" + id + "' name='file' style='display:none' accept='image/*' />" +
+                            "</div>" +
+                            "<div class='col-md-9 col-xs-10'>" +
+                            "<div class='AttachmentAddress' id=uploadlImage_" + id + " ></div>" +
+                             "<button class='deleteAttachmentbutton' id=closeButton_" + id + " type=button onclick=removeImage(" + id + "); style='display:none;height: 22px;margin-bottom: 3px;margin-top: -29px;margin-left: 120px;'>&times;</button>" +
+                            "<button class='btn btn-block MessageSendbutton' style='background-color:#1d486a;color:#ffffff;margin-top: 0px;' onclick='sendMessage(" + id + ");'>Send</button>" +
+                            "</div>" +
+                            "</div>" +
+                            "</div>";
+                    $(chatRowID).append(items);
+                    $("#message" + id).focus();
+                    var expended = expandedRowID.split('#')[1];
+                    var container = document.getElementById(expended);
+
+                    container.scrollTop = container.scrollHeight;
+                   
+                    }
+                    else{
+                        $("#message" + id).val("");
+                        $("#message" + id).focus();
+                    }
+                    $.spin('false');
+                },
+
+            }).done(function() {       var expended = expandedRowID.split('#')[1];
+                var container = document.getElementById(expended);
+
+                container.scrollTop = container.scrollHeight;});
+        }
+        $("#message" + elem).focus();
+    }
+    $(document).ready(function () {
+        setInterval(function () {
+
+            $(".unexpanded").each(function () {
+                var id = this.id;
+                //id = rowid.split("#")[1];
+                var userid = id.split("_")[1];
+
+                lastMessageID = $("#" + id).attr('name');
+                var items = "";
+                $.ajax({
+                    url: '@Url.Action("GettUsersNewMessages", "Home")',
+                    type: 'POST',
+                    data: { "userID": userid, "messageID": lastMessageID },
+                    dataType: 'json',
+
+                    success: function (response) {
+
+
+                        if (response.chatLast != null) {
+                            //$("#" + id).attr('id', "#unexpanded_" + response.chatLast.chatMessageID);
+                            //$("#" + id).attr('id', "#unexpanded_" + response.chatlast.chatmessageid);
+                            $("#" + id).attr('name', response.chatLast.chatMessageID);
+                            $("#Message_" + userid).html(response.chatLast.desc);
+                            $("#NewMessage_" + userid).css('display', 'block');
+
+
+                        }
+                    },
+                    error: function (error) {
+                    }
+                });
+            });
+        }, 10000);
+        //$("#report tr:odd").addClass("odd");
+        //$("#report tr:not(.odd)").hide();
+        //$("#report tr:first-child").show();
+        //function hexc(colorval) {
+        //    var parts = colorval.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+        //    delete (parts[0]);
+        //    for (var i = 1; i <= 3; ++i) {
+        //        parts[i] = parseInt(parts[i]).toString(16);
+        //        if (parts[i].length == 1) parts[i] = '0' + parts[i];
+        //    }
+        //    color = '#' + parts.join('');
+        //}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        startup();
+
+
+        @*var lastMessageID;
+
+        $("#report tr.odd").click(function () {
+
+            var color = $(this).css('backgroundColor');
+            hexc(color);
+            if (color == "rgb(255, 255, 255)") {
+                //alert();
+                $(".expanded").hide();
+                $(".unexpanded").css("background-color", "#FFFFFF");
+                $(".unexpanded").css("font-weight", "initial");
+                $(this).css("background-color", "rgb(245, 240, 245)");
+                $(this).css("font-weight", "Bold");
+                $(this).next("tr").show();
+                var rowid = $(this).attr("id");
+                id = $(this).attr("id").split("_")[1];
+                expandedRowID = "#expanded_" + id;
+                unexpandedRowID = "#unexpanded_" + id;
+                chatRowID = "#chat_" + id;
+                var messageID = $(unexpandedRowID).attr("name");
+                ChangeMessageStatus(messageID);
+                newmessageID = "#NewMessage" + id;
+
+                var items="";
+                $.ajax({
+                    url: '@Url.Action("GetUsersMessages", "Home")',
+                    type: 'POST',
+                    data: { "UserID": id },
+                    dataType: 'json',
+
+                    success: function (response) {
+                        var length = response.ChatUserResponce.length - 1;
+                        lastMessageID = response.ChatUserResponce[length].chatMessageID;
+                        $(expandedRowID).children().remove();
+                        $(chatRowID).children().remove();
+                        $.each(response.ChatUserResponce, function (i, item) {
+                            var date = timeSince(item.Date)
+                            items = "<div class='row'>" +
+
+                                   "<div class='col-md-1' style='width:11%'>" +
+                                    "<b>" + item.userFrom.firstName + "</b><br />" +
+                                    "</div>" +
+                       "<div class='col-md-9' style='    margin-left: 3.6%;'>" +
+                            "<p style='text-align:left'>" + item.desc + "</p>" ;
+                            if(item.image!=null){
+                                items += "<a data-toggle='modal' href=" + "#Modal" + item.chatMessageID + " id=" + "ahref" + item.userFrom.userID + " ><img src=" + item.image + " class=ImagePreviewBox id=" + "image" + item.userFrom.userID + " style='width:40px;margin-top:1%;margin-bottom:2%;float:left;' /></a>";
+                                items += "<div class=modal fade id=Modal" + item.chatMessageID + " role=dialog>" +
+                                                    "<div class=modal-dialog modal-xs>" +
+                                                        "<div class=modal-content>" +
+                                                           "<div class=modal-header id=header style=background:#367fa9>" +
+                                                                "<button type=button class=close data-dismiss=modal>&times;</button>" +
+                                                                "<h4 style=margin-left:20px;color:white;margin-bottom:0px><strong>Image</strong></h4>" +
+                                                            "</div>" +
+
+                                                            "<div class=modal-body id=modal-style>" +
+                                                                "<img src=" + item.image + " id=" + "modalImage_" + item.userFrom.userID + " style='height:50%;width:50%'>" +
+                                                            "</div></div></div></div>";
+                            }
+
+                            items += "</div>" +
+                                   "<div class='col-md-1'>" +
+                                   "<small>"+date+"</small>"+
+                                   "</div>" +
+                           "</div>";
+                            $(expandedRowID).append(items);
+                        });
+                        items = "<div style='background-color: rgb(245, 240, 245);margin-top:1%; margin-bottom: -1%;' class='row'>" +
+                                //"<div class='col-md-1'>" +
+                                //"</div>" +
+                                "<div class='col-md-1 ' style='margin-top:2%;padding-right: 0%;'>" +
+                                "<b >You</b><br><small>now</small>" +
+                                "</div>" +
+                                "<div class='col-md-8' style='text-align:left'>" +
+                                "<textarea id='message"+id+"' class='form-control' style='width: 100%;margin-top:2%;margin-bottom:2%;    border-radius: 5px;resize: none;    margin-left: 9%;' rows='3'>" +
+                                "</textarea>" +
+                                 //"<img src='' id=uploadlImage_" + id + " style='display:none;height:5px;width:5px'>" +
+                                "</div>" +
+                                "<div style='margin-top: 5%;' class='col-md-3'>" +
+                                "<div class='col-md-3'>" +
+                                 "<button onclick='opendialog(" + id + ")' class='btn-link' style='background-color: #ecf0f5; margin-right: -150%; margin-top: 25%;'><i class='glyphicon glyphicon-paperclip' style='color: #C1C5C5;'></i></button>" +
+                                 "<input type='file' onchange=EditImage("+id+") id='file" + id + "' name='file' style='display:none' accept='image/*' />" +
+                                "</div>" +
+                                "<div class='col-md-9'>" +
+                                "<div id=uploadlImage_" + id + " ></div>" +
+                                 "<button id=closeButton_" + id + " type=button onclick=removeImage(" + id + "); style='display:none;height: 22px;margin-bottom: 3px;margin-top: -29px;margin-left: 120px;'>&times;</button>" +
+                                "<button class='btn btn-block' style='background-color:#1d486a;color:#ffffff' onclick='sendMessage(" + id + ");'>Send</button>" +
+                                "</div>" +
+                                "</div>" +
+                                "</div>";
+                        $(chatRowID).append(items);
+                        latestMessages(id, lastMessageID);
+                        var expended = expandedRowID.split('#')[1];
+                        var container = document.getElementById(expended);
+
+                        container.scrollTop = container.scrollHeight;
+                    },
+                    error: function (error) {
+                    }
+                });
+                $(newmessageID).fadeOut();
+            }
+            else {
+                $(this).css("background-color", "#FFFFFF");
+                $(this).css("font-weight", "initial");
+                $(this).next("tr").hide();
+
+                //$(".expanded").hide();
+            }
+            //$(this).next("tr").toggle();
+            //$(this).find(".arrow").toggleClass("up");
+        });*@
+    });
+</script>
+
+    <script type="text/javascript">
+    @*set  sidebar selected tab color*@
+        $(document).ready(function () {
+            $("#Community_Messages").css("background-color", "#ffffff");
+            $("#Messages").css("color", "#000000");
+        });
+    </script>
+
+
+
+
+
+}

@@ -1,0 +1,710 @@
+﻿@model RatiusCommunityApp.Models.ServiceDTO
+@{
+    ViewBag.Title = "Directory";
+    Layout = "~/Views/Shared/_communityLayout.cshtml";
+}
+@section NavbarAndSideMenu{
+
+    @{ Html.RenderAction("_CommunityAdminNavbarAndSideMenu"); }
+}
+<script>
+    $(document).ready(function(){
+        $(".center-cropped").on('mouseenter', function () {
+            $(this).animate({  width: "+=5", height: "+=5" })
+        });
+        $(".center-cropped").on('mouseleave', function () {
+            $(this).animate({  width: "-=5", height: "-=5" })
+        });
+    });
+  
+</script>
+<div >
+    <!-- Businesses Details -->
+
+    <section class="content-header">
+        <h1 style="font-family:Roboto-Light;margin-top:15px;font-size: 24px;color:#1d486a">
+            Directory
+        </h1>
+    </section>
+
+    <br>
+
+    <div class="row">
+        <div class="col-md-12">
+            <section class="content">
+                <!-- Small boxes (Stat box) -->
+                <div class="row" style="margin-top:-25px">
+                    @foreach (var item in Model.selectedServices)
+                    {
+                        <a data-toggle="modal" href=@("../Home/ServiceStaff?serviceName=" + item.communityServiceID) onclick="$.spin('true');">
+                            <div class="col-md-4 col-sm-4 col-xs-12 col-lg-4">
+                                <!-- small box -->
+                                <div style="height: 171px;box-shadow:3px 5px 10px #c9c9c9;background-color: #FFFFFF;margin-top:5%; class=" small-box">
+                                    <center>
+
+                                        <div class="inner row" style="min-height: 115px;vertical-align:middle;">
+                                            <i style="color:#ffffff" class="">
+
+                                                <div class="picContainer">
+                                                    <img src="@item.icon" class="center-cropped" style="min-height:10px;min-width:10px;">
+                                                </div>
+                                            </i>
+
+                                        </div>
+                                        <div class="inner">
+                                            <div style="color: #ffffff;">
+                                                <h4 style="font-size: 22px;color: #0054A6;text-align:center;margin-top:0%;    letter-spacing: 1px;font-family: Roboto-Medium;">
+                                                    @item.serviceName
+                                                </h4>
+                                            </div>
+                                        </div>
+
+
+                                    </center>
+                                </div>
+                            </div>
+
+                        </a>
+                    }
+                
+
+
+               
+                    @*<a data-toggle="modal" href="#serviceModal">
+                        <div class="col-md-4 col-sm-4 col-xs-12 col-lg-4">
+                          
+                            <div style="height: 171px;box-shadow:3px 5px 10px #c9c9c9;background-color: #1d486a;margin-top:5%;" class="small-box">
+                                <center>
+                                    <div class="inner row" style=" min-height: 115px;">
+                                        <i style="color:#ffffff" class="">
+                                            <img src="/images/add-new.png" style="height:50px" class="center-cropped">
+                                        </i>
+
+                                    </div>
+
+                                    <div class="inner">
+                                        <div style="margin-top: 0%;color: #1d486a;">
+                                            <h4 style="font-size: 22px; color:#ffffff;letter-spacing: 1px;font-family: Roboto-Medium;">
+                                                Add New / Delete
+                                            </h4>
+                                        </div>
+                                    </div>
+                 
+                                </center>
+                            </div>
+                        </div>
+
+                    </a>*@
+                    <div class="modal fade" id="serviceModal" role="dialog">
+                        <div class="modal-dialog modal-xs">
+                            <div class="modal-content">
+                           
+
+                                <div class="modal-body" id="modal-style">
+                                    <center>
+
+                                        <h3 style="color: #1d486a;font-family:Roboto-Regular;text-transform:uppercase">Add New Catagory</h3>
+                           
+
+
+
+
+
+
+
+                                        <div id="modalDiv4" style="display:block">
+
+
+
+                                            <div class="row">
+                                                <div class="col-md-5 " style="margin-left:5.5%;">
+
+
+
+
+                                                    <div id="addnewserviceDiv" style="display:block;margin-top:10px;margin-left:23px;width:100%;">
+                                                          <input id="txtAddNewService" placeholder="ENTER NEW TITLE" type="text" class="" style=" display:block   ;font-family: Roboto-Light;width: 97%;border: 1px solid #0094FF;color: #2d2d2d;height: 30px;padding-left: 9px;">
+
+                                                    </div>
+
+                                                </div>
+
+                                                <div class="col-md-4 " style="padding-left:0px;padding-right: 5.5%;">
+                                                    <div class="row">
+                                                        <div class="col-md-12">
+                                                            <div id="menu" style="width:100%;height:30px;    text-align: left;padding-left: 7px;    padding-top: 3px;background-color:white;border:1px solid #0094ff;cursor:pointer;margin-top:10px;margin-left:15px;">
+                                                                <span id="notSelectedIconSpan">Select Icon<i class="fa fa-angle-down" style="float:right;font-size:16px;padding-right: 10px; padding-top: 4px;font-weight: 700;"></i></span>
+                                                                <img id="selectedIcon" style="display:none;    margin-top: -25px;float: right;margin-right: 27px;" src='' width="30" height="30" />
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="col-md-12">
+                                                            <div class="unexpanded" id="sub" style="margin-left: 15px;margin-top: -1px;z-index:1000;position:absolute;width:85%;background-color:white;border:1px solid #0094ff;display:none;">
+                                                                <div class="row">
+                                                                    <div id="icons" class="col-md-12">
+                                                                        @foreach (var item in Model.directoryImage)
+                                                                        {
+                                                                            <img onclick="SelectIcon(this)" src='@item.image' width="30" height="30" style="margin-left: 5px;margin-top: 5px;" />
+                                                                        }
+                                                                    </div>
+
+                                                                </div>
+                                                                <button onclick="openIconImageDialog()" class="btn btn-primary" style="    margin-top: 3px;width: 100%;    position: relative;right: 0;bottom: 0;">Add New Icon</button>
+                                                                <input style="display:none" type="file" id="iconImage" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <button id="btn_AddDirectory" disabled onclick="AddDirectory()" class="btn btn-primary" style="margin-top: 8px;margin-left:-63px;width: 80%; background-color: #8E979C; border-color: #8E979C; }">Add</button>
+                                                </div>
+
+                                                <div class="mCustomScrollbar" style="height: 150px;margin: 10% 7% 1% 6%;width:78%;">
+
+                                                    <div class="row" style="margin-left:0px;border: 3px solid #EBEBEb;    width: 100%;">
+
+                                                    </div>
+
+
+                                                    <div id="selectedServices">
+                                                        @foreach (var item in Model.CommunityServiceWithServiceIdDTOList)
+                                                        {
+                                                            <div class="row" style="margin-left:0px;width:100%;background-color: #ededed;" id="@item.communityService.communityServiceID">
+                                                                <label id="serviceLabel" class="txt_streetFloor" style="  font-family: Roboto-Light;background: transparent;width: 70.8%;border-color: transparent;    text-align: -webkit-left;padding-left: 12px;color: #2d2d2d;font-weight:normal;">@item.communityService.serviceName</label>
+
+                                                                <img src="@item.communityService.icon" width="20" height="20" style="margin-right:16%;margin-top: -5px;">
+                                                                @if (item.serviceID <= 0)
+                                                                {
+                                                                    <button id="btn_EditStreetFloor_" class="btn_EditStreetFloor" onclick="EditService('@(item.communityService.serviceName+"_"+item.communityService.communityServiceID)')" style="    margin-right: -5px;border: transparent;margin-left: -5%;background-color: transparent;"><i class="glyphicon glyphicon-pencil"></i></button>
+                                                                }
+                                                                @if (item.serviceID <= 0)
+                                                                {
+                                                                    <button id="btn_DeleteStreetFloor_" onclick="RemoveUserDefinedService('@(item.communityService.communityServiceID)')" class="btn_DeleteStreetFloor" style="    border-color: transparent;background-color: transparent;margin-left: -2px;"><i class="glyphicon glyphicon-trash" style=""></i></button>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <button id="btn_DeleteStreetFloor_" onclick="RemoveService('@(item.communityService.serviceName+"_"+item.serviceID+"_"+item.communityService.communityServiceID)')" class="btn_DeleteStreetFloor" style="    border-color: transparent;background-color: transparent;margin-left: -2px;"><i class="glyphicon glyphicon-trash" style=""></i></button>
+
+                                                                }
+                                                                <button id="btn_UpdateStreetFloor_" class="btn_UpdateStreetFloor" style="display:none;border-right-color: transparent;border-left-color: transparent;border-bottom-color: transparent;margin-left: -1px;float: right;background-color: rgb(255, 255, 255);border-top-color: transparent;"><i class="glyphicon glyphicon-ok" style=""></i></button>
+                                                                <hr style='margin-top: 0px;margin-bottom: 0px;border-top: 1px solid rgb(220, 220, 220);' />
+                                                            </div>
+
+                                                        }
+
+                                                    </div>
+
+
+
+
+
+                                                </div>
+
+
+                                            </div>
+                                        </div>
+
+
+
+
+
+
+                                        <br />
+
+                                        <button type="button" data-dismiss="modal"  style=" margin-bottom:1.8%;border-radius:7px;height:42px;margin-top: 0px;width :30%; background-color:#1b70a7; color:white;" onclick="$.spin('true'); AddService()">Done</button>
+
+                                    </center>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div><!-- /.row -->
+
+
+
+
+
+            </section>
+            <!-- TODO: Add new book -->
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+</div>
+
+
+
+@section mystyles{
+
+    <style>
+        .SelectIcon {
+            width: 100%;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            padding: 2px 2px 2px 2px;
+            border: none;
+            background: transparent url("http://cdn1.iconfinder.com/data/icons/cc_mono_icon_set/blacks/16x16/br_down.png") no-repeat 95% center;
+            background-size: 9px;
+            height: 30px;
+            background-color: white;
+            border: 1px solid #0094ff;
+        }
+
+
+        .center-cropped {
+            height: 50%;
+            background-position: center center;
+            background-repeat: no-repeat;
+            overflow: hidden;
+            margin-top: 36px;
+        }
+
+        .picContainer {
+            /*width: 73px;*/
+            height: 107px;
+        }
+    </style>
+}
+@section myscripts{
+    <script type="text/javascript">
+        function showServices() {
+            $("#serviceAdd").toggle();
+        }
+        function selectedService(elem) {
+            $("#serviceAdd").hide();
+            $("#selectedService").children().remove();
+            var item = " <option id='selctedService' style='display:none'>" + elem + "</option>";
+            $("#selectedService").append(item);
+        }
+        function AddService() {
+            window.location.reload();
+
+        }
+    </script>
+
+    <script type="text/javascript">
+    @*set  sidebar selected tab color*@
+        //$(document).ready(function () {
+        //    $("#Community_Services").css("background-color", "#1d486a");
+        //    $("#Services").css("color", "#ffffff");
+        //    $("#txtAddNewService").keyup(function () { 
+           
+        //        $("#txtAddNewService").on('click', function () {
+
+        //            $("#sub").slideUp();
+        //            $("#sub").addClass('unexpanded');
+        //        });
+        //        //$( "#menu" ).one( "click", function() {
+        //        $("#menu").click(function () {
+                  
+        //                if ($("#sub").attr('class') == "unexpanded") {
+
+        //                    $("#sub").slideDown();
+        //                    $("#sub").removeClass('unexpanded');
+        //                }
+        //                else {
+
+        //                    $("#sub").slideUp();
+        //                    $("#sub").addClass('unexpanded');
+
+        //                }
+                    
+        //        });
+           
+        //    });
+        //});
+
+        $(document).ready(function () {
+            $("#Community_Services").css("background-color", "#ffffff");
+            $("#Services").css("color", "#000000");
+
+            $("#menu").click(function () {
+
+                if ($("#sub").attr('class') == "unexpanded") {
+
+                    $("#sub").slideDown();
+                    $("#sub").removeClass('unexpanded');
+                }
+                else {
+
+                    $("#sub").slideUp();
+                    $("#sub").addClass('unexpanded');
+
+                }
+            });
+        });
+
+        //--------------------------------------------Fourth Screen-----------------------------------------------------------------------
+        var servicesArray = new Array();
+        var serviceIcon = new Array();
+        var itemservice = "";
+        var service;
+        var serviceID;
+        var serviceDescription;
+        var counter = 000;
+        var directoryName = "";
+        var editCheck=0;
+        function addService(elem) {
+
+            if (elem.value == "addnew") {
+
+                $("#txtAddNewService").css("display", "block")
+                $("#servicesDropdown").css("display", "none")
+
+            }
+
+            if (elem.value != "addnew" && elem.value != "Select Directory") {
+                servicesArray.push(elem.value);
+
+                var select1 = document.getElementById("servicesDropdown");
+                var option1 = select1.options[select1.selectedIndex];
+                serviceID = option1.id;
+                serviceDescription = option1.value;
+                directoryName = serviceDescription;
+                var completeService = option1.value + "_" + option1.id;
+                $(elem).attr("selected", "selected");
+
+                service = elem;
+            }
+
+        }
+
+        function RemoveUserDefinedService(elem) {
+
+            //var service=elem.split("_");
+            //var serviceID=service[1];
+            //var description=service[0];
+
+            $.ajax({
+                url: '@Url.Action("RemoveCommunityServices", "Home")',
+                type: 'POST',
+                data: { "CommunityServiceID": elem },
+                dataType: 'json',
+
+                success: function (response) {
+                    $("#" + elem).children().remove();
+                    $("#" + elem).remove();
+                },
+                error: function (error) {
+                }
+            });
+            //$("#servicesDropdown").append(item);
+        }
+
+        editCheck = 0;
+        var editCommunityServiceID;
+
+
+        function EditService(elem) {
+            editCheck = 1;
+            var service = elem.split("_");
+
+            var communityServiceID = service[1];
+            var description = service[0];
+            editCommunityServiceID = communityServiceID;
+            $("#txtAddNewService").val(description);
+            $("#servicesDropdown").css('display', 'none');
+            $("#txtAddNewService").css('display', 'block');
+            $("#btn_AddDirectory").css('background-color', '#8E979C');
+            $("#btn_AddDirectory").css('border-color', '#8E979C');
+            $("#btn_AddDirectory").html('Edit');
+            $("#btn_AddDirectory").attr('disabled', true);
+            btn_AddDirectory
+
+        }
+        function RemoveService(elem) {
+
+            var service = elem.split("_");
+            var serviceID = service[1];
+            var description = service[0];
+            var communityServiceId = service[2];
+            $("#" + communityServiceId).children().remove();
+            $("#" + communityServiceId).remove();
+            $.ajax({
+                url: '@Url.Action("RemoveCommunityServices", "Home")',
+                type: 'POST',
+                data: { "CommunityServiceID": communityServiceId },
+                dataType: 'json',
+
+                success: function (response) {
+                    $("#" + elem).children().remove();
+                    $("#" + elem).remove();
+                    var item = "<option id='" + serviceID + "' value='" + description + "'>" + description + "</option>";
+                    $("#servicesDropdown").append(item);
+                },
+                error: function (error) {
+                }
+            });
+
+        }
+        $("#btnAddNewService").click(function () {
+
+            var value = $("#txtAddNewService").val();
+            servicesArray.push(value);
+            var item = "<div class='row' style='margin-left:0px;width:100%;background-color: #ededed;' id='streetFloor_' >" +
+                              "<label class='txt_streetFloor' style='font-family: Roboto-Light;background: transparent;width: 70.8%;border-color: transparent;    text-align: -webkit-left;padding-left: 12px;color: #2d2d2d;font-weight:normal;'>" + value + "</label>" +
+                                 "<button id='btn_DeleteStreetFloor_' class='btn_DeleteStreetFloor' style='    border-color: transparent;background-color: transparent;margin-left: 6px;'><i class='glyphicon glyphicon-trash' style='margin-left:4px;'></i></button>" +
+                                 "<button id='btn_UpdateStreetFloor_' class='btn_UpdateStreetFloor' style='display:none;border-right-color: transparent;border-left-color: transparent;border-bottom-color: transparent;margin-left: -1px;float: right;background-color: rgb(255, 255, 255);border-top-color: transparent;'><i class='glyphicon glyphicon-ok' style=''></i></button>" +
+                             "<hr style='margin-top: 0px;margin-bottom: 0px;border-top: 1px solid rgb(220, 220, 220);' /> </div>";
+
+            $("#selectedServices").prepend(item);
+
+            $("#servicesDropdown").css('display', 'block');
+            $("#txtAddNewService").css('display', 'none');
+        });
+
+
+
+        @*function AddServices() {
+            $.ajax({
+                url: '@Url.Action("AddServicesStartUpModal", "Home")',
+                type: 'POST',
+                data: { "services": servicesArray, "icons": serviceIcon },
+                dataType: 'json',
+
+                success: function (response) {
+                    $('#modalDiv4').css('display', 'none');
+                    $('#modalDiv5').css('display', 'block')
+                },
+                error: function (error) {
+                }
+            });
+
+        }*@
+
+        var icon = "";
+        function SelectIcon(elem) {
+            icon = elem;
+            var iconSRC = $(icon).attr("src");
+            $("#sub").slideUp();
+            $("#notSelectedIconSpan").css("display", "block");
+            $("#selectedIcon").attr("src", iconSRC);
+            $("#selectedIcon").css("display", "block");
+            $("#btn_AddDirectory").css('background-color', '#1B70A7');
+            $("#btn_AddDirectory").css('border-color', '#1B70A7');
+            $("#btn_AddDirectory").attr('disabled', false);
+        }
+
+
+
+
+
+
+
+        function AddDirectory() {
+            var customeServiceDescription = $("#txtAddNewService").val();
+            if (customeServiceDescription != "") {
+                directoryName = customeServiceDescription;
+            }
+            if (icon != "" && directoryName != "") {
+
+
+                if (editCheck == 1) {
+
+
+                    var iconUrl = $(icon).attr("src");
+                    $.ajax({
+                        url: '@Url.Action("EditCommunityServices", "Home")',
+                        type: 'POST',
+                        data: { "serviceName": customeServiceDescription, "imageURL": iconUrl, "communityServiceID": editCommunityServiceID },
+                        dataType: 'json',
+
+                        success: function (response) {
+
+                            communityServiceID = response.CommunityServiceID;
+                            $("#" + communityServiceID).children().remove();
+                            var completeService = customeServiceDescription + "_" + communityServiceID;
+
+                            itemservice = "<label id='serviceLabel' class='txt_streetFloor' style='  font-family: Roboto-Light;background: transparent;width: 70.8%;border-color: transparent;    text-align: -webkit-left;padding-left: 12px;color: #2d2d2d;font-weight:normal;'>" + customeServiceDescription + "</label>" +
+                            "<button id='btn_EditStreetFloor_'class='btn_EditStreetFloor'  onclick=EditService('" + completeService + "') style='  margin-right: -5px;border: transparent;margin-left: -5%;background-color: transparent;'><i class='glyphicon glyphicon-pencil'></i></button>" +
+                            "<button id='btn_DeleteStreetFloor_' onclick=RemoveUserDefinedService('" + communityServiceID + "') class='btn_DeleteStreetFloor' style='   border-color: transparent;background-color: transparent;margin-left: 4px;'><i class='glyphicon glyphicon-trash' style=''></i></button>" +
+                              "<button id='btn_UpdateStreetFloor_' class='btn_UpdateStreetFloor' style='display:none;border-right-color: transparent;border-left-color: transparent;border-bottom-color: transparent;margin-left: -1px;float: right;background-color: rgb(255, 255, 255);border-top-color: transparent;'><i class='glyphicon glyphicon-ok' style=''></i></button>"+
+                                 "<hr style='margin-top: 0px;margin-bottom: 0px;border-top: 1px solid rgb(220, 220, 220);' />";
+
+
+                            var item = "<img src='" + iconUrl + "' width='20' height='20' style='margin-right:16%;' />";
+
+                            $("#" + editCommunityServiceID).append(itemservice);
+                            $("#serviceLabel").after(item);
+                            $("#sub").slideUp();
+                            serviceIcon.push(iconUrl);
+                            //var select1 = document.getElementById("servicesDropdown");
+                            //var option1 = select1.options[0];
+                            //$("#" + option1.id).attr("selected", "selected");
+                            $("#txtAddNewService").val("");
+                            //$("#servicesDropdown").css('display', 'block');
+                            //$("#txtAddNewService").css('display', 'none');
+                            $("#txtAddNewService").css('display', 'block');
+                            $("#btn_AddDirectory").css('background-color', '#8E979C');
+                            $("#btn_AddDirectory").css('border-color', '#8E979C');
+                            $("#btn_AddDirectory").html('Add');
+                            $("#btn_AddDirectory").attr('disabled', true);
+                            editCheck = 0;
+                        },
+                        error: function (error) {
+                        }
+                    });
+
+                }
+                @*if (customeServiceDescription == "") {
+                    var iconUrl = $(icon).attr("src");
+                    var communityServiceID = "";
+
+                    var select1 = document.getElementById("servicesDropdown");
+                    var option1 = select1.options[select1.selectedIndex];
+                    serviceID = option1.id;
+                    serviceDescription = option1.value;
+                    directoryName = serviceDescription;
+
+                    $.ajax({
+                        url: '@Url.Action("AddCommunityServices", "Home")',
+                        type: 'POST',
+                        data: { "serviceName": serviceDescription, "imageURL": iconUrl },
+                        dataType: 'json',
+
+                        success: function (response) {
+                            communityServiceID = response.CommunityServiceID;
+
+                            var completeService = option1.value + "_" + communityServiceID;
+                            var item = "<img src='" + iconUrl + "' width='20' height='20' style='margin-right:16%;' />";
+                            itemservice = "<div class='row' style='margin-left:0px;width:100%;background-color: #ededed;' id=" + communityServiceID + " >" +
+                                          "<label id='serviceLabel' class='txt_streetFloor' style='  font-family: Roboto-Light;background: transparent;width: 70.8%;border-color: transparent;    text-align: -webkit-left;padding-left: 12px;color: #2d2d2d;font-weight:normal;'>" + serviceDescription + "</label>" +
+                                             "<button id='btn_DeleteStreetFloor_' onclick=RemoveService('" + serviceDescription + "_" + option1.id + "_" + communityServiceID + "') class='btn_DeleteStreetFloor' style='   border-color: transparent;background-color: transparent;margin-left: 4px;'><i class='glyphicon glyphicon-trash' style=''></i></button>" +
+                                             "<button id='btn_UpdateStreetFloor_' class='btn_UpdateStreetFloor' style='display:none;border-right-color: transparent;border-left-color: transparent;border-bottom-color: transparent;margin-left: -1px;float: right;background-color: rgb(255, 255, 255);border-top-color: transparent;'><i class='glyphicon glyphicon-ok' style=''></i></button>" +
+                                         "<hr style='margin-top: 0px;margin-bottom: 0px;border-top: 1px solid rgb(220, 220, 220);' /> </div> ";
+
+                            $("#selectedServices").prepend(itemservice);
+                            $("#serviceLabel").after(item);
+                            $("#sub").slideUp();
+                            serviceIcon.push(iconUrl);
+                            $(service).find('option:selected').remove();
+                        },
+                        error: function (error) {
+                        }
+                    });
+
+                }*@
+                if (customeServiceDescription != "" && editCheck != 1) {
+                    counter--;
+                    serviceID = counter;
+                    serviceDescription = $("#txtAddNewService").val();
+                    var completeService = serviceDescription + "_" + serviceID;
+                    var iconUrl = $(icon).attr("src");
+
+
+                    $.ajax({
+                        url: '@Url.Action("AddCommunityServices", "Home")',
+                        type: 'POST',
+                        data: { "serviceName": serviceDescription, "imageURL": iconUrl },
+                        dataType: 'json',
+
+                        success: function (response) {
+                            communityServiceID = response.CommunityServiceID;
+                            var completeService = serviceDescription + "_" + communityServiceID;
+                            var item = "<img src='" + iconUrl + "' width='20' height='20' style='margin-right:16%;' />";
+
+                            itemservice = "<div class='row' style='margin-left:0px;width:100%;background-color: #ededed;' id=" + communityServiceID + " >" +
+                                      "<label id='serviceLabel' class='txt_streetFloor' style='  font-family: Roboto-Light;background: transparent;width: 70.8%;border-color: transparent;    text-align: -webkit-left;padding-left: 12px;color: #2d2d2d;font-weight:normal;'>" + serviceDescription + "</label>" +
+                                         "<button id='btn_EditStreetFloor_'class='btn_EditStreetFloor'  onclick=EditService('" + completeService + "') style='  margin-right: -5px;border: transparent;margin-left: -5%;background-color: transparent;'><i class='glyphicon glyphicon-pencil'></i></button>" +
+                                        "<button id='btn_DeleteStreetFloor_' onclick=RemoveUserDefinedService('" + communityServiceID + "') class='btn_DeleteStreetFloor' style='  border-color: transparent;background-color: transparent;margin-left: 4px;'><i class='glyphicon glyphicon-trash' style=''></i></button>" +
+                                         "<button id='btn_UpdateStreetFloor_' class='btn_UpdateStreetFloor' style='display:none;border-right-color: transparent;border-left-color: transparent;border-bottom-color: transparent;margin-left: -1px;float: right;background-color: rgb(255, 255, 255);border-top-color: transparent;'><i class='glyphicon glyphicon-ok' style=''></i></button>" +
+                                     "<hr style='margin-top: 0px;margin-bottom: 0px;border-top: 1px solid rgb(220, 220, 220);' /></div>";
+
+
+                            $("#selectedServices").prepend(itemservice);
+                            $("#serviceLabel").after(item);
+                            $("#sub").slideUp();
+                            serviceIcon.push(iconUrl);
+                            //var select1 = document.getElementById("servicesDropdown");
+                            //var option1 = select1.options[0];
+                            //$("#" + option1.id).attr("selected", "selected");
+                            $("#txtAddNewService").val("");
+                          
+                            //$("#servicesDropdown").css('display', 'block');
+                            //$("#txtAddNewService").css('display', 'none');
+                            $("#txtAddNewService").css('display', 'block');
+                            $("#btn_AddDirectory").css('background-color', '#8E979C');
+                            $("#btn_AddDirectory").css('border-color', '#8E979C');
+                            $("#btn_AddDirectory").attr('disabled', true);
+                        },
+                        error: function (error) {
+                        }
+                    });
+
+
+
+
+
+
+                }
+            }
+            directoryName = "";
+            icon = "";
+            $("#notSelectedIconSpan").css("display", "block");
+            $("#selectedIcon").attr("src", "");
+            $("#selectedIcon").css("display", "none");
+        }
+        function openIconImageDialog() {
+            $('#iconImage').click()
+        }
+
+        $(function () {
+
+            $('#iconImage').change(function (event) {
+                //var tmppath = URL.createObjectURL(event.target.files[0]);
+                var iconImage = document.getElementById('iconImage').files[0];
+                var fd = new FormData();
+                fd.append("iconImage", iconImage);
+                $.ajax({
+                    url: ' @Url.Action("blobImageURL", "home")',
+                    type: 'POST',
+                    data: fd,
+                    async: false,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    success: function (responce) {
+
+                        document.getElementById('iconImage').files[0] = null;
+
+                        if (responce.ResponceImage != "null") {
+                            item = "<img onclick='SelectIcon(this)' src='" + responce.ResponceImage + "' width='30' height='30' />";
+                            $("#icons").append(item);
+                        }
+
+
+                    }
+                });
+
+            });
+
+        });
+
+
+
+
+    </script>
+    <style>
+        .col-xs-6 {
+            width: 0px;
+        }
+
+        .col-lg-4 {
+            margin-top: 11px;
+            /*width: 338px;*/
+        }
+    </style>
+}

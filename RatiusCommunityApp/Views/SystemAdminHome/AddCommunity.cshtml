@@ -1,0 +1,107 @@
+﻿@model List<RatiusCommunityApp.Models.Community>
+@{
+    ViewBag.Title = "Dashboard";
+    Layout = "~/Views/Shared/_communityLayout.cshtml";
+}
+
+@section NavbarAndSideMenu{
+
+    @{ Html.RenderAction("_SystemAdminNavbarAndSideMenu"); }
+}
+<div >
+    <div class="divide-unit clearfix">
+        <div class="half-unit">
+            <header>
+                <h6>Add Cumminuty</h6>
+            </header>
+            <div class="add-info">
+                <input id="createCommunityName" type="text" placeholder="Community Name">
+                <input id="communityPassword" type="password" placeholder="Password">
+                <input id="communityRequiredPassword" type="password" placeholder="Required Password For Create Community">
+
+                <a class="btn-primary style" id="btn_CreateCommunity">Add</a>
+            </div>
+
+        </div>
+        <div class="half-unit">
+            <header>
+                <h6>Added Communities</h6>
+            </header>
+            <div id="CommunityBlock" class="added-info added-communities-scroll" data-mcs-theme="minimal-dark">
+              @foreach (var item in Model) { 
+                  <div class="added-community-wrap">
+                    <figure>
+                        <img class="img-circle CommunitiesImages" src="@item.coverImage" alt="Community Image">
+                    </figure>
+
+                    <div class="community-details">
+                        <h4>@item.name</h4>
+                        <p>@item.communityAddress</p>
+                    </div>
+             
+             
+                </div>
+              }
+             
+            </div>
+        </div>
+    </div>
+</div>
+@section myscripts{
+<script type="text/javascript">
+    jQuery(function ($) {
+
+
+            $("#btn_CreateCommunity").click(function () {
+
+                var communityName = $("#createCommunityName").val();
+                var communityPassword = $("#communityPassword").val();
+                var communityRequiredPassword = $("#communityRequiredPassword").val();
+                //alert(communityName + " " + communityPassword + " " + communityRequiredPassword)
+                $.ajax({
+                    url: '@Url.Action("CreateCommunity", "Home")',
+                    type: 'POST',
+                    data: { "communityName": communityName, "communityPassword": communityPassword, "communityRequiredPassword": communityRequiredPassword },
+                    dataType: 'json',
+
+                    success: function (response) {
+                        if (response.status == "Success") {
+                            //window.location.reload();
+                            item = "<div class='added-community-wrap'>"+
+                    "<figure>"+
+                        "<img class='img-circle CommunitiesImages' src='" + response.CommunityResponse.coverImage + "' alt='Community Image'>" +
+                    "</figure>"+
+
+                    "<div class='community-details'>"+
+                        "<h4>"+response.CommunityResponse.name+"</h4>"+
+                        "<p>" + response.CommunityResponse.communityAddress+ "</p>" +
+                    "</div>"+
+                    //"<div class='edit-btns'><a class='delete-item-trigger' >Delete</a></div>"+
+                "</div>";
+                            $("#mCSB_1_container").prepend(item);
+                            $("#createCommunityName").val("");
+                            $("#communityPassword").val("");
+                            $("#communityRequiredPassword").val("");
+                            $("#createCommunityName").focus();
+                        }
+                        else {
+                            $("#AddCommunityError").html(response.status);
+                            $("#AddCommunityError").css("visibility", "visible");
+                            $("#AddCommunityError").css("opacity", "1");
+                            $("#AddCommunityError").fadeTo(7000, 0, function () {
+                                $("#AddCommunityError").css("visibility", "hidden");
+                            });
+
+                        }
+
+
+
+
+                    },
+                    error: function (error) {
+                    }
+                });
+            });
+        });
+</script>
+}

@@ -1,0 +1,185 @@
+﻿@model RatiusCommunityApp.Models.SubCommunityEmergencyContactsDTO   
+
+
+
+<div class="subAccorContent" id="@Model.subCommunityID">
+                <div class="divide-unit clearfix">
+                    <div class="button-group clearfix">
+                        <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown"><span>Selected streets/floors</span> <span class="caret"></span></button>
+                        <ul class="dropdown-menu">
+
+
+                            @foreach (var item in Model.allStreetFloors)
+                            {
+                                if (Model.selectedStreetFloorsIDs.Contains(item.id) == true)
+                                {
+                                    if (Model.subCommunitySelectedStreetFloorsIDs.Contains(item.id) == true)
+                                    {
+
+                                        @*<li><a href="#" class="small" data-value="option1" tabindex="1"  id="@(item.id+"_"+Model.subCommunityID)"><input id="@("CheckboxStreetfloor_"+item.id+"_"+Model.subCommunityID)" type="checkbox" checked class="CheckboxStreetfloor" />&nbsp;@item.streetFloor</a></li>*@
+    <li>
+        <div id="@(item.id+"_"+Model.subCommunityID)" class="custom-form-wid check">
+            <input onclick="AddStreetFloorToList(this.name)" id="@("CheckboxStreetfloor_"+item.id+"_"+Model.subCommunityID)" name="@(item.id+"_"+Model.subCommunityID)" checked type="checkbox" value="">
+            <label for="@("CheckboxStreetfloor_"+item.id+"_"+Model.subCommunityID)"><i class="fa"></i>@item.streetFloor</label>
+        </div>
+    </li>
+                                    }
+                                    else
+                                    {
+                                        @*<li ><a href="#" disabled="disabled" class="small" onclick="AddStreetFloorToList(this.id)" data-value="option1" tabindex="-1" id="@(item.id+"_"+Model.subCommunityID)"><input id="@("CheckboxStreetfloor_" + item.id + "_" + Model.subCommunityID)" disabled checked type="checkbox" />&nbsp;@item.streetFloor</a></li>*@
+    <li>
+        <div id="@(item.id+"_"+Model.subCommunityID)" class="custom-form-wid check disabled">
+            <input onclick="AddStreetFloorToList(this.name)" id="@("CheckboxStreetfloor_"+item.id+"_"+Model.subCommunityID)" name="@(item.id+"_"+Model.subCommunityID)"  disabled checked type="checkbox" value="">
+            <label for="@("CheckboxStreetfloor_"+item.id+"_"+Model.subCommunityID)"><i class="fa"></i>@item.streetFloor</label>
+        </div>
+    </li>
+                                    }
+                                }
+                                else
+                                {
+
+
+                                        @*<li><a href="#" class="small" data-value="option1" tabindex="1" onclick="AddStreetFloorToList(this.id)" id="@(item.id+"_"+Model.subCommunityID)"><input id="@("CheckboxStreetfloor_" + item.id + "_" + Model.subCommunityID)" type="checkbox" class="CheckboxStreetfloor" />&nbsp;@item.streetFloor</a></li>*@
+    <li>
+        <div id="@(item.id+"_"+Model.subCommunityID)" class="custom-form-wid check ">
+            <input onclick="AddStreetFloorToList(this.name)" id="@("CheckboxStreetfloor_"+item.id+"_"+Model.subCommunityID)" name="@(item.id+"_"+Model.subCommunityID)" type="checkbox" value="">
+            <label for="@("CheckboxStreetfloor_"+item.id+"_"+Model.subCommunityID)"><i class="fa"></i>@item.streetFloor</label>
+        </div>
+    </li>
+
+                                }
+
+                            }
+                                                   </ul>
+                    </div>
+                    <div class="half-unit">
+                        <header>
+                            <h6>Add Emergency Contact</h6>
+                        </header>
+                        <div class="add-info">
+                            <input type="text" id=@("txt_AddEmergencyName"+Model.subCommunityID)  placeholder="Add Name">
+                            <input type="tel" id=@("txt_AddEmergencyContact"+Model.subCommunityID)  placeholder="Add Number">
+                            <h6>Add Operational Hours</h6>
+                            <div class="custome-select width-40 clearfix">
+                                <span id=@("spanOperationalFrom"+Model.subCommunityID)>To</span>
+                                <select id=@("SelectedWorkinghoursFrom" + Model.subCommunityID)>
+                                    <option value="From" style="display:none"></option>
+                                    <option value="1">1am</option>
+                                    <option value="2">2am</option>
+                                    <option value="3">3am</option>
+                                    <option value="4">4am</option>
+                                    <option value="5">5am</option>
+                                    <option value="6">6am</option>
+                                    <option value="7">7am</option>
+                                    <option value="8">8am</option>
+                                    <option value="9">9am</option>
+                                    <option value="10">10am</option>
+                                    <option value="11">11am</option>
+                                    <option value="12">12am</option>
+                                    <option value="13">1pm</option>
+                                    <option value="14">2pm</option>
+                                    <option value="15">3pm</option>
+                                    <option value="16">4pm</option>
+                                    <option value="17">5pm</option>
+                                    <option value="18">6pm</option>
+                                    <option value="19">7pm</option>
+                                    <option value="20">8pm</option>
+                                    <option value="21">9pm</option>
+                                    <option value="22">10pm</option>
+                                    <option value="23">11pm</option>
+                                    <option value="24">12pm</option>
+                                </select>
+                            </div>
+                            <div class="custome-select width-40 clearfix">
+                                <span id=@("spanOperationalTo" + Model.subCommunityID)>From</span>
+                                <select id=@("SelectedWorkinghoursTo" + Model.subCommunityID)>
+                                    <option value="To" style="display:none"></option>
+                                    <option value="1">1am</option>
+                                    <option value="2">2am</option>
+                                    <option value="3">3am</option>
+                                    <option value="4">4am</option>
+                                    <option value="5">5am</option>
+                                    <option value="6">6am</option>
+                                    <option value="7">7am</option>
+                                    <option value="8">8am</option>
+                                    <option value="9">9am</option>
+                                    <option value="10">10am</option>
+                                    <option value="11">11am</option>
+                                    <option value="12">12am</option>
+                                    <option value="13">1pm</option>
+                                    <option value="14">2pm</option>
+                                    <option value="15">3pm</option>
+                                    <option value="16">4pm</option>
+                                    <option value="17">5pm</option>
+                                    <option value="18">6pm</option>
+                                    <option value="19">7pm</option>
+                                    <option value="20">8pm</option>
+                                    <option value="21">9pm</option>
+                                    <option value="22">10pm</option>
+                                    <option value="23">11pm</option>
+                                    <option value="24">12pm</option>
+                                </select>
+                            </div>
+                            <a class="btn-primary style" onclick="AddEmergencyContact(@Model.subCommunityID)" id=@("btn_AddEmergencyContact" + Model.subCommunityID)>Add</a>
+                            <a class="btn-primary style" onclick="UpdateEmergencyContactInList(@Model.subCommunityID)" style="display:none" id=@("btn_UpdateEditEmergencyContact" + Model.subCommunityID)>Update</a>
+                        </div>
+
+                    </div>
+                    <div class="half-unit">
+                        <header>
+                            <h6>Added Emergency Contact</h6>
+                        </header>
+                        <div class="added-info added-info-scroll added-emergency-contact" data-mcs-theme="minimal-dark">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <td>Name and Contact</td>
+                                        <td></td>
+                                        <td>Operational Hours</td>
+                                    </tr>
+                                </thead>
+                                <tbody id=@("communityEmergencyContacts"+Model.subCommunityID)>
+                            @foreach (var item in Model.subCommunityEmergencyContactsList)
+                            {
+                                string workingHourStart;
+                                string workingHourEnd;
+                                if (Convert.ToInt32(item.workingHourStart) > 12)
+                                {
+                                    workingHourStart = Convert.ToString(Convert.ToInt32(item.workingHourStart) - 12) + "pm";
+                                }
+                                else
+                                {
+                                    workingHourStart = item.workingHourStart + "am";
+
+                                }
+                                if (Convert.ToInt32(item.workingHourEnd) > 12)
+                                {
+                                    workingHourEnd = Convert.ToString(Convert.ToInt32(item.workingHourEnd) - 12) + "pm";
+                                }
+                                else
+                                {
+                                    workingHourEnd = item.workingHourEnd + "am";
+
+                                }
+                                
+                                <tr id=@("EmergencyContact_" + item.id + "_" + Model.subCommunityID) class="table-body  txt_emergencyContact  ">
+                                    <td><span class="name" id='@("txt_EmergencyContactName_" + item.id + "_" + Model.subCommunityID)'>@item.name</span><span id='@("txt_EmergencyContact_" + item.id + "_" + Model.subCommunityID)'>@item.contact</span></td>
+                                    <td></td>
+                                    <td><span class="workingHourTo" id='@("txt_workingHourFrom12Hrs_" + item.id + "_" + Model.subCommunityID)'>@workingHourStart</span><span id='@("txt_workingHourFrom_" + item.id + "_" + Model.subCommunityID)' style="display:none">@item.workingHourStart</span> - <span class="workingHourFrom" id='@("txt_workingHourTo12Hrs_" + item.id + "_" + Model.subCommunityID)'>@workingHourEnd </span><span style="display:none" id='@("txt_workingHourTo_" + item.id + "_" + Model.subCommunityID)'>@item.workingHourEnd</span></td>
+                                    <td>
+                                        <div class="edit-btns"><a id='@("btn_EditEmergencyContact_" + item.id + "_" + Model.subCommunityID)' onclick="EditEmergencyContact(this.id)">Edit</a> - <a id='@("btn_DeleteEmergencyContact_" + item.id + "_" + Model.subCommunityID)' onclick="DeleteEmergencyContact(this.id)" class="delete-item-trigger">Delete</a></div>
+                                    </td>
+                                </tr>
+}
+                                </tbody>
+                            </table>
+                        </div>
+                        <a onclick="SaveEmergencyContacts(this.id)" id="@Model.subCommunityID" class="btn-primary">Save</a>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+

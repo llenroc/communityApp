@@ -1,0 +1,1790 @@
+﻿@model RatiusCommunityApp.Models.StartupModal
+<style>
+    .SelectIcon {
+    
+    width: 100%;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    padding: 2px 2px 2px 2px;
+    border: none;
+    background: transparent url("http://cdn1.iconfinder.com/data/icons/cc_mono_icon_set/blacks/16x16/br_down.png") no-repeat 95% center;
+    background-size:9px;
+    height:30px;background-color:white;border:1px solid #0094ff;
+}
+</style>
+<a id="btn_stratupModal" data-toggle="modal" href="#Modal" data-backdrop="static" data-keyboard="false" style="display:none"></a>
+
+<div class="modal fade" id="Modal" role="dialog">
+    <div class="modal-dialog modal-xs">
+        <div class="modal-content" style="min-height:500px">
+            @*<div class="modal-header" id="header" style="background:#367fa9">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 style="margin-left:20px;color:white;margin-bottom:0px"><strong>Image</strong></h4>
+                </div>*@
+
+            <div class="modal-body" id="modal-style">
+                @*First Screen*@
+                <div id="modalDiv1">
+                    <div class="row">
+                        <div style=" margin-left: 28px;margin-right: -90px;">
+                            <div class=" col-md-2">
+                                <div class="selected_arrow_box selectedMenu ">
+                                    <span style="line-height:90%;margin-top:10%;font-family:Roboto-Regular" class="logo"><center style="margin-top:8%;">Basic <br /> Information</center></span>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="Unselected_arrow_box UnselectedMenu">
+                                    <span style="line-height:90%;margin-top:10%;font-family:Roboto-Regular" class="logo"><center style="margin-top:10%;">&nbsp;&nbsp;Add Street <br />&nbsp;&nbsp;Names/Floors</center></span>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="Unselected_arrow_box UnselectedMenu">
+                                    <span style="line-height:90%;margin-top:10%;font-family:Roboto-Regular" class="logo"><center style="margin-top:10%;">Add <br /> Images</center></span>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="Unselected_arrow_box UnselectedMenu">
+                                    <span style="line-height:90%;margin-top:10%;font-family:Roboto-Regular" class="logo"><center style="margin-top:10%;">Add <br /> Directory</center></span>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="Unselected_arrow_box UnselectedMenu">
+                                    <span style="line-height:90%;margin-top:10%;font-family:Roboto-Regular" class="logo"><center style="margin-top:10%;">&nbsp;Add Directory <br /> Provider</center></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 ">
+                            <div class="WelcomeBaner" style="margin-top:25px;font-family:roboto-thin">
+                                <center><span style="margin-top:10px;font-family:Roboto-Light;color: #2d2d2d;    font-size: 17px;">Welcome to</span><br /><span style="font-family:Roboto-Regular;    font-size: 24px;">@Model.community.name</span><br /><span style="font-family:roboto-thin;color: #2d2d2d;    font-size: 20px;">Create your neighbourhood profile here</span> </center>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-10 col-md-offset-1">
+                            <div class="col-md-6" style="margin-top: 5%;    padding-left: 0px;">
+                                <span style="font-family:Roboto-Light">Admin Name</span>
+                                <input type="text" id="FirstName" value="@Model.user.firstName" style="padding-top:15px;padding-bottom:15px;font-family:Roboto-Light;    margin-top: 10px;width:100%;     height: 30px;     background-color: #EDEDED;  border-color: rgba(221, 221, 220, 0.15);border-bottom-color: rgb(221, 221, 220);border-right-color: rgb(221, 221, 220);padding-left: 12px;color:#2d2d2d" />
+
+                            </div>
+                            <div class="col-md-6" style="margin-top: 5%;    padding-left: 0px;    padding-right: 0px;">
+                                <span style="font-family:Roboto-Light">Admin Email ID</span>
+                                <input type="text" id="Email" value="@Model.user.emailID" style="text-transform:lowercase; padding-top:15px;padding-bottom:15px;font-family:Roboto-Light;    margin-top: 10px;width:100%;     height: 30px;     background-color: #EDEDED;  border-color: rgba(221, 221, 220, 0.15);border-bottom-color: rgb(221, 221, 220);border-right-color: rgb(221, 221, 220);padding-left: 12px;color:#2d2d2d" />
+
+                            </div>
+
+                        </div>
+                        <div class="col-md-10 col-md-offset-1">
+                            <div class="col-md-6" style="margin-top: 5%;    padding-left: 0px;">
+                               
+                                <div class="col-md-12" style="padding-left: 0px;    padding-right: 0px;">
+                                    <span style="font-family:Roboto-Light">Admin Profile Picture</span>
+                                    <input id="userImageURL" type="text" disabled value="Add Image" style="padding-top:15px;padding-bottom:15px;font-family:Roboto-Light;    margin-top: 10px;width:100%;     height: 30px;     background-color: #EDEDED;  border-color: rgba(221, 221, 220, 0.15);border-bottom-color: rgb(221, 221, 220);border-right-color: rgb(221, 221, 220);padding-left: 12px;color:#2d2d2d" />
+                                </div>
+                                <div class="col-md-12" style="padding-left: 0px; padding-right: 0px;">
+                                    <button type="button" id="userbtnImageURL" onclick="" style="    border: transparent;float: right;margin-top: -13%;    width: 55px;height: 28px;background: transparent"><img style="margin-left:56%;margin-bottom:6%;vertical-align:initial;width: 25%;" src="~/images/plus-symbol.png" /></button>
+                                
+                                </div>
+                                 
+                                    
+
+
+                                    <input type="file" style="display:none" id="userPhoto" />
+                                </div>
+                            <div class="col-md-6" style="margin-top: 5%;    padding-left: 0px;    padding-right: 0px;">
+                                <div class="col-md-12" style="padding-left: 0px;    padding-right: 0px;">
+                                    <span style="font-family:Roboto-Light">Neighbourhood Address</span>
+                                    <input id="addressWords" disabled type="text" value="@Model.community.communityAddress" style="padding-right: 30px;padding-top:15px;padding-bottom:15px;font-family:Roboto-Light;    margin-top: 10px;width:100%;     height: 30px;     background-color: #EDEDED;  border-color: rgba(221, 221, 220, 0.15);border-bottom-color: rgb(221, 221, 220);border-right-color: rgb(221, 221, 220);padding-left: 12px;color:#2d2d2d" />
+                                  
+                                </div>
+                                <div class="col-md-12" style="padding-left: 0px; padding-right: 0px;">
+                                    <button type="button" onclick="showGoogleMap();" style="    border: transparent;float: right;margin-top: -12%;    width: 55px;height: 28px;background: transparent"><img style="margin-left:56%;margin-bottom:6%;vertical-align:initial;width: 25%;" src="~/images/Forma 1.png" /></button>
+
+
+
+
+
+
+                                    <div class="modal" id="MapModal" role="dialog">
+                                        <div class="modal-dialog modal-xs">
+                                            <div class="modal-content">
+                                                <div class="modal-header" id="header" style="background:#367fa9">
+                                                    @*<button type="button" class="close" data-dismiss="modal">&times;</button>*@
+                                                    <h4 style="margin-left:20px;color:white;margin-bottom:0px"><strong>Map</strong></h4>
+                                                </div>
+
+                                                <div class="modal-body" id="modal-style">
+                                                    <h3>The address will automaticaly set on map click</h3>
+                                                    <div id="dvMap" class="col-sm-8" style="padding-bottom:20px;width:100%;height:250px;">  </div>
+                                                        <div class="">
+                                                            <input id="addressLongitude" type="text" style="display:block;width:100%;    margin-top: 10px;" placeholder="Lat" />
+                                                        </div>
+                                                <div class="">
+                                                    <input id="addressLatitude" type="text" style="display:block;width:100%;    margin-top: 10px;" placeholder="Lng" />
+                                                </div>
+                                                    <center><button style="    width: 80px;margin-top: 8px;margin-bottom: 8px;" onclick='$("#MapModal").css("display", "none");' type="button" class="btn btn-primary">Ok</button></center>
+
+                                                     </div>
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+                        <div class="col-md-10 col-md-offset-1">
+                            <div style="    margin-top: 5%;">
+                                <span style="font-family:Roboto-Light">About Neighbourhood</span><span id="textarea_CountCharacters" style="float: right;margin-right: 210px;font-size: 10px;margin-top: 4px;"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-10 col-md-offset-1">
+
+
+                            <textarea id="aboutCommunity" placeholder="Please Add About Community (minimum 500 characters)"  rows="3" style="    margin-top: 10px;font-family:Roboto-Light;resize:none;width:100%;background-color:#ededed;border-color: rgba(221, 221, 220, 0.15);border-bottom-color: rgb(221, 221, 220);border-right-color: rgb(221, 221, 220);padding-left: 12px;">@Model.community.about</textarea>
+
+                        </div>
+                        <div class="col-md-12">
+                            <center>
+                                <button id="btn_AboutUpdate" disabled class="btn btn-primary" style="margin-bottom:1.8%;border-radius:7px;height:42px;margin-top: 3%;width: 30%; background-color: #9FA5A9; border-color: #9FA5A9; }">Continue</button>
+                            </center>
+                        </div>
+                        <div class="col-md-12">
+
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+
+                @*Second Scereen*@
+                <div id="modalDiv2" style="display:none">
+                    <div class="row">
+                        <div style=" margin-left: 28px;margin-right: -90px;">
+                            <div class=" col-md-2">
+                                <div class="Unselected_arrow_box UnselectedWithLeftMenu">
+                                    <span style="line-height:100%;font-family:Roboto-Regular" class="logo"><center style="margin-top:6%;">Basic <br /> Information</center></span>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="selected_arrow_box selectedMenu">
+                                    <span style="line-height:100%;font-family:Roboto-Regular" class="logo"><center style="margin-top:6%;margin-left:15px;">&nbsp;&nbsp;Add Street <br />&nbsp;&nbsp;Names/Floors</center></span>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="Unselected_arrow_box UnselectedMenu">
+                                    <span style="line-height:100%;font-family:Roboto-Regular" class="logo"><center style="margin-top:6%;">Add <br /> Images</center></span>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="Unselected_arrow_box UnselectedMenu">
+                                    <span style="line-height:100%;font-family:Roboto-Regular" class="logo"><center style="margin-top:6%;">Add <br /> Directory</center></span>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="Unselected_arrow_box UnselectedMenu">
+                                    <span style="line-height:100%;font-family:Roboto-Regular" class="logo"><center style="margin-top:6%;">&nbsp;Add Directory <br /> Provider</center></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 ">
+                            <div style="    margin-top: 8%;">
+                                <center><span style="font-family:Roboto-Regular;   font-size: 20px;">Add in all Streets/Floors in your Neighbourhood</span><br /><span style="font-family:Roboto-Light;color:#2d2d2d">This will make it easier for your members to select their address</span> </center>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+
+                        @*<div class="col-md-6 ">
+
+                                    <select style="    width: 100%;">
+                                        <option value="NULL" selected>Select your Neighbourhodd Type</option>
+                                        <option value="NULL" selected>Street</option>
+                                        <option value="NULL" selected>Floor</option>
+                                    </select>
+
+                            </div>
+
+                            <div class="col-md-6 ">
+
+                                    <select style="    width: 100%;">
+                                        <option value="NULL" selected>Select Number of Streets/Floors</option>
+                                        <option value="NULL" selected>1</option>
+                                        <option value="NULL" selected>2</option>
+                                    </select>
+
+                            </div>*@
+
+
+
+
+                        <div class="mCustomScrollbar" style="height: 190px;margin: 10% 8% 1%;margin-top:36px;">
+
+                            <div class="row" style="margin-left:0px;border: 3px solid #EBEBEb;    width: 100%;">
+
+                                <input id="txt_AddStreetFloor" type="text"  placeholder="Add new Street/Floor" class="" style="padding:6px;font-family:Roboto-Light;width: 93%;border-color: transparent;padding-left: 12px;color:#2d2d2d">
+                                <button id="btn_AddStreetFloor" style="background-color: transparent;border-color: transparent;"><i class="glyphicon glyphicon-ok"></i></button>
+                                @*<button style="margin-right: -5px;border-left-color: transparent;margin-left: -10px;background-color: #EBEBE4;border-right-color: transparent;border-bottom-color: rgba(221, 221, 221, 0.2);" class=""><i class="glyphicon glyphicon-pencil"></i></button>
+                                    <button class="" style="border-right-color: rgba(221, 221, 221, 0.2);border-bottom-color: rgba(221, 221, 221, 0.2);background-color: #EBEBE4;border-left-color: transparent;margin-left: -2px;"><i class="glyphicon glyphicon-trash" style=""></i></button>*@
+                                <hr style="margin-top: 4px;width:105%;margin-left:2px;margin-bottom: 0px;border-top: 1px solid rgb(220, 220, 220);" />
+
+                            </div>
+
+
+                            <div id="communityStreetFloor">
+                                @foreach (var item in Model.communityStreetFloor)
+                                {
+                                    <div class="row" id=@("streetFloor_"+item.id) style="margin-left:0px;width:100%;background-color: #ededed;">
+
+                                        <input id=@("txt_streetFloor_"+item.id) type="text" value="@item.streetFloor" disabled="" class="txt_streetFloor" style=" padding:6px;font-family: Roboto-Light;background: transparent;width: 90.8%;border-color: transparent;padding-left: 12px;color: #2d2d2d;">
+                                        <button id=@("btn_EditStreetFloor_"+item.id) style="margin-right: -5px;border: transparent;margin-left: -3%;background-color: transparent;" class="btn_EditStreetFloor" onclick="EditStreetFloors(@item.id)"><i class="glyphicon glyphicon-pencil"></i></button>
+                                        <button id=@("btn_DeleteStreetFloor_"+item.id) class="btn_DeleteStreetFloor" style="    border-color: transparent;background-color: transparent;margin-left: -2px;" onclick="DeleteStreetFloors(@item.id)"><i class="glyphicon glyphicon-trash" style=""></i></button>
+                                        <button id=@("btn_UpdateStreetFloor_"+item.id) class="btn_UpdateStreetFloor" style="display:none;height: 36px;border-right-color: transparent;border-left-color: transparent;border-bottom-color: transparent;margin-left: -1px;float: right;background-color: rgb(255, 255, 255);border-top-color: transparent;" onclick="UpdateStreetFloors(@item.id)"><i class="glyphicon glyphicon-ok" style=""></i></button>
+                                           <hr style="margin-top: 0px;margin-bottom: 0px;border-top: 1px solid rgb(220, 220, 220);" />
+                                    </div>
+                                 
+                                }
+                            </div>
+                            <style>
+                                .mCustomScrollbar {
+                                    background-color: #EBEBEB;
+                                }
+                            </style>
+
+
+
+
+                        </div>
+                        <div class="col-md-12" style=" margin-top: 2%;">
+                            <center>
+                                <button onclick="$('#modalDiv2').css('display', 'none'); $('#modalDiv3').css('display', 'inline')" class="btn btn-primary" style="margin-top: 3.7%;width: 30%;height:42px;border-radius:7px; background-color: #1B70A7; border-color: #1B70A7; }">Continue</button>
+                            </center>
+                        </div>
+                        @*<div class="col-md-12">
+                            <center style="    margin-top: 1%;">
+                                <a href="#" onclick="$('#modalDiv2').css('display', 'none'); $('#modalDiv3').css('display', 'inline')">Skip this Step</a>
+                            </center>
+                        </div>*@
+
+                    </div>
+                </div>
+
+
+                @*Third Screen*@
+                <div id="modalDiv3" style="display:none">
+                    <div class="row">
+                        <div style=" margin-left: 28px;margin-right: -90px;">
+                            <div class=" col-md-2">
+                                <div class="Unselected_arrow_box UnselectedWithLeftMenu">
+                                    <span style="line-height:100%;font-family:Roboto-Regular" class="logo"><center style="margin-top:6%;">Basic <br /> Information</center></span>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="Unselected_arrow_box UnselectedMenu">
+                                    <span style="line-height:100%;font-family:Roboto-Regular" class="logo"><center style="margin-top:6%;">&nbsp;&nbsp;Add Streets<br />&nbsp;&nbsp;Names/Floors</center></span>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="selected_arrow_box selectedMenu">
+                                    <span style="line-height:100%;font-family:Roboto-Regular" class="logo"><center style="margin-top:6%;">Add <br /> Images</center></span>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="Unselected_arrow_box UnselectedMenu">
+                                    <span style="line-height:100%;font-family:Roboto-Regular" class="logo"><center style="margin-top:6%;">Add <br /> Directory</center></span>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="Unselected_arrow_box UnselectedMenu">
+                                    <span style="line-height:100%;font-family:Roboto-Regular" class="logo"><center style="margin-top:6%;">&nbsp;Add Directory <br /> Provider</center></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 ">
+                            <div style="    margin-top: 3%;">
+                                <center><span style="font-family:Roboto-Regular;   font-size: 17px;">Personalize your neighbourhood profile with pictures!</span> </center>
+                            </div>
+                        </div>
+                        <div class="col-md-10 col-md-offset-1">
+                            <button class="btn center-block dt-body-center" id="buttonCoverPhoto" style="display:none;background-color:transparent;font-weight:200;color:white;font-size:x-large;position:absolute;z-index:6;margin-left:32%;margin-top:14%;" onclick="openCoverDialog()" onmouseover="EditCoverDialog()" onmouseout="RemoveCoverDialog()">Add Banner Image</button>
+                            <input type="file" id="coverImagefile" style="display:none" onchange="AddCoverImage()" />
+                            @if (Model.community.coverImage != null)
+                            {
+                                <center style="    margin-top: 2%;"><img src="@Model.community.coverImage" style=" width: 100%; " id="coverImage" onmouseover="EditCoverDialog()" onmouseout="RemoveCoverDialog()" /></center>
+
+                            }
+                            else
+                            {
+                                <center style="    margin-top: 2%;"> <img src="~/images/buildings-vector-01.jpg" style=" width: 100%;" id="coverImage" onmouseover="EditCoverDialog()" onmouseout="RemoveCoverDialog()" /></center>
+                            }
+
+
+                        </div>
+
+
+
+
+                    </div>
+                    <div class="row">
+
+                        @if (Model.communityFeaturesImage.Count != 0)
+                        {
+                            <div class="col-md-1"></div>
+                            foreach (var item in Model.communityFeaturesImage)
+                            {
+                                <div class="col-md-3 " style=" width: 26.4%;margin-top: -7px;"><div id=@("divImage_"+item.id)><button class="btn center-block dt-body-center" onmouseover="EditFeatureDialog(this.id)" onmouseout="RemoveFeatureDialog(this.id)" id=@("button_"+item.id) onclick="openFeatureDialog(@item.id)" style="display:none;background-color:transparent;font-weight:200;color:white;font-size:15px;position:absolute;z-index:6;margin-left:10%;margin-top:19%;">Add Feature<br>Image</button><img src="@item.image" style="width: 120%;height: 74px;-webkit-filter: brightness(100%);margin-top: 8%; " onmouseover="EditFeatureDialog(this.id)" onmouseout="RemoveFeatureDialog(this.id)" id='@("image_"+item.id)' /><input type="file" id='@("FeatureImage_" + item.id)' style="display:none" onchange="UpdateFeatureImage(@item.id)" /></div></div>
+                            }
+                            if (Model.communityFeaturesImage.Count == 1)
+                            {
+                                <div class="col-md-3 " style=" width: 26.4%;margin-top: -7px;"><div id="divImage_-1"><button class="btn center-block dt-body-center" onmouseover="EditFeatureDialog(this.id)" onmouseout="RemoveFeatureDialog(this.id)" id="button_-1" onclick="openFeatureDialog(-1)" style="display:none; background-color:transparent;font-weight:200;color:white;font-size:15px;position:absolute;z-index:6;margin-left:10%;margin-top:19%;">Add Feature<br>Image</button><img src="/images/buildings-vector-01.jpg" style="width: 120%;height: 74px;-webkit-filter: brightness(100%);margin-top: 8%; " onmouseover="EditFeatureDialog(this.id)" onmouseout="RemoveFeatureDialog(this.id)" id="image_-1" /><input type="file" id="FeatureImage_-1" style="display:none" onchange="UpdateFeatureImage(-1)" /></div></div>
+                                <div class="col-md-3 " style=" width: 26.4%;margin-top: -7px;"><div id="divImage_-2"><button class="btn center-block dt-body-center" onmouseover="EditFeatureDialog(this.id)" onmouseout="RemoveFeatureDialog(this.id)" id="button_-2" onclick="openFeatureDialog(-2)" style="display:none;background-color:transparent;font-weight:200;color:white;font-size:15px;position:absolute;z-index:6;margin-left:10%;margin-top:19%;">Add Feature<br>Image</button><img src="/images/buildings-vector-01.jpg" style="width: 120%;height: 74px;-webkit-filter: brightness(100%);margin-top: 8%; " onmouseover="EditFeatureDialog(this.id)" onmouseout="RemoveFeatureDialog(this.id)" id="image_-2" /><input type="file" id="FeatureImage_-2" style="display:none" onchange="UpdateFeatureImage(-2)" /></div></div>
+                            }
+                            if (Model.communityFeaturesImage.Count == 2)
+                            {
+                                <div class="col-md-3 " style=" width: 26.4%;margin-top: -7px;"><div id="divImage_-2"><button class="btn center-block dt-body-center" onmouseover="EditFeatureDialog(this.id)" onmouseout="RemoveFeatureDialog(this.id)" id="button_-2" onclick="openFeatureDialog(-2)" style="display:none;background-color:transparent;font-weight:200;color:white;font-size:15px;position:absolute;z-index:6;margin-left:10%;margin-top:19%;">Add Feature<br>Image</button><img src="/images/buildings-vector-01.jpg" style="width: 120%;height: 74px;-webkit-filter: brightness(100%);margin-top: 8%; " onmouseover="EditFeatureDialog(this.id)" onmouseout="RemoveFeatureDialog(this.id)" id="image_-2" /><input type="file" id="FeatureImage_-2" style="display:none" onchange="UpdateFeatureImage(-2)" /></div></div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="col-md-3 " style=" width: 26.4%;margin-top: -7px;margin-left: 50px;"><div id="divImage_0"><button class="btn center-block dt-body-center" onmouseover="EditFeatureDialog(this.id)" onmouseout="RemoveFeatureDialog(this.id)" id="button_0" onclick="openFeatureDialog(0)" style="display:none;background-color:transparent;font-weight:200;color:white;font-size:15px;position:absolute;z-index:6;margin-left:10%;margin-top:19%;">Add Feature<br>Image</button><img src="/images/buildings-vector-01.jpg" style="width: 120%;height: 74px;-webkit-filter: brightness(100%);margin-top: 8%; " onmouseover="EditFeatureDialog(this.id)" onmouseout="RemoveFeatureDialog(this.id)" id="image_0" /><input type="file" id="FeatureImage_0" style="display:none" onchange="UpdateFeatureImage(0)" /></div></div>
+                            <div class="col-md-3 " style=" width: 26.4%;margin-top: -7px;"><div id="divImage_-1"><button class="btn center-block dt-body-center" onmouseover="EditFeatureDialog(this.id)" onmouseout="RemoveFeatureDialog(this.id)" id="button_-1" onclick="openFeatureDialog(-1)" style="display:none;background-color:transparent;font-weight:200;color:white;font-size:15px;position:absolute;z-index:6;margin-left:10%;margin-top:19%;">Add Feature<br>Image</button><img src="/images/buildings-vector-01.jpg" style="width: 120%;height: 74px;-webkit-filter: brightness(100%);margin-top: 8%; " onmouseover="EditFeatureDialog(this.id)" onmouseout="RemoveFeatureDialog(this.id)" id="image_-1" /><input type="file" id="FeatureImage_-1" style="display:none" onchange="UpdateFeatureImage(-1)" /></div></div>
+                            <div class="col-md-3 " style=" width: 26.4%;margin-top: -7px;"><div id="divImage_-2"><button class="btn center-block dt-body-center" onmouseover="EditFeatureDialog(this.id)" onmouseout="RemoveFeatureDialog(this.id)" id="button_-2" onclick="openFeatureDialog(-2)" style="display:none;background-color:transparent;font-weight:200;color:white;font-size:15px;position:absolute;z-index:6;margin-left:10%;margin-top:19%;">Add Feature<br>Image</button><img src="/images/buildings-vector-01.jpg" style="width: 120%;height: 74px;-webkit-filter: brightness(100%);margin-top: 8%; " onmouseover="EditFeatureDialog(this.id)" onmouseout="RemoveFeatureDialog(this.id)" id="image_-2" /><input type="file" id="FeatureImage_-2" style="display:none" onchange="UpdateFeatureImage(-2)" /></div></div>
+                        }
+
+
+                    </div>
+                    <div class="row">
+
+
+
+
+
+                        <div class="col-md-12" style=" margin-top: 2%;">
+                            <center>
+                                <button onclick="$('#modalDiv3').css('display', 'none'); $('#modalDiv4').css('display', 'inline')" class="btn btn-primary" style="border-radius:7px;height:42px;margin-top: 2.5%;width: 30%; background-color: #1B70A7; border-color: #1B70A7; }">Continue</button>
+                            </center>
+                        </div>
+                        @*<div class="col-md-12">
+                            <center style="    margin-top: 1%;">
+                                <a href="#" onclick="$('#modalDiv3').css('display', 'none'); $('#modalDiv4').css('display', 'inline')">Skip this Step</a>
+                            </center>
+                        </div>*@
+
+                    </div>
+                </div>
+
+
+
+                @*Fourth Scereen*@
+                <div id="modalDiv4" style="display:none">
+                    <div class="row">
+                        <div style=" margin-left: 28px;margin-right: -90px;">
+                            <div class=" col-md-2">
+                                <div class="Unselected_arrow_box UnselectedWithLeftMenu">
+                                    <span style="line-height:100%;font-family:Roboto-Regular" class="logo"><center style="margin-top:6%;">Basic <br /> Information</center></span>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="Unselected_arrow_box UnselectedMenu">
+                                    <span style="line-height:100%;font-family:Roboto-Regular" class="logo"><center style="margin-top:6%;">&nbsp;&nbsp;Add Streets<br />&nbsp;&nbsp;Names/Floors</center></span>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="Unselected_arrow_box UnselectedMenu">
+                                    <span style="line-height:100%;font-family:Roboto-Regular" class="logo"><center style="margin-top:6%;">Add <br /> Images</center></span>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="selected_arrow_box selectedMenu">
+                                    <span style="line-height:100%;font-family:Roboto-Regular" class="logo"><center style="margin-top:6%;">Add <br /> Directory</center></span>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="Unselected_arrow_box UnselectedMenu">
+                                    <span style="line-height:100%;font-family:Roboto-Regular" class="logo"><center style="margin-top:6%;">&nbsp;Add Directory <br /> Provider</></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 ">
+                            <div style="    margin-top: 8%;">
+                                <center><span style="font-family:Roboto-Regular;   font-size: 17px;">Your Neighbourhoods Directory</span><br /><span style="font-family:Roboto-Light;color:#2d2d2d">All categories and select items from the list</span> </center>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-md-5 " style="margin-left:5.5%;">
+
+
+                            @*<select class="SelectIcon" id="servicesDropdown" onchange="addService(this)" style="margin-left:23px;margin-top:10px;">
+                        <option id="0" selected value="Select Directory">Select Directory</option>
+                        <option value="addnew">Add New</option>
+                        @foreach (var service in Model.remainingServices)
+                        {
+
+                            <option id="@service.serviceID" value="@service.description">@service.description</option>
+
+                        }
+
+                    </select>*@
+
+
+
+                            <div id="addnewserviceDiv" style="display:block;margin-top:10px;margin-left:23px;width:100%;">
+                                <input id="txtAddNewService" placeholder="ENTER NEW TITLE" type="text" class="" style=" display:block   ;font-family: Roboto-Light;width: 97%;border: 1px solid #0094FF;color: #2d2d2d;height: 30px;padding-left: 9px;">
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-4 " style="padding-left:0px;padding-right: 5.5%;">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div id="menu" style="width:100%;height:30px;    text-align: left;padding-left: 7px;    padding-top: 3px;background-color:white;border:1px solid #0094ff;cursor:pointer;margin-top:10px;margin-left:15px;">
+                                        <span id="notSelectedIconSpan">Select Icon<i class="fa fa-angle-down" style="float:right;font-size:16px;padding-right: 10px; padding-top: 4px;font-weight: 700;"></i></span>
+                                        <img id="selectedIcon" style="display:none;    margin-top: -25px;float: right;margin-right: 27px;" src='' width="30" height="30" />
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="unexpanded" id="sub" style="margin-left: 15px;margin-top: -1px;z-index:1000;position:absolute;width:85%;height:200px;background-color:white;border:1px solid #0094ff;display:none;">
+                                        <div class="row">
+                                            <div id="icons" class="col-md-12">
+                                                @foreach (var item in Model.directoryImage)
+                                                {
+                                                    <img onclick="SelectIcon(this)" src='@item.image' width="30" height="30" style="margin-left: 5px;margin-top: 5px;" />
+                                                }
+                                            </div>
+
+                                        </div>
+                                        <button onclick="openIconImageDialog()" class="btn btn-primary" style="width: 100%;    position: absolute;right: 0;bottom: 0;">Add New Icon</button>
+                                        <input style="display:none" type="file" id="iconImage" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <button id="btn_AddDirectory" disabled onclick="AddDirectory()" class="btn btn-primary" style="margin-top: 8px;    margin-left: -15px !important;width: 80%; background-color: #8E979C; border-color: #8E979C; }">Add</button>
+                        </div>
+
+                        <div class="mCustomScrollbar" style="height: 150px;margin: 10% 7% 1% 11%;width:79%;">
+
+                            <div class="row" style="margin-left:0px;border: 3px solid #EBEBEb;    width: 100%;">
+
+
+                                @*<button style="margin-right: -5px;border-left-color: transparent;margin-left: -10px;background-color: #EBEBE4;border-right-color: transparent;border-bottom-color: rgba(221, 221, 221, 0.2);" class=""><i class="glyphicon glyphicon-pencil"></i></button>
+                        <button class="" style="border-right-color: rgba(221, 221, 221, 0.2);border-bottom-color: rgba(221, 221, 221, 0.2);background-color: #EBEBE4;border-left-color: transparent;margin-left: -2px;"><i class="glyphicon glyphicon-trash" style=""></i></button>*@
+                            </div>
+
+
+                            <div id="selectedServices">
+                                @*@foreach (var item in Model.CommunityServiceWithServiceIdDTOList)
+                        {
+                            <div class="row" style="margin-left:0px;width:100%;background-color: #ededed;" id="@item.communityService.communityServiceID">
+                                <label id="serviceLabel" class="txt_streetFloor" style="  font-family: Roboto-Light;background: transparent;width: 70.8%;border-color: transparent;    text-align: -webkit-left;padding-left: 12px;color: #2d2d2d;font-weight:normal;">@item.communityService.serviceName</label>
+
+                                <img src="@item.communityService.icon" width="20" height="20" style="margin-right:16%;margin-top: -5px;">
+                                @if (item.serviceID <= 0)
+                                {
+                                    <button id="btn_EditStreetFloor_" class="btn_EditStreetFloor" onclick="EditService('@(item.communityService.serviceName+"_"+item.communityService.communityServiceID)')" style="    margin-right: -5px;border: transparent;margin-left: -5%;background-color: transparent;"><i class="glyphicon glyphicon-pencil"></i></button>
+                                }
+                                @if (item.serviceID <= 0)
+                                {
+                                    <button id="btn_DeleteStreetFloor_" onclick="RemoveUserDefinedService('@(item.communityService.communityServiceID)')" class="btn_DeleteStreetFloor" style="    border-color: transparent;background-color: transparent;margin-left: -2px;"><i class="glyphicon glyphicon-trash" style=""></i></button>
+                                }
+                                else
+                                {
+                                    <button id="btn_DeleteStreetFloor_" onclick="RemoveService('@(item.communityService.serviceName+"_"+item.serviceID+"_"+item.communityService.communityServiceID)')" class="btn_DeleteStreetFloor" style="    border-color: transparent;background-color: transparent;margin-left: -2px;"><i class="glyphicon glyphicon-trash" style=""></i></button>
+
+                                }
+                                <button id="btn_UpdateStreetFloor_" class="btn_UpdateStreetFloor" style="display:none;border-right-color: transparent;border-left-color: transparent;border-bottom-color: transparent;margin-left: -1px;float: right;background-color: rgb(255, 255, 255);border-top-color: transparent;"><i class="glyphicon glyphicon-ok" style=""></i></button>
+                                <hr style='margin-top: 0px;margin-bottom: 0px;border-top: 1px solid rgb(220, 220, 220);' />
+                            </div>
+
+                        }*@
+
+                            </div>
+
+
+
+
+
+                        </div>
+
+                        <div class="col-md-12" style=" margin-top: 2%;">
+                            <center>
+                                <button onclick="AddServicesInModalDropdown();" class="btn btn-primary" style="border-radius:7px;height:42px;margin-top: 3%;width: 30%; background-color: #1B70A7; border-color: #1B70A7; ">Continue</button>
+                            </center>
+                        </div>
+                        @*<div class="col-md-12">
+                            <center style="    margin-top: 1%;">
+                                <a href="#" onclick="$('#modalDiv4').css('display', 'none'); $('#modalDiv5').css('display', 'inline')">Skip this Step</a>
+                            </center>
+                        </div>*@
+                    </div>
+                </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                @*fifth Scereen*@
+                <div id="modalDiv5" style="display:none">
+                    <div class="row">
+                        <div style=" margin-left: 28px;margin-right: -90px;">
+                            <div class=" col-md-2">
+                                <div class="Unselected_arrow_box UnselectedWithLeftMenu">
+                                    <span style="line-height:100%;font-family:Roboto-Regular" class="logo"><center style="margin-top:6%;">Basic <br /> Information</></span>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="Unselected_arrow_box UnselectedMenu">
+                                    <span style="line-height:100%;font-family:Roboto-Regular" class="logo"><center style="margin-top:6%;">Add Names<br />Streets/Floors</center></span>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="Unselected_arrow_box UnselectedMenu">
+                                    <span style="line-height:100%;font-family:Roboto-Regular" class="logo"><center style="margin-top:6%;">Add <br /> Images</></span>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="Unselected_arrow_box UnselectedMenu">
+                                    <span style="line-height:100%;font-family:Roboto-Regular" class="logo"><center style="margin-top:6%;">Add <br /> Directory</center></span>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="selected_arrow_box selectedMenu">
+                                    <span style="line-height:100%;font-family:Roboto-Regular" class="logo"><center style="margin-left:14px;margin-top:6%;">&nbsp;Add Directory <br /> Provider</center></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 ">
+                            <div style="    margin-top: 4%;">
+                                <center><span style="font-family:Roboto-Regular;   font-size: 20px;">Populate your directory with important contact information</span><br /><span style="font-family:Roboto-Light;color:#2d2d2d">Select the category and begin adding contacts</span> </center>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12 ">
+
+                            <center>
+                                <select class="SelectIcon" style="height:38px;margin-top:15px;width:60%" onchange="getServiceStaff()" id="AllservicesDropdown">
+                                    <option value="-1" selected="selected">Select Category</option>
+                                    @foreach (var service in Model.selectedCommunityServices)
+                                    {
+
+                                        <option id="@service.communityServiceID" value="@service.serviceName">@service.serviceName</option>
+
+                                    }
+
+                                </select>
+                            </center>
+
+
+
+
+                        </div>
+
+
+                        <style>
+                            .txt_ServiceStaff {
+                                font-family: Roboto-Light;
+                                width: 97%;
+                                border: 2px solid #CAC9C9;
+                                color: #000000;
+                                height: 30px;
+                                padding-left: 9px;
+                                margin-top: 6px;
+                                background-color: #EBEBEB;
+                            }
+                        </style>
+
+                        <div class="col-md-5 col-md-offset-1" style="margin-left: 11px;margin-top: 18px;padding-left: 26px;padding-right: 0px;width: 48%;">
+
+                            <label>Add Contact</label>
+
+                            <input type="text" class="txt_ServiceStaff" id="Name" placeholder="Name" />
+                            <input type="text" class="txt_ServiceStaff" id="Designation" placeholder="Designation" />
+                            <input type="text" class="txt_ServiceStaff" id="Contact" placeholder="Contact" />
+                            <input type="text" class="txt_ServiceStaff" style="text-transform:lowercase" id="EmailID" placeholder="EmailID" />
+                            <input type="button" class="btn btn-primary btnEditStaff" id="StaffUpdate_" onclick="EditServiceStaff(this.id)" value="Edit" disabled style="    color: #ffffff;background-color: #6F6C6C;border: transparent;float: right;margin-top: 14px;margin-right: 9%;width:35%;border-radius:7px;" />
+                        </div>
+                        <div class="col-md-5 " style="margin-right: 11px;margin-top: 8px;">
+                            <div class="row" style="margin-top: 179px;">
+                                <div id="staffImage" onclick="$('#staffImagefile').click();" class="img-circle" style=" display:none;   position: absolute;    background-size: cover;background-repeat: no-repeat;background-image:url('../images/Add Photo.jpg') ;    height: 130px;   width: 54%;margin-top: -135px;margin-left:41px;cursor:pointer"></div>
+                            </div>
+                        <div class="row" style=" margin-top: -141px;">
+                            <div onclick="$('#staffImagefile').click();" style="    background-size: contain;background-repeat: no-repeat; background-image:url('../images/Add Photo.jpg') ;    height: 141px;   width: 100%;cursor:pointer"></div>
+
+                        </div>
+                            
+                            <input id="staffImagefile" type="file" style="display:none" onchange="SetStaffImage()" />
+                        </div>
+                        <input type="button" class="btn btn-primary btnAddStaff" value="Add" onclick="AddServiceStaff()" style="margin-left:-10px;color: #ffffff;width: 22%;    background-color: #39B54A;border: transparent;float: left;margin-left: -3%;margin-top: 14px;border-radius:7px;" />
+
+
+                        <div class="col-md-12">
+
+
+                            <p style="margin-left:26px;margin-top:8px;">Contacts Added</p>
+                            <div class="mCustomScrollbar" style="height: 66px;margin: 0px 8% 1%;margin-top:0%;width:87%;margin-left:4.5%;">
+
+
+
+                                <div id="AddedStaffServices">
+
+                                </div>
+
+
+
+
+
+                            </div>
+                        </div>
+
+
+
+
+
+
+                        <div class="col-md-12" style=" margin-top: 2%;">
+                            <center>
+                                <button data-dismiss="modal" class="btn btn-primary" style="height:42px;border-radius:7px;margin-top: -1%;width: 30%; background-color: #1B70A7; border-color: #1B70A7; }">Done</button>
+                            </center>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+
+
+@*<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>*@
+<script language="javascript" src="https://maps.googleapis.com/maps/api/js?v=3"></script>
+<script type="text/javascript">
+    function showGoogleMap() {
+        $('#MapModal').css('display', 'inline');
+        //google.maps.event.addListenerOnce('dvMap', 'idle', function () { google.maps.event.trigger('dvMap', 'resize'); });
+        map();
+    }
+    function map() {
+        var mapOptions = {
+            center: new google.maps.LatLng(33.700828, 73.065033),
+            zoom: 12,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        var infoWindow = new google.maps.InfoWindow();
+        var latlngbounds = new google.maps.LatLngBounds();
+        var map = new google.maps.Map(document.getElementById("dvMap"), mapOptions);
+        google.maps.event.trigger(map, 'resize');
+        google.maps.event.addListener(map, 'click', function (e) {
+            var latlng = new google.maps.LatLng(e.latLng.lat(), e.latLng.lng());
+            var geocoder = geocoder = new google.maps.Geocoder();
+            geocoder.geocode({ 'latLng': latlng }, function (results, status) {
+                if (status == google.maps.GeocoderStatus.OK) {
+                    if (results[1]) {
+                        var address = results[1].formatted_address;
+                        //document.getElementById("addressWords").value=address.substring(0, 25)+"...";
+                        document.getElementById("addressWords").value = address;
+                        $("#addressWords").attr("disabled", false);
+                        document.getElementById("addressLongitude").value = e.latLng.lng();
+                        document.getElementById("addressLatitude").value = e.latLng.lat();
+                        //$("#MapModal").css("display", "none");
+
+
+
+                        //alert("Location: " + results[1].formatted_address + "\r\nLatitude: " + e.latLng.lat() + "\r\nLongitude: " + e.latLng.lng());
+                    }
+                }
+            });
+
+        });
+    }
+    //$(document).ready(function () {
+ 
+    //});
+
+</script>
+    <script>
+     
+    $(document).ready(function () {
+        $("#btn_stratupModal").click();
+
+        $('#mySelect').selectpicker();
+
+        $("#menu").click(function () {
+
+            if ($("#sub").attr('class') == "unexpanded") {
+
+                $("#sub").slideDown();
+                $("#sub").removeClass('unexpanded');
+            }
+            else {
+
+                $("#sub").slideUp();
+                $("#sub").addClass('unexpanded');
+
+            }
+        });
+        //--------------------------------------------First Screen-----------------------------------------------------------------------
+        $(document).ready(function () {
+
+            $('#dvMap').on('show', function () {
+                google.maps.event.trigger(map, 'resize');
+            });
+            var textbox = document.getElementById("aboutCommunity");
+            var text_min = 500;
+            var text_remaining = text_min - textbox.value.length;
+            if (textbox.value.length >= 500) {
+                $('#textarea_CountCharacters').html('(0 characters remaining)');
+            }
+            else {
+                $('#textarea_CountCharacters').html('(' + text_remaining + ' characters remaining)');
+            }
+          
+        });
+    
+        $("#aboutCommunity").keyup(function () {
+            var textbox = document.getElementById("aboutCommunity");
+            if (textbox.value.length >= 500) {
+                $('#textarea_CountCharacters').html('(0 characters remaining)');
+                $("#btn_AboutUpdate").attr('disabled', false);
+                $("#btn_AboutUpdate").css('border-color', '#1B70A7');
+                $("#btn_AboutUpdate").css('background-color', '#1B70A7');
+            }
+            else {
+                var text_min = 500;
+                var text_remaining = text_min - textbox.value.length;
+
+                $('#textarea_CountCharacters').html('(' + text_remaining + ' characters remaining)');
+                $("#btn_AboutUpdate").css('border-color', '#9FA5A9');
+                $("#btn_AboutUpdate").css('background-color', '#9FA5A9');
+                $("#btn_AboutUpdate").attr('disabled', true);
+
+            }
+        });
+
+
+        $("#userImageURL").click(function(){
+            $("#userPhoto").click();
+        });
+        $("#userbtnImageURL").click(function () {
+            $("#userPhoto").click();
+        });
+        $(function(){
+
+            $('#userPhoto').change(function (event) {
+
+                var filename = event.target.files[0].name;
+                filename = filename.substring(0, 10);
+                filename = filename + "...";
+                $("#userImageURL").val(filename);
+            });
+
+        });
+        $('#btn_AboutUpdate').click(function () {
+
+            var FirstName = document.getElementById("FirstName").value;
+            var Email = document.getElementById("Email").value;
+            var aboutCommunity = document.getElementById("aboutCommunity").value;
+            var addressWords = document.getElementById("addressWords").value;
+            var addressLongitude = document.getElementById("addressLongitude").value;
+            var addressLatitude = document.getElementById("addressLatitude").value;
+            var userPhoto = document.getElementById('userPhoto').files[0];
+            var fd = new FormData();
+            fd.append("userPhoto", userPhoto);
+            fd.append("FirstName", FirstName);
+            fd.append("Email", Email);
+            fd.append("aboutCommunity", aboutCommunity);
+            fd.append("addressWords", addressWords);
+            fd.append("addressLongitude", addressLongitude);
+            fd.append("addressLatitude", addressLatitude);
+
+            $.ajax({
+                url: ' @Url.Action("UpdateModalFirstScreen", "home")',
+                type: 'POST',
+                data: fd,
+                async: false,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function (responce) {
+
+                    document.getElementById("aboutCommunity").value = aboutCommunity;
+                    $('#modalDiv1').css('display', 'none');
+                    $('#modalDiv2').css('display', 'inline')
+
+
+
+                }
+            });
+
+
+        });
+
+
+
+
+
+
+
+
+        //--------------------------------------------Second Screen-----------------------------------------------------------------------
+
+
+
+
+        $("#txt_AddStreetFloor").keyup(function (e) {
+            if (e.keyCode == 13) {
+                $('#btn_AddStreetFloor').click();
+            }
+        });
+        $('#btn_AddStreetFloor').click(function () {
+
+            var StreerFloor = $('#txt_AddStreetFloor').val();
+ 
+            var item = "";
+            $.ajax({
+                url: '@Url.Action("AddCommunityStreetFloor", "Home")',
+                type: 'POST',
+                data: { "StreetFloor": StreerFloor },
+                dataType: 'json',
+
+                success: function (response) {
+                    item = "<div class='row' style='margin-left:0px;width:100%;background-color: #ededed;' id=streetFloor_" + response.ResponceCommunityStreetFloor.model.id + " >" +
+                               "<input id='txt_streetFloor_" + response.ResponceCommunityStreetFloor.model.id + "' type='text' value='" + response.ResponceCommunityStreetFloor.model.streetFloor + "' disabled='' class='txt_streetFloor' style=' padding:6px;font-family: Roboto-Light;background: transparent;width: 90.8%;border-color: transparent;padding-left: 12px;color: #2d2d2d;'>" +
+                                "<button id='btn_EditStreetFloor_" + response.ResponceCommunityStreetFloor.model.id + "'class='btn_EditStreetFloor' style='margin-right: -5px;border: transparent;margin-left: -2%;background-color: transparent;' onclick=EditStreetFloors(" + response.ResponceCommunityStreetFloor.model.id + ")><i class='glyphicon glyphicon-pencil'></i></button>" +
+                                 "<button id='btn_DeleteStreetFloor_" + response.ResponceCommunityStreetFloor.model.id + "' class='btn_DeleteStreetFloor' style='    border-color: transparent;background-color: transparent;margin-left: -2px;' onclick=DeleteStreetFloors(" + response.ResponceCommunityStreetFloor.model.id + ")><i class='glyphicon glyphicon-trash' style=''></i></button>" +
+                                  "<button id='btn_UpdateStreetFloor_" + response.ResponceCommunityStreetFloor.model.id + "' class='btn_UpdateStreetFloor' style='display:none;height: 36px;border-right-color: transparent;border-left-color: transparent;border-bottom-color: transparent;margin-left: -1px;float: right;background-color: rgb(255, 255, 255);border-top-color: transparent;' onclick=UpdateStreetFloors(" + response.ResponceCommunityStreetFloor.model.id + ")><i class='glyphicon glyphicon-ok' style=''></i></button>" +
+                              "<hr style='margin-top: 0px;margin-bottom: 0px;border-top: 1px solid rgb(220, 220, 220);' /> </div>  ";
+                    $("#communityStreetFloor").prepend(item);
+                    $('#txt_AddStreetFloor').val("");
+                    $("#txt_AddStreetFloor").focus();
+                },
+                error: function (error) {
+                }
+            });
+
+        });
+
+    });
+
+
+
+        function EditStreetFloors(elem) {
+            $(".txt_streetFloor").css("background", "rgb(237, 237, 237)")
+        $(".txt_streetFloor").prop("disabled", true);
+        $('.btn_EditStreetFloor').css("display", "inline");
+        $('.btn_DeleteStreetFloor').css("display", "inline");
+        $('.btn_UpdateStreetFloor').css("display", "none");
+        $('.txt_streetFloor').css('width', '91%');
+
+
+        $('#txt_streetFloor_' + elem).prop("disabled", false);
+        $('#btn_EditStreetFloor_' + elem).css("display", "none");
+        $('#btn_DeleteStreetFloor_' + elem).css("display", "none");
+        $('#btn_UpdateStreetFloor_' + elem).css("display", "block");
+        $('#txt_streetFloor_' + elem).css('width', '93.785%');
+
+        $('#txt_streetFloor_' + elem).css('background', '#ffffff');
+    }
+    function DeleteStreetFloors(elem) {
+        $.ajax({
+            url: '@Url.Action("DeleteCommunityStreetFloor", "Home")',
+            type: 'POST',
+            data: { "Id": elem },
+            dataType: 'json',
+
+            success: function (response) {
+                if (response.success == "Success") {
+                    $("#streetFloor_" + elem).remove();
+                }
+            },
+            error: function (error) {
+            }
+        });
+
+    }
+    function UpdateStreetFloors(elem) {
+
+        var StreerFloor = $('#txt_streetFloor_' + elem).val();
+        var item = "";
+        $.ajax({
+            url: '@Url.Action("UpdateCommunityStreetFloor", "Home")',
+            type: 'POST',
+            data: { "StreetFloor": StreerFloor, "Id": elem },
+            dataType: 'json',
+
+            success: function (response) {
+                if (response.success == "Success") {
+                    $('#txt_streetFloor_' + elem).prop("disabled", true);
+                    $('#btn_EditStreetFloor_' + elem).css("display", "inline");
+                    $('#btn_DeleteStreetFloor_' + elem).css("display", "inline");
+                    $('#btn_UpdateStreetFloor_' + elem).css("display", "none");
+                    $('#txt_streetFloor_' + elem).css('width', '91%');
+                    $('#txt_streetFloor_' + elem).css('background', '#ededed');
+                    rgb(235, 235, 228)
+                }
+            },
+            error: function (error) {
+            }
+        });
+
+    }
+
+
+
+    //--------------------------------------------Third Screen-----------------------------------------------------------------------
+    $(document).ready(function () {
+
+    });
+    function openCoverDialog() {
+        $("#coverImagefile").click();
+    }
+    function EditCoverDialog() {
+        $("#coverImage").css('-webkit-filter', 'brightness(30%)');
+        $("#buttonCoverPhoto").css("display", "block");
+    }
+    function RemoveCoverDialog() {
+        $("#coverImage").css('-webkit-filter', 'brightness(100%)');
+        $("#buttonCoverPhoto").css("display", "none");
+    }
+    function AddCoverImage() {
+        var coverfile = document.getElementById('coverImagefile').files[0];
+        var fd = new FormData();
+        fd.append("coverfile", coverfile);
+
+        $.ajax({
+            url: ' @Url.Action("ChangeCommunityCover", "home")',
+            type: 'POST',
+            data: fd,
+            async: false,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function (responce) {
+
+                document.getElementById('coverImagefile').files[0] = null;
+                $("#coverImage").attr("src", responce.ImageString);
+
+
+
+            }
+        });
+    }
+
+    function EditFeatureDialog(elem) {
+        var id = elem.split("_")[1];
+        $("#image_" + id).css('-webkit-filter', 'brightness(30%)');
+        $("#button_" + id).css("display", "block");
+    }
+    function RemoveFeatureDialog(elem) {
+        var id = elem.split("_")[1];
+        $("#image_" + id).css('-webkit-filter', 'brightness(100%)');
+        $("#button_" + id).css("display", "none");
+
+    }
+    function openFeatureDialog(elem) {
+
+        $("#FeatureImage_" + elem).click();
+    }
+
+    function UpdateFeatureImage(elem) {
+        var Featurefile = document.getElementById('FeatureImage_' + elem).files[0];
+        var fd = new FormData();
+        fd.append("Featurefile", Featurefile);
+        fd.append("Id", elem);
+        $.ajax({
+            url: ' @Url.Action("ChangeFeatureImage", "home")',
+                type: 'POST',
+                data: fd,
+                async: false,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function (responce) {
+
+                    document.getElementById('FeatureImage_' + elem).files[0] = null;
+                    $('#image_' + elem).attr("src", responce.CommunityResponse.model.image);
+                    $('#image_' + elem).attr("id", "image_" + responce.CommunityResponse.model.id);
+                    $('#FeatureImage_' + elem).attr("id", "FeatureImage_" + responce.CommunityResponse.model.id);
+
+
+
+                }
+            });
+        }
+
+
+
+    //--------------------------------------------Fourth Screen-----------------------------------------------------------------------
+    var servicesArray = new Array();
+    var serviceIcon = new Array();
+    var itemservice = "";
+    var service;
+    var serviceID;
+    var serviceDescription;
+    var counter = 000;
+    var directoryName = "";
+    var editCheck = 0;
+
+    function AddServicesInModalDropdown() {
+        $.ajax({
+            url: '@Url.Action("SetdropdownServicesStartUpModal", "Home")',
+            type: 'POST',
+            dataType: 'json',
+
+            success: function (response) {
+                $("#AllservicesDropdown").children().remove();
+
+                $.each(response.ResponceCommunityService, function (i, item) {
+
+
+                    var items = "<option id='" + item.communityServiceID + "' value='" + item.serviceName + "'>" + item.serviceName + "</option>";
+                    $("#AllservicesDropdown").append(items);
+                });
+
+                $('#modalDiv4').css('display', 'none');
+                $('#modalDiv5').css('display', 'block');
+            },
+            error: function (error) {
+            }
+        });
+    }
+    function addService(elem) {
+
+        if (elem.value == "addnew") {
+
+            $("#txtAddNewService").css("display", "block")
+            $("#servicesDropdown").css("display", "none")
+
+        }
+
+
+
+        if (elem.value != "addnew" && elem.value != "Select Directory") {
+            servicesArray.push(elem.value);
+
+            var select1 = document.getElementById("servicesDropdown");
+            var option1 = select1.options[select1.selectedIndex];
+            serviceID = option1.id;
+            serviceDescription = option1.value;
+            directoryName = serviceDescription;
+            var completeService = option1.value + "_" + option1.id;
+            $(elem).attr("selected", "selected");
+
+            service = elem;
+        }
+
+    }
+
+    function RemoveUserDefinedService(elem) {
+
+        //var service=elem.split("_");
+        //var serviceID=service[1];
+        //var description=service[0];
+
+        $.ajax({
+            url: '@Url.Action("RemoveCommunityServices", "Home")',
+            type: 'POST',
+            data: { "CommunityServiceID": elem },
+            dataType: 'json',
+
+            success: function (response) {
+                $("#" + elem).children().remove();
+                $("#" + elem).remove();
+            },
+            error: function (error) {
+            }
+        });
+        //$("#servicesDropdown").append(item);
+    }
+
+    editCheck = 0;
+    var editCommunityServiceID;
+
+
+    function EditService(elem) {
+        editCheck = 1;
+        var service = elem.split("_");
+
+        var communityServiceID = service[1];
+        var description = service[0];
+        editCommunityServiceID = communityServiceID;
+        $("#txtAddNewService").val(description);
+        $("#servicesDropdown").css('display', 'none');
+        $("#txtAddNewService").css('display', 'block');
+        $("#btn_AddDirectory").css('background-color', '#8E979C');
+        $("#btn_AddDirectory").css('border-color', '#8E979C');
+        $("#btn_AddDirectory").html('Edit');
+        $("#btn_AddDirectory").attr('disabled', true);
+        btn_AddDirectory
+
+    }
+    function RemoveService(elem) {
+
+        var service = elem.split("_");
+        var serviceID = service[1];
+        var description = service[0];
+        var communityServiceId = service[2];
+        $("#" + communityServiceId).children().remove();
+        $("#" + communityServiceId).remove();
+        $.ajax({
+            url: '@Url.Action("RemoveCommunityServices", "Home")',
+            type: 'POST',
+            data: { "CommunityServiceID": communityServiceId },
+            dataType: 'json',
+
+            success: function (response) {
+                $("#" + elem).children().remove();
+                $("#" + elem).remove();
+                var item = "<option id='" + serviceID + "' value='" + description + "'>" + description + "</option>";
+                $("#servicesDropdown").append(item);
+            },
+            error: function (error) {
+            }
+        });
+
+    }
+    $("#btnAddNewService").click(function () {
+
+        var value = $("#txtAddNewService").val();
+        servicesArray.push(value);
+        var item = "<div class='row' style='margin-left:0px;width:100%;background-color: #ededed;' id='streetFloor_' >" +
+                          "<label class='txt_streetFloor' style='font-family: Roboto-Light;background: transparent;width: 70.8%;border-color: transparent;    text-align: -webkit-left;padding-left: 12px;color: #2d2d2d;font-weight:normal;'>" + value + "</label>" +
+                             "<button id='btn_DeleteStreetFloor_' class='btn_DeleteStreetFloor' style='    border-color: transparent;background-color: transparent;margin-left: 6px;'><i class='glyphicon glyphicon-trash' style='margin-left:4px;'></i></button>" +
+                             "<button id='btn_UpdateStreetFloor_' class='btn_UpdateStreetFloor' style='display:none;border-right-color: transparent;border-left-color: transparent;border-bottom-color: transparent;margin-left: -1px;float: right;background-color: rgb(255, 255, 255);border-top-color: transparent;'><i class='glyphicon glyphicon-ok' style=''></i></button>" +
+                         "<hr style='margin-top: 0px;margin-bottom: 0px;border-top: 1px solid rgb(220, 220, 220);' /> </div>";
+
+        $("#selectedServices").prepend(item);
+
+        $("#servicesDropdown").css('display', 'block');
+        $("#txtAddNewService").css('display', 'none');
+    });
+
+
+
+        @*function AddServices() {
+            $.ajax({
+                url: '@Url.Action("AddServicesStartUpModal", "Home")',
+                type: 'POST',
+                data: { "services": servicesArray, "icons": serviceIcon },
+                dataType: 'json',
+
+                success: function (response) {
+                    $('#modalDiv4').css('display', 'none');
+                    $('#modalDiv5').css('display', 'block')
+                },
+                error: function (error) {
+                }
+            });
+
+        }*@
+
+        var icon = "";
+    function SelectIcon(elem) {
+        icon = elem;
+        var iconSRC = $(icon).attr("src");
+        $("#sub").slideUp();
+        $("#notSelectedIconSpan").css("display", "block");
+        $("#selectedIcon").attr("src", iconSRC);
+        $("#selectedIcon").css("display", "block");
+        $("#btn_AddDirectory").css('background-color', '#1B70A7');
+        $("#btn_AddDirectory").css('border-color', '#1B70A7');
+        $("#btn_AddDirectory").attr('disabled', false);
+    }
+
+
+
+
+
+
+
+    function AddDirectory() {
+        var customeServiceDescription = $("#txtAddNewService").val();
+        if (customeServiceDescription != "") {
+            directoryName = customeServiceDescription;
+        }
+        if (icon != "" && directoryName != "") {
+
+
+            if (editCheck == 1) {
+
+
+                var iconUrl = $(icon).attr("src");
+                $.ajax({
+                    url: '@Url.Action("EditCommunityServices", "Home")',
+                    type: 'POST',
+                    data: { "serviceName": customeServiceDescription, "imageURL": iconUrl, "communityServiceID": editCommunityServiceID },
+                    dataType: 'json',
+
+                    success: function (response) {
+
+                        communityServiceID = response.CommunityServiceID;
+                        $("#" + communityServiceID).children().remove();
+                        var completeService = customeServiceDescription + "_" + communityServiceID;
+
+                        itemservice = "<label id='serviceLabel' class='txt_streetFloor' style='  font-family: Roboto-Light;background: transparent;width: 70.8%;border-color: transparent;    text-align: -webkit-left;padding-left: 12px;color: #2d2d2d;font-weight:normal;'>" + customeServiceDescription + "</label>" +
+                        "<button id='btn_EditStreetFloor_'class='btn_EditStreetFloor'  onclick=EditService('" + completeService + "') style='  margin-right: -5px;border: transparent;margin-left: -5%;background-color: transparent;'><i class='glyphicon glyphicon-pencil'></i></button>" +
+                        "<button id='btn_DeleteStreetFloor_' onclick=RemoveUserDefinedService('" + communityServiceID + "') class='btn_DeleteStreetFloor' style='   border-color: transparent;background-color: transparent;margin-left: 4px;'><i class='glyphicon glyphicon-trash' style=''></i></button>" +
+                          "<button id='btn_UpdateStreetFloor_' class='btn_UpdateStreetFloor' style='display:none;border-right-color: transparent;border-left-color: transparent;border-bottom-color: transparent;margin-left: -1px;float: right;background-color: rgb(255, 255, 255);border-top-color: transparent;'><i class='glyphicon glyphicon-ok' style=''></i></button>"+
+                             "<hr style='margin-top: 0px;margin-bottom: 0px;border-top: 1px solid rgb(220, 220, 220);' />";
+
+
+                        var item = "<img src='" + iconUrl + "' width='20' height='20' style='margin-right:16%;' />";
+
+                        $("#" + editCommunityServiceID).append(itemservice);
+                        $("#serviceLabel").after(item);
+                        $("#sub").slideUp();
+                        serviceIcon.push(iconUrl);
+                        //var select1 = document.getElementById("servicesDropdown");
+                        //var option1 = select1.options[0];
+                        //$("#" + option1.id).attr("selected", "selected");
+                        $("#txtAddNewService").val("");
+                        //$("#servicesDropdown").css('display', 'block');
+                        //$("#txtAddNewService").css('display', 'none');
+                        $("#txtAddNewService").css('display', 'block');
+                        $("#btn_AddDirectory").css('background-color', '#8E979C');
+                        $("#btn_AddDirectory").css('border-color', '#8E979C');
+                        $("#btn_AddDirectory").html('Add');
+                        $("#btn_AddDirectory").attr('disabled', true);
+                        editCheck = 0;
+                    },
+                    error: function (error) {
+                    }
+                });
+
+            }
+            @*if (customeServiceDescription == "") {
+                var iconUrl = $(icon).attr("src");
+                var communityServiceID = "";
+
+                var select1 = document.getElementById("servicesDropdown");
+                var option1 = select1.options[select1.selectedIndex];
+                serviceID = option1.id;
+                serviceDescription = option1.value;
+                directoryName = serviceDescription;
+
+                $.ajax({
+                    url: '@Url.Action("AddCommunityServices", "Home")',
+                    type: 'POST',
+                    data: { "serviceName": serviceDescription, "imageURL": iconUrl },
+                    dataType: 'json',
+
+                    success: function (response) {
+                        communityServiceID = response.CommunityServiceID;
+
+                        var completeService = option1.value + "_" + communityServiceID;
+                        var item = "<img src='" + iconUrl + "' width='20' height='20' style='margin-right:16%;' />";
+                        itemservice = "<div class='row' style='margin-left:0px;width:100%;background-color: #ededed;' id=" + communityServiceID + " >" +
+                                      "<label id='serviceLabel' class='txt_streetFloor' style='  font-family: Roboto-Light;background: transparent;width: 70.8%;border-color: transparent;    text-align: -webkit-left;padding-left: 12px;color: #2d2d2d;font-weight:normal;'>" + serviceDescription + "</label>" +
+                                         "<button id='btn_DeleteStreetFloor_' onclick=RemoveService('" + serviceDescription + "_" + option1.id + "_" + communityServiceID + "') class='btn_DeleteStreetFloor' style='   border-color: transparent;background-color: transparent;margin-left: 4px;'><i class='glyphicon glyphicon-trash' style=''></i></button>" +
+                                         "<button id='btn_UpdateStreetFloor_' class='btn_UpdateStreetFloor' style='display:none;border-right-color: transparent;border-left-color: transparent;border-bottom-color: transparent;margin-left: -1px;float: right;background-color: rgb(255, 255, 255);border-top-color: transparent;'><i class='glyphicon glyphicon-ok' style=''></i></button>" +
+                                     "<hr style='margin-top: 0px;margin-bottom: 0px;border-top: 1px solid rgb(220, 220, 220);' /> </div> ";
+
+                        $("#selectedServices").prepend(itemservice);
+                        $("#serviceLabel").after(item);
+                        $("#sub").slideUp();
+                        serviceIcon.push(iconUrl);
+                        $(service).find('option:selected').remove();
+                    },
+                    error: function (error) {
+                    }
+                });
+
+            }*@
+            if (customeServiceDescription != "" && editCheck != 1) {
+                counter--;
+                serviceID = counter;
+                serviceDescription = $("#txtAddNewService").val();
+                var completeService = serviceDescription + "_" + serviceID;
+                var iconUrl = $(icon).attr("src");
+
+
+                $.ajax({
+                    url: '@Url.Action("AddCommunityServices", "Home")',
+                    type: 'POST',
+                    data: { "serviceName": serviceDescription, "imageURL": iconUrl },
+                    dataType: 'json',
+
+                    success: function (response) {
+                        communityServiceID = response.CommunityServiceID;
+                        var completeService = serviceDescription + "_" + communityServiceID;
+                        var item = "<img src='" + iconUrl + "' width='20' height='20' style='margin-right:16%;' />";
+
+                        itemservice = "<div class='row' style='margin-left:0px;width:100%;background-color: #ededed;' id=" + communityServiceID + " >" +
+                                  "<label id='serviceLabel' class='txt_streetFloor' style='  font-family: Roboto-Light;background: transparent;width: 70.8%;border-color: transparent;    text-align: -webkit-left;padding-left: 12px;color: #2d2d2d;font-weight:normal;'>" + serviceDescription + "</label>" +
+                                     "<button id='btn_EditStreetFloor_'class='btn_EditStreetFloor'  onclick=EditService('" + completeService + "') style='  margin-right: -5px;border: transparent;margin-left: -5%;background-color: transparent;'><i class='glyphicon glyphicon-pencil'></i></button>" +
+                                    "<button id='btn_DeleteStreetFloor_' onclick=RemoveUserDefinedService('" + communityServiceID + "') class='btn_DeleteStreetFloor' style='  border-color: transparent;background-color: transparent;margin-left: 4px;'><i class='glyphicon glyphicon-trash' style=''></i></button>" +
+                                     "<button id='btn_UpdateStreetFloor_' class='btn_UpdateStreetFloor' style='display:none;border-right-color: transparent;border-left-color: transparent;border-bottom-color: transparent;margin-left: -1px;float: right;background-color: rgb(255, 255, 255);border-top-color: transparent;'><i class='glyphicon glyphicon-ok' style=''></i></button>" +
+                                 "<hr style='margin-top: 0px;margin-bottom: 0px;border-top: 1px solid rgb(220, 220, 220);' /></div>";
+
+
+                        $("#selectedServices").prepend(itemservice);
+                        $("#serviceLabel").after(item);
+                        $("#sub").slideUp();
+                        serviceIcon.push(iconUrl);
+                        //var select1 = document.getElementById("servicesDropdown");
+                        //var option1 = select1.options[0];
+                        //$("#" + option1.id).attr("selected", "selected");
+                        $("#txtAddNewService").val("");
+                          
+                        //$("#servicesDropdown").css('display', 'block');
+                        //$("#txtAddNewService").css('display', 'none');
+                        $("#txtAddNewService").css('display', 'block');
+                        $("#btn_AddDirectory").css('background-color', '#8E979C');
+                        $("#btn_AddDirectory").css('border-color', '#8E979C');
+                        $("#btn_AddDirectory").attr('disabled', true);
+                    },
+                    error: function (error) {
+                    }
+                });
+
+
+
+
+
+
+            }
+        }
+        directoryName = "";
+        icon = "";
+        $("#notSelectedIconSpan").css("display", "block");
+        $("#selectedIcon").attr("src", "");
+        $("#selectedIcon").css("display", "none");
+    }
+    function openIconImageDialog() {
+        $('#iconImage').click()
+    }
+
+    $(function () {
+
+        $('#iconImage').change(function (event) {
+            //var tmppath = URL.createObjectURL(event.target.files[0]);
+            var iconImage = document.getElementById('iconImage').files[0];
+            var fd = new FormData();
+            fd.append("iconImage", iconImage);
+            $.ajax({
+                url: ' @Url.Action("blobImageURL", "home")',
+                type: 'POST',
+                data: fd,
+                async: false,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function (responce) {
+
+                    document.getElementById('iconImage').files[0] = null;
+
+                    if (responce.ResponceImage != "null") {
+                        item = "<img onclick='SelectIcon(this)' src='" + responce.ResponceImage + "' width='30' height='30' />";
+                        $("#icons").append(item);
+                    }
+
+
+                }
+            });
+
+        });
+
+    });
+
+
+
+//--------------------------------------------Fifth Screen-----------------------------------------------------------------------
+        $("#Contact").click(function () {
+            //$("#Contact").mask("+60?9999999999");
+        });
+   
+        function getServiceStaff() {
+            var select1 = document.getElementById("AllservicesDropdown");
+            var communityServiceName = select1.options[select1.selectedIndex].value;
+            var communityServiceId = select1.options[select1.selectedIndex].id;
+            $.ajax({
+                url: ' @Url.Action("getServiceStaffModal", "home")',
+                type: 'POST',
+                data: { "CommunityServiceName": communityServiceName, "CommunityServiceId": communityServiceId },
+                success: function (responce) {
+                    document.getElementById('Name').value = "";
+                    document.getElementById('Designation').value = "";
+                    document.getElementById('Contact').value = "";
+                    document.getElementById('EmailID').value = "";
+                    $("#staffImage").css('display', 'none');
+                    $("#staffImage").css('background-image', 'url(../images/Add Photo.jpg)');
+                    $("#AddedStaffServices").children().remove();
+
+                    $.each(responce.ResponseServiceStaff, function (i, item) {
+                        items =
+                       "<div class='row' style='margin-left:0px;width:100%;background-color: #ededed;' id=" + item.id + " >" +
+                              "<input type='text' id='communityID" + item.id + "' style='display:none' value='" + item.communityID + "'/>" +
+                           "<input type='text' id='communityServiceID" + item.id + "' style='display:none' value='" + item.communityServiceID + "'/>" +
+                       "<input type='text' id='contactNumber" + item.id + "'  style='display:none' value='" + item.contactNumber + "'/>" +
+                           "<input type='text' id='emailID" + item.id + "'  style='display:none' value='" + item.emailID + "'/>" +
+                           "<input type='text' id='id" + item.id + "'  style='display:none' value='" + item.id + "'/>" +
+                           "<input type='text' id='image" + item.id + "'  style='display:none' value='" + item.image + "'/>" +
+                            "<input type='text' id='name" + item.id + "'  style='display:none' value='" + item.name + "'/>" +
+                             "<input type='text' id='staffRole" + item.id + "'  style='display:none' value='" + item.staffRole + "'/>" +
+
+
+
+                              "<label id='serviceLabel' class='txt_streetFloor' style='  font-family: Roboto-Light;background: transparent;width: 50.8%;border-color: transparent;padding-left: 12px;color: #2d2d2d;font-weight:normal;'>" + item.name + "</label>" +
+                                                  "<label id='serviceLabel' class='txt_streetFloor' style='  font-family: Roboto-Light;background: transparent;width: 40.8%;border-color: transparent;padding-left: 12px;color: #2d2d2d;font-weight:normal;'>" + item.staffRole + "</label>" +
+                       "<button id='btn_EditStreetFloor_'class='btn_EditStreetFloor'  onclick=EditServiceStaffSetText('" + item.id + "') style='margin-right: -5px;border: transparent;margin-left: -2%;background-color: transparent;'><i class='glyphicon glyphicon-pencil'></i></button>" +
+                                "<button id='btn_DeleteStreetFloor_' onclick=DeleteServiceStaff('" + item.id + "') class='btn_DeleteStreetFloor' style='    border-color: transparent;background-color: transparent;margin-left: -2px;'><i class='glyphicon glyphicon-trash' style=''></i></button>" +
+                                 "<button id='btn_UpdateStreetFloor_' class='btn_UpdateStreetFloor' style='display:none;border-right-color: transparent;border-left-color: transparent;border-bottom-color: transparent;margin-left: -1px;float: right;background-color: rgb(255, 255, 255);border-top-color: transparent;'><i class='glyphicon glyphicon-ok' style=''></i></button>" +
+                             "<hr style='margin-top: 0px;margin-bottom: 0px;border-top: 1px solid rgb(220, 220, 220);' /> </div>  ";
+                        $("#AddedStaffServices").append(items);
+                    });
+                }
+            });
+        }
+
+
+
+        function DeleteServiceStaff(elem) {
+            
+              $.ajax({
+                  url: ' @Url.Action("DeleteServicesStaff", "home")',
+                  type: 'POST',
+                  data: { "CommunityServiceID": elem },
+                  success: function (responce) {
+
+                      $("#"+elem).children().remove();
+                      $("#"+elem).remove();
+                  }
+              });
+        }
+
+        function EditServiceStaffSetText(elem){
+            $("#staffImage").css('display', 'block');
+                                  
+            $("#Name").val($("#name"+elem).val());
+            $("#Designation").val($("#staffRole"+elem).val());
+            $("#Contact").val($("#contactNumber"+elem).val());
+         
+            $("#EmailID").val($("#emailID"+elem).val());
+           
+            $("#staffImage").css('background-image', 'url('+$("#image" + elem).val()+')');
+            $(".btnEditStaff").attr("disabled", false);
+            $(".btnAddStaff").attr("disabled", true);
+            $(".btnEditStaff").css("background-color", "#39B54A");
+            $(".btnAddStaff").css("background-color", "#6F6C6C");
+            $("#StaffUpdate_").attr('disabled', false);
+            $("#StaffUpdate_").attr('id',"StaffUpdate_"+elem);
+
+        }
+        function EditServiceStaff(elem) {
+            
+            elem=elem.split('_')[1];
+            var item="";
+            var select1 = document.getElementById("AllservicesDropdown");
+            var option1 = select1.options[select1.selectedIndex].id;
+            var staffImage = document.getElementById('staffImagefile').files[0];
+            var Name = document.getElementById('Name').value;
+            var Designation = document.getElementById('Designation').value;
+            var Contact = document.getElementById('Contact').value;
+            var EmailID = document.getElementById('EmailID').value;
+            var communityServiceID = option1;
+            var id = elem;
+            var fd = new FormData();
+            fd.append("staffImage", staffImage);
+            fd.append("Name", Name);
+            fd.append("Designation", Designation);
+            fd.append("Contact", Contact);
+            fd.append("EmailID", EmailID);
+            fd.append("id", id);
+            fd.append("communityServiceID", communityServiceID);
+            $.ajax({
+                url: ' @Url.Action("EditServicesStaff", "home")',
+                type: 'POST',
+                data: fd,
+                async: false,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function (responce) {
+                    $("#"+elem).children().remove();
+                    item="<input type='text' id='communityID"+responce.ResponseServiceStaff.id+"' style='display:none' value='"+responce.ResponseServiceStaff.communityID+"'/>"+
+                        "<input type='text' id='communityServiceID"+responce.ResponseServiceStaff.id+"' style='display:none' value='"+responce.ResponseServiceStaff.communityServiceID+"'/>"+
+                    "<input type='text' id='contactNumber"+responce.ResponseServiceStaff.id+"'  style='display:none' value='"+responce.ResponseServiceStaff.contactNumber+"'/>"+
+                        "<input type='text' id='emailID"+responce.ResponseServiceStaff.id+"'  style='display:none' value='"+responce.ResponseServiceStaff.emailID+"'/>"+
+                        "<input type='text' id='id"+responce.ResponseServiceStaff.id+"'  style='display:none' value='"+responce.ResponseServiceStaff.id+"'/>"+
+                        "<input type='text' id='image"+responce.ResponseServiceStaff.id+"'  style='display:none' value='"+responce.ResponseServiceStaff.image+"'/>"+
+                         "<input type='text' id='name"+responce.ResponseServiceStaff.id+"'  style='display:none' value='"+responce.ResponseServiceStaff.name+"'/>"+
+                          "<input type='text' id='staffRole"+responce.ResponseServiceStaff.id+"'  style='display:none' value='"+responce.ResponseServiceStaff.staffRole+"'/>"+
+
+
+
+
+                   "<label id='serviceLabel' class='txt_streetFloor' style='  font-family: Roboto-Light;background: transparent;width: 50.8%;border-color: transparent;padding-left: 12px;color: #2d2d2d;font-weight:normal;'>" + responce.ResponseServiceStaff.name + "</label>" +
+                                               "<label id='serviceLabel' class='txt_streetFloor' style='  font-family: Roboto-Light;background: transparent;width: 40.8%;border-color: transparent;padding-left: 12px;color: #2d2d2d;font-weight:normal;'>" + responce.ResponseServiceStaff.staffRole + "</label>" +       
+                    "<button id='btn_EditStreetFloor_'class='btn_EditStreetFloor'  onclick=EditServiceStaffSetText('"+responce.ResponseServiceStaff.id+"') style='margin-right: -5px;border: transparent;margin-left: -2%;background-color: transparent;'><i class='glyphicon glyphicon-pencil'></i></button>" +
+                             "<button id='btn_DeleteStreetFloor_' onclick=DeleteServiceStaff('"+responce.ResponseServiceStaff.id+"') class='btn_DeleteStreetFloor' style='    border-color: transparent;background-color: transparent;margin-left: -2px;'><i class='glyphicon glyphicon-trash' style=''></i></button>" +
+                              "<button id='btn_UpdateStreetFloor_' class='btn_UpdateStreetFloor' style='display:none;border-right-color: transparent;border-left-color: transparent;border-bottom-color: transparent;margin-left: -1px;float: right;background-color: rgb(255, 255, 255);border-top-color: transparent;'><i class='glyphicon glyphicon-ok' style=''></i></button>"+
+                    "<hr style='margin-top: 0px;margin-bottom: 0px;border-top: 1px solid rgb(220, 220, 220);' />" ;              
+
+                    $("#" + elem).append(item);
+                    document.getElementById('staffImagefile').files[0]=null;
+                    document.getElementById('Name').value="";
+                    document.getElementById('Designation').value="";
+                    document.getElementById('Contact').value="";
+                    document.getElementById('EmailID').value = "";
+
+                    $("#staffImage").css('background-image', 'url(../images/Add Photo.jpg)');
+                    //$("#staffImage").fadeIn("fast").attr('src',"../images/Add Photo.jpg");
+                }
+            });
+            $("#staffImage").css('display', 'none');
+            $("#StaffUpdate_"+id).attr('id',"StaffUpdate_");
+            $(".btnEditStaff").attr("disabled", true);
+            $(".btnAddStaff").attr("disabled", false);
+            $(".btnEditStaff").css("background-color", "#6F6C6C");
+            $(".btnAddStaff").css("background-color", "#39B54A");
+            $("#StaffUpdate_").attr('disabled', true);
+        }
+
+        function SetStaffImage(){
+            $("#staffImage").css('display', 'block');
+            var tmppath = URL.createObjectURL(event.target.files[0]);
+            $("#staffImage").css('background-image', 'url(' + tmppath + ')');
+            //$("#staffImage").fadeIn("fast").attr('src',tmppath);
+
+        }
+        function AddServiceStaff() {  
+            var item="";
+            var select1 = document.getElementById("AllservicesDropdown");
+            var option1 = select1.options[select1.selectedIndex].id;
+            var staffImage = document.getElementById('staffImagefile').files[0];
+            var Name = document.getElementById('Name').value;
+            var Designation = document.getElementById('Designation').value;
+            var Contact = document.getElementById('Contact').value;
+            var EmailID = document.getElementById('EmailID').value;
+            var communityServiceID = option1;
+            var fd = new FormData();
+            fd.append("staffImage", staffImage);
+            fd.append("Name", Name);
+            fd.append("Designation", Designation);
+            fd.append("Contact", Contact);
+            fd.append("EmailID", EmailID);
+            fd.append("communityServiceID", communityServiceID);
+            $.ajax({
+                url: ' @Url.Action("AddServicesStaff", "home")',
+                type: 'POST',
+                data: fd,
+                async: false,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function (responce) {
+
+                    item=
+                    "<div class='row' style='margin-left:0px;width:100%;background-color: #ededed;' id="+responce.ResponseServiceStaff.id+" >" +
+                           "<input type='text' id='communityID"+responce.ResponseServiceStaff.id+"' style='display:none' value='"+responce.ResponseServiceStaff.communityID+"'/>"+
+                        "<input type='text' id='communityServiceID"+responce.ResponseServiceStaff.id+"' style='display:none' value='"+responce.ResponseServiceStaff.communityServiceID+"'/>"+
+                    "<input type='text' id='contactNumber"+responce.ResponseServiceStaff.id+"'  style='display:none' value='"+responce.ResponseServiceStaff.contactNumber+"'/>"+
+                        "<input type='text' id='emailID"+responce.ResponseServiceStaff.id+"'  style='display:none' value='"+responce.ResponseServiceStaff.emailID+"'/>"+
+                        "<input type='text' id='id"+responce.ResponseServiceStaff.id+"'  style='display:none' value='"+responce.ResponseServiceStaff.id+"'/>"+
+                        "<input type='text' id='image"+responce.ResponseServiceStaff.id+"'  style='display:none' value='"+responce.ResponseServiceStaff.image+"'/>"+
+                         "<input type='text' id='name"+responce.ResponseServiceStaff.id+"'  style='display:none' value='"+responce.ResponseServiceStaff.name+"'/>"+
+                          "<input type='text' id='staffRole"+responce.ResponseServiceStaff.id+"'  style='display:none' value='"+responce.ResponseServiceStaff.staffRole+"'/>"+
+
+                           
+                           
+                           "<label id='serviceLabel' class='txt_streetFloor' style='  font-family: Roboto-Light;background: transparent;width: 50.8%;border-color: transparent;padding-left: 12px;color: #2d2d2d;font-weight:normal;'>" + responce.ResponseServiceStaff.name + "</label>" +
+                                               "<label id='serviceLabel' class='txt_streetFloor' style='  font-family: Roboto-Light;background: transparent;width: 40.8%;border-color: transparent;padding-left: 12px;color: #2d2d2d;font-weight:normal;'>" + responce.ResponseServiceStaff.staffRole + "</label>" +       
+                    "<button id='btn_EditStreetFloor_'class='btn_EditStreetFloor'  onclick=EditServiceStaffSetText('"+responce.ResponseServiceStaff.id+"') style='margin-right: -5px;border: transparent;margin-left: -2%;background-color: transparent;'><i class='glyphicon glyphicon-pencil'></i></button>" +
+                             "<button id='btn_DeleteStreetFloor_' onclick=DeleteServiceStaff('"+responce.ResponseServiceStaff.id+"') class='btn_DeleteStreetFloor' style='    border-color: transparent;background-color: transparent;margin-left: -2px;'><i class='glyphicon glyphicon-trash' style=''></i></button>" +
+                              "<button id='btn_UpdateStreetFloor_' class='btn_UpdateStreetFloor' style='display:none;border-right-color: transparent;border-left-color: transparent;border-bottom-color: transparent;margin-left: -1px;float: right;background-color: rgb(255, 255, 255);border-top-color: transparent;'><i class='glyphicon glyphicon-ok' style=''></i></button>" +
+                          "<hr style='margin-top: 0px;margin-bottom: 0px;border-top: 1px solid rgb(220, 220, 220);' /> </div>  ";
+                    $("#AddedStaffServices").append(item);
+                    document.getElementById('staffImagefile').files[0]=null;
+
+                    document.getElementById('Name').value="";
+                    document.getElementById('Designation').value="";
+                    document.getElementById('Contact').value="";
+                    document.getElementById('EmailID').value = "";
+                    $("#staffImage").css('display', 'none');
+                    $("#staffImage").css('background-image', 'url(../images/Add Photo.jpg)');
+                }
+            });
+        }
+    </script>
+
+<style>
+ .selected_arrow_box {
+    position: relative;
+    background: transparent;
+    border: 4px solid #1B70A7;
+}
+.selected_arrow_box :after, .selected_arrow_box :before {
+       left: 100%;
+    top: 50%;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+}
+
+.selected_arrow_box :after {
+     border-color: rgba(136, 183, 213, 0);
+    border-left-color: #1B70A7;
+    border-width: 14px;
+    margin-top: -19px;
+    margin-left: 1px;
+}
+.selected_arrow_box :before {
+    border-color: rgba(194, 225, 245, 0);
+    border-left-color: #1B70A7;
+    border-width: 20px;
+    margin-top: -20px;
+    margin-left: 3px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  .Unselected_arrow_box {
+    position: relative;
+    background: transparent;
+    border: 1px solid #1B70A7;
+}
+.Unselected_arrow_box :after, .Unselected_arrow_box :before {
+       left: 100%;
+    top: 50%;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+}
+
+.Unselected_arrow_box :after {
+    /*border-color: rgba(136, 183, 213, 0);
+    border-left-color: #FFFFFF;
+    border-width: 22px;
+    margin-top: -22px;
+       margin-left: -1px;*/
+     border-color: rgba(136, 183, 213, 0);
+    border-left-color: #FFFFFF;
+    border-width: 20px;
+    margin-top: -21px;
+    margin-left: -1px;
+}
+.Unselected_arrow_box :before {
+     /*border-color: rgba(194, 225, 245, 0);
+    border-left-color: #1B70A7;
+    border-width: 23px;
+    margin-top: -23px;
+    margin-left: 1px;*/
+      border-color: rgba(194, 225, 245, 0);
+    border-left-color: #1B70A7;
+    border-width: 20px;
+    margin-top: -21px;
+    margin-left: 0px;
+}
+
+
+
+
+
+
+
+.selectedMenu{
+background-color: #1B70A7;
+    color: #ffffff;
+    /* width: 158%; */
+    height: 41px;
+    font-size: 12px;
+    margin-left: -40%;
+    /* padding-top: 5px; */
+}
+.UnselectedMenu{
+    margin-left: -40%;
+    padding-left: 28%;
+    border-left: transparent;
+    /* width: 207%; */
+    height: 41px;
+    font-size: 12px;
+        padding-top: 2px;
+            z-index: 1;
+}
+.UnselectedWithLeftMenu{
+    margin-left: -40%;
+    padding-left: 28%;
+    /*border-left: transparent;*/
+    /* width: 207%; */
+      height: 41px;
+    font-size: 12px;
+        padding-top: 2px;
+            z-index: 1;
+}
+
+.WelcomeBaner {
+    background:url("../images/Vector Smart Object.png");
+ background-repeat: no-repeat;
+    background-position:center;
+    background-size: 80% 113%;
+        margin: 2%;
+}
+.mCustomScrollBox{ /* contains plugin's markup */
+		position: relative;
+		overflow: hidden;
+
+		height: 410px;
+		max-width: 100%;
+		outline: none;
+		direction: ltr;
+        width:100%
+	}
+</style>

@@ -1,0 +1,232 @@
+﻿@{
+    ViewBag.Title = "Dashboard";
+    Layout = "~/Views/Shared/_communityLayout.cshtml";
+}
+
+@section NavbarAndSideMenu{
+
+    @{ Html.RenderAction("_SystemAdminNavbarAndSideMenu"); }
+}
+
+
+<div >
+    <!-- Businesses Details -->
+    <section class="content-header" style=" padding: 15px 15px 0 0px;">
+        <h1 style="font-family:Roboto-Light;margin-top: 15px;margin-bottom: 15px;margin-left:15px;    font-size: 24px;color:#1d486a">
+            Home
+        </h1>
+    </section>
+
+    <br>
+
+    <div class="row" style="margin-left:15px;">
+        <section class="content" style="padding:0px;min-height:0px">
+            <!-- Small boxes (Stat box) -->
+            <div class="row">
+
+                <a href="../SystemAdminHome/addcommunity" onclick=" $.spin('true');">
+                    <div class="col-md-4 col-sm-4 col-xs-12">
+                        <!-- small box -->
+                        <div style="margin-bottom:20px;height: 171px;background-color:#1d486a" class="small-box">
+                            <div class="inner">
+                                <h5 style="background-color:red;color:#ffffff;text-align:center;width:45px;margin-top: 79px;margin-left: 15px;visibility:hidden">2 New</h5>
+                                <div style="margin-top: 55px;color: #ffffff;margin-left: 15px;">
+                                    <h4 style="text-transform:uppercase;margin-top: -70px;font-size: 18px;    letter-spacing: 1px;font-family:Roboto-Medium">Add Community</h4>
+                                    <p style="text-transform:uppercase;width: 90%;font-size: 12px;font-family:Roboto-Light">You Can Create New Community From here</p>
+                                </div>
+                            </div>
+                            <div class="icon" style="margin-top: -13px;">
+                                <i class="fa fa-home"  style="color:#ffffff;" aria-hidden="true"></i>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="../SystemAdminHome/communitysettings" onclick=" $.spin('true');">
+                    <div class="col-md-4 col-sm-4 col-xs-12">
+                        <!-- small box -->
+                        <div style="margin-bottom:20px;height: 171px;background-color:#1d486a" class="small-box">
+                            <div class="inner">
+                                <h5 style="background-color:red;color:#ffffff;text-align:center;width:45px;margin-top: 79px;margin-left: 15px;visibility:hidden">2 New</h5>
+                                <div style="margin-top: 55px;color: #ffffff;margin-left: 15px;">
+                                    <h4 style="text-transform:uppercase;margin-top: -70px;font-size: 18px;    letter-spacing: 1px;font-family:Roboto-Medium">Communities Setting</h4>
+                                    <p style="text-transform:uppercase;width: 90%;font-size: 12px;font-family:Roboto-Light">Add Community, Change Emergency Contact Range & Directory</p>
+                                </div>
+                            </div>
+                            <div class="icon" style="margin-top: -13px;">
+                                <i style="color:#ffffff;font-size: 70px;" class="fa fa-cogs" aria-hidden="true"></i>
+                            </div>
+                        </div>
+                    </div>
+                </a><!-- ./col -->
+
+
+                <a href="../SystemAdminHome/Services" onclick=" $.spin('true');">
+                    <div class="col-md-4 col-sm-4 col-xs-12">
+                        <!-- small box -->
+                        <div style="margin-bottom:20px;height: 171px;background-color:#1d486a" class="small-box">
+                            <div class="inner">
+                                <h5 style="background-color:red;color:#ffffff;text-align:center;width:45px;margin-top: 79px;margin-left: 15px;visibility:hidden">2 New</h5>
+                                <div style="margin-top: 55px;color: #ffffff;margin-left: 15px;">
+                                    <h4 style="text-transform:uppercase;margin-top: -70px;font-size: 18px;    letter-spacing: 1px;font-family:Roboto-Medium">Communities Directory</h4>
+                                    <p style="text-transform:uppercase;width: 90%;font-size: 12px;font-family:Roboto-Light">Community Directories can added and Updated Form here</p>
+                                </div>
+                            </div>
+                            <div class="icon" style="margin-top: -13px;">
+                                <i style="color:#ffffff;" aria-hidden="true"><img src="/images/Dashboard/Forma 1-3.png" style="height: 60px;margin-right: 13px;"></i>
+                            </div>
+                        </div>
+                    </div>
+                </a><!-- ./col -->
+
+
+
+
+            </div><!-- /.row -->
+
+
+
+            <div class="row">
+
+
+                <a href="../systemadminhome/smstestfeature" onclick=" $.spin('true');">
+                    <div class="col-md-4 col-sm-4 col-xs-12">
+                        <!-- small box -->
+                        <div style="margin-bottom:20px;height: 171px;background-color:#1d486a" class="small-box">
+                            <div class="inner">
+                                <h5 style="background-color:red;color:#ffffff;text-align:center;width:45px;margin-top: 79px;margin-left: 15px;visibility:hidden">2 New</h5>
+                                <div style="margin-top: 55px;color: #ffffff;margin-left: 15px;">
+                                    <h4 style="text-transform:uppercase;margin-top: -70px;font-size: 18px;    letter-spacing: 1px;font-family:Roboto-Medium">SMS Test</h4>
+                                    <p style="text-transform:uppercase;width: 90%;font-size: 12px;font-family:Roboto-Light">Send message to test SMS Service</p>
+                                </div>
+                            </div>
+                            <div class="icon" style="margin-top: -13px;">
+                                <i style="color:#ffffff;" aria-hidden="true"><img src="/images/Dashboard/Forma 1-2.png" style="height: 60px;margin-right: 13px;"></i>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+        </section>
+        <!-- TODO: Add new book -->
+    </div>
+
+
+
+    @*<div class="row" style="margin-left:15px;margin-top:15px">
+
+        <section class="content" style="padding:0px;min-height:0px">
+            <!-- Small boxes (Stat box) -->
+            <div class="row">
+
+                <a href="../Home/Services" onclick=" $.spin('true');">
+
+                    <div class="col-md-4 col-sm-4 col-xs-12">
+                        <!-- small box -->
+                        <div style="margin-bottom:20px;height: 171px;background-color:#1d486a" class="small-box">
+                            <div class="inner">
+                                <div style="margin-top: 55px;color: #ffffff;margin-left: 15px;">
+                                    <h5 style="background-color:red;color:#ffffff;text-align:center;width:45px;visibility:hidden;margin-top: 79px">2 New</h5>
+                                    <h4 style="text-transform:uppercase;margin-top: -31px;font-size: 18px;    letter-spacing: 1px;font-family:Roboto-Medium">Directory</h4>
+                                    <p style="text-transform:uppercase;font-size: 12px;font-family:Roboto-Light">Customize your own directory</p>
+                                </div>
+                            </div>
+                            <div class="icon" style="">
+                                <i style="color:#ffffff"><img src="/images/Dashboard/Forma 1-3.png" style="height: 60px;margin-top: -40px;margin-right: 13px;"></i>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+                </a><!-- ./col -->
+
+
+
+                <a href="../Home/AlertLog" onclick=" $.spin('true');">
+                    <div class="col-md-4 col-sm-4 col-xs-12" style="margin-left: -10px;">
+                        <!-- small box -->
+                        <div style="margin-bottom:20px;height: 171px;background-color:#1d486a" class="small-box">
+                            <div class="inner">
+                                <div style="margin-top: 55px;color: #ffffff;margin-left: 15px;">
+                                    <h5 style="background-color:red;color:#ffffff;text-align:center;width:45px;visibility:hidden;margin-top: 79px">2 New</h5>
+                                    <h4 style="text-transform:uppercase;margin-top: -31px;font-size: 18px;    letter-spacing: 1px;font-family:Roboto-Medium">Alert Log</h4>
+                                    <p style="text-transform:uppercase;font-size: 12px;font-family:Roboto-Light">View all alerts issued</p>
+                                </div>
+                            </div>
+                            <div class="icon" style="">
+                                <i style="color:#ffffff"><img src="/images/Dashboard/Forma 1-4.png" style="height: 60px;margin-top: -40px;margin-right: 13px;"></i>
+                            </div>
+                        </div>
+                    </div>
+                </a><!-- ./col -->
+
+                <a href="../Home/users" onclick=" $.spin('true');">
+                    <div class="col-md-4 col-sm-4 col-xs-12" style="margin-left: -10px;">
+                        <!-- small box -->
+                        <div style="margin-bottom:20px;height: 171px;background-color:#1d486a" class="small-box">
+                            <div class="inner">
+                                <div style="margin-top: 55px;color: #ffffff;margin-left: 15px;">
+                                    <h5 style="background-color:red;color:#ffffff;text-align:center;width:45px;visibility:hidden;margin-top: 79px">2 New</h5>
+                                    <h4 style="text-transform:uppercase;margin-top: -31px;font-size: 18px;    letter-spacing: 1px;font-family:Roboto-Medium">Users</h4>
+                                    <p style="text-transform:uppercase;font-size: 12px;font-family:Roboto-Light">Manage all users</p>
+                                </div>
+                            </div>
+                            <div class="icon" style="">
+                                <i style="color:#ffffff"><img src="/images/Dashboard/Forma 1-5.png" style="height: 60px;margin-top: -40px;margin-right: 13px;"></i>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- ./col -->
+            </div><!-- /.row -->
+
+
+
+
+
+        </section>
+        <!-- TODO: Add new book -->
+
+    </div>*@
+
+
+
+
+
+    <!--View for Complaints-->
+    @*<div class="row">
+
+            <div class="col-md-4">
+
+            </div>
+
+        </div>*@
+</div>
+
+
+
+<!--Businesses, Add Business, Complaints End here -->
+@section myscripts{
+    @*set  sidebar selected tab color*@
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $("#SystemAmdin_Dashboard").css("background-color", "#ffffff");
+            $("#Admin_dashboard").css("color", "#000000");
+        });
+    </script>
+
+}
+<style>
+    .col-xs-6 {
+        width: 0px;
+    }
+
+    .col-lg-4 {
+        width: 350px;
+    }
+</style>

@@ -1,0 +1,5 @@
+Select data that is not is another table
+
+select communityID, [from] from Chats
+Except
+select communityID, userID from Members

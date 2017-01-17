@@ -1,0 +1,46 @@
+﻿.indexBody {
+    background:url("../images/indexImage/sign-in.png");
+	background-repeat: no-repeat;
+    /*background-size:100% 100%;*/
+    background-size:cover;
+}
+.indexHeading{
+    font-size:26px;
+    color:#ffffff;
+    margin-left:7%;
+    font-size: 32px;
+}
+.indexheadingMargin{
+        margin-top: 8.5%;
+    
+}
+.indexAdminParagraph{
+    color:#ffffff;
+    margin-top: 3%;
+
+}
+.indexTextbox{
+    height: 40px;
+    width: 400px;
+    margin-top: 1%;
+    border-radius: 0px;
+    font-size: 16px;
+    padding-left: 10px;
+}
+
+.indexSignInButton{
+    height: 40px;
+
+    width: 400px;
+    margin-top: 1%;
+   
+}
+.indexhref{
+     color: #ffffff;
+    margin-left: 25px;
+    text-decoration: initial;
+}
+.indexCheckBox{
+ padding-left: 7%;
+}
+

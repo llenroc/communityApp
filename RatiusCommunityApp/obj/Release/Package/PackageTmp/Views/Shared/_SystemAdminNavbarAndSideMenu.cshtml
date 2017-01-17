@@ -1,0 +1,635 @@
+﻿
+@*@model RatiusCommunityApp.Models.tokenDTO<RatiusCommunityApp.Models.User>*@
+@model RatiusCommunityApp.Models.CommunityNavbarAndSideMenuDTO
+<header class="main-header" style=" background-color: #d9dada;    margin-top: -20px;">
+    <h4 id="communityName" class="zoom" style="padding-top: 10px;margin-bottom: -33px;margin-top: 0px;color:#1D486A;margin-left:12%; text-align: center;   font-size: 20px;font-family:Roboto-Light;height: 30px;">System Admin</h4>
+
+    <!-- Logo -->
+    <!-- Header Navbar: style can be found in header.less -->
+    <nav class="navbar navbar-static-top" role="navigation">
+        <!-- Sidebar toggle button-->
+
+        <style>
+            .content-wrapper, .right-side {
+                background-color: #ffffff;
+            }
+
+            h1, h2, h3, h4, h5, th {
+                text-transform: uppercase;
+            }
+
+            .zoom {
+                -webkit-transition: all .2s ease-in-out;
+                transition: all .2s ease-in-out;
+            }
+
+                .zoom:hover {
+                    -webkit-transform: scale(1.4);
+                    transform: scale(1.4);
+                }
+
+            .dropdown-toggle {
+                /*background-color: #dadada !important;*/
+                background-color:  #d9dada !important;
+            }
+
+            .selected {
+                background-color: white !important;
+            }
+        </style>
+
+        <script>
+            $(document).on('click', function(event) {
+                if (!$(event.target).closest('#SettingDiv').length) {
+                    //$("#SettingDiv").slideUp();
+                    //$("#settingsBtn").removeClass("selected");
+                    //$("#AletDiv").slideUp();
+
+                }
+            });
+        </script>
+
+        <script>
+            $(document).on('click', function(event) {
+                if (!$(event.target).closest('#AletDiv').length) {
+                    //$("#AletDiv").slideUp();
+                    //$("#UnreadAlertCounter").removeClass("selected");
+                    //$("#SettingDiv").slideUp();
+                }
+            });
+        </script>
+
+
+        <script>
+            $(".dropdown tasks-menu").hover(function(){
+                $(this).css("background-color","#dadada !important");
+            })
+
+
+
+            function OpenSetting(elem) {
+                $("#AletDiv").slideUp();
+                $("#SettingDiv").slideToggle();
+                $(elem).toggleClass("selected");
+
+                //$("#AletDiv").hide();
+                //$("#SettingDiv").toggle();
+                $(".slimScrollDiv").css("height","auto")
+
+            }
+            function OpenAlert(elem) {
+                $("#AletDiv").slideToggle();
+                $(elem).toggleClass("selected");
+                $("#SettingDiv").slideUp();
+                //$("#SettingDiv").hide();
+                //$("#AletDiv").toggle();
+
+
+            }
+            $(document).ready(function () {
+                var languageCode = localStorage.getItem("language");
+                $(".selcetImage").attr("src", "/images/flags/circle-empty-2x.png");
+
+                $("#image_" + languageCode).attr("src", "/images/flags/circle-selected-2x.png");
+                if (languageCode == null) {
+                    $("#image_en").attr("src", "/images/flags/circle-selected-2x.png");
+                }
+            });
+
+
+
+
+            function changeAdminImage() {
+
+                //var userID = $("#userID").val();
+                    var file1 = document.getElementById('file123').files[0];
+                    var fd = new FormData();
+                    fd.append("files", file1);
+                    //fd.append("userID", userID);
+                    $.ajax({
+                        url: ' @Url.Action("ChangeSystemAdminImage", "SystemAdminHome")',
+                        type: 'POST',
+                        data: fd,
+                        async: false,
+                        cache: false,
+                        contentType: false,
+                        processData: false,
+                        success: function (responce) {
+                            if (responce.ResponceMessage == "Success") {
+                                document.getElementById('file123').files[0] = null;
+                                if (responce.ImageString != null) {
+                                    $("#sideBarImage").attr("src", responce.ImageString);
+                                }
+                                $("#error").html("Image Update SuccessFully");
+                                $
+                                $("#error").fadeIn("slow");
+                                $("#error").fadeOut(7000);
+                            }
+                            else {
+                                $("#error").html("Image Failed to Update");
+                                $("#error").fadeIn("slow");
+                                $("#error").fadeOut(7000);
+                            }
+                        }
+
+
+                    });
+
+                }
+
+
+
+
+
+            function changePassword() {
+                var emailID = $("#emailID").val();
+                var oldpass = $("#oldCommunityPassword").val();
+                var newpass = $("#newCommunityPassword").val();
+                //var communitySecretCode = $("#communitySecretCode").val();
+                var confpass = $("#confirmPassword").val();
+                //var userID = $("#userID").val();
+                $("#ajax-loading").css("display", "block");
+                $("#updatePasswordButton").css("display", "none");
+
+                if ($("#emailID").val() == "") {
+                    $("#ajax-loading").css("display", "none");
+                    $("#updatePasswordButton").css("display", "block");
+                    $("#error").html("Please Enter EmailID.");
+                    $("#error").fadeIn("slow");
+                    $("#error").fadeOut(7000);
+                }
+                else if ($("#oldCommunityPassword").val() == "") {
+                    $("#ajax-loading").css("display", "none");
+                    $("#updatePasswordButton").css("display", "block");
+                    $("#error").html("Please Enter Old Password.");
+                    $("#error").fadeIn("slow");
+                    $("#error").fadeOut(7000);
+                }
+            
+                else if ($("#newCommunityPassword").val() != $("#confirmPassword").val()) {
+                    $("#ajax-loading").css("display", "none");
+                    $("#updatePasswordButton").css("display", "block");
+                    $("#error").html("New Password and Confirm Password not match.");
+                    $("#error").fadeIn("slow");
+                    $("#error").fadeOut(7000);
+
+                }
+                //else if ($("#communitySecretCode").val()=="") {
+                //    $("#ajax-loading").css("display", "none");
+                //    $("#updatePasswordButton").css("display", "block");
+                //    $("#error").html("Please Enter Secret Code");
+                //    $("#error").fadeIn("slow");
+                //    $("#error").fadeOut(3000);
+                //}
+                else {
+                    var file1 = document.getElementById('file123').files[0];
+                    var fd = new FormData();
+                    fd.append("files", file1);
+                    fd.append("oldpass", oldpass);
+                    fd.append("newpass", newpass);
+                    //fd.append("userID", userID);
+                    fd.append("emailID", emailID);
+                    //fd.append("communitySecretCode", communitySecretCode);
+                    $.ajax({
+                        url: ' @Url.Action("ChangeSystemAdminPassword", "SystemAdminHome")',
+                        type: 'POST',
+                        data: fd,
+                        async: false,
+                        cache: false,
+                        contentType: false,
+                        processData: false,
+                        success: function (responce) {
+                            if (responce.ResponceMessage == "Success") {
+                                document.getElementById('file123').files[0] = null;
+                                if (responce.ImageString != null) {
+                                    $("#sideBarImage").attr("src", responce.ImageString);
+                                }
+                                $("#ajax-loading").css("display", "none");
+                                $("#updatePasswordButton").css("display", "block");
+                                $("#error").html("Update SuccessFully");
+                                $("#error").fadeIn("slow");
+                                $("#error").fadeOut(7000);
+                            }
+                            else {
+                                $("#ajax-loading").css("display", "none");
+                                $("#updatePasswordButton").css("display", "block");
+                                var ajaxRespoceMessage = responce.ResponceMessage
+                                $("#error").html(ajaxRespoceMessage);
+                                $("#error").fadeIn("slow");
+                                $("#error").fadeOut(7000);
+                            }
+
+
+                        }
+                    });
+
+                }
+                //$("#ajax-loading").css("display", "none");
+                //$("#updatePasswordButton").css("display", "block");
+                $("#oldCommunityPassword").val("");
+                $("#newCommunityPassword").val("");
+                $("#confirmPassword").val("");
+
+            }
+
+            function opendialog123() {
+                $("#file123").click();
+
+            }
+            $(function () {
+
+                $('#file123').change(function (event) {
+
+                    var tmppath = URL.createObjectURL(event.target.files[0]);
+                    $("#Edit123").fadeIn("fast").attr('src', tmppath);
+                    $("#Edit123").css("display", "block");
+                });
+
+            });
+        </script>
+
+
+        <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+        <script>
+
+
+            function googleTranslateElementInit(elem) {
+                new google.translate.TranslateElement({ pageLanguage: elem, includedLanguages: 'en,ms', layout: google.translate.TranslateElement.InlineLayout.SIMPLE, autoDisplay: false }, 'google_translate_element');
+            }
+
+            function ChangeLang(value)//This function call when dropdown menu changes
+            {
+                localStorage.setItem("language", value);
+                createCookie('googtrans','/auto/'+value,1000,'');//generate cookie path www.mydomain.com
+                createCookie('googtrans','/auto/'+value,1000,'');//generate cookie path .mydomain.com
+
+            }
+
+            function createCookie(name, value, days, domain){
+
+                var userLang = getCookie('googtrans');
+
+                if (days){
+                    var date = new Date();
+                    date.setTime(date.getTime() + (days*24*60*60*1000));
+                    var expires = "; expires=" + date.toGMTString();
+                }
+                else{var expires = "";}
+
+
+                if(userLang.split('/')[2] != value.split('/')[2])
+                {
+
+                    document.cookie = name + "=" + value + expires + "; domain=" + domain + "; path=/";
+                    googleTranslateElementInit(userLang.split('/')[2]);
+                    window.location.reload();
+                }
+
+
+            }
+
+
+            //get cookie
+            function getCookie(cname) {
+                var name = cname + "=";
+                var ca = document.cookie.split(';');
+                for(var i=0; i<ca.length; i++) {
+                    var c = ca[i];
+                    while (c.charAt(0)==' ') c = c.substring(1);
+                    if (c.indexOf(name) == 0) {
+                        return c.substring(name.length, c.length);
+                    }
+                }
+                return "";
+            }
+        </script>
+        @*<center>
+                <h4 style="padding: 0px;margin-bottom: -33px;margin-top: 14px;color:#2d2d2d;    font-size: 20px;font-family:Roboto-Light">@Model.community.name</h4>
+            </center>*@
+        <div class="navbar-custom-menu" style="margin-right:6%;">
+            <ul class="nav navbar-nav">
+
+               
+            
+
+                <li class="dropdown tasks-menu">
+
+                    <a title="Settings" id="settingsBtn" href="#" class="dropdown-toggle" data-toggle="dropdown" onclick="OpenSetting(this)">
+                        <i class="fa fa-cog" style="color:#1D486A;"></i>
+                        @*<span class="label label-warning">10</span>*@
+                    </a>
+                    <ul id="SettingDiv" class="dropdown-menu" style="border-radius: 6px;">
+                        <li class=" arrow_box" style="height:450px; box-shadow: 0px -2px 4px #C6BABA;">
+                            <ul class="menu" style="height:540px;min-height:540px">
+
+
+                                <li id="image">
+
+                                    <center>
+                                        @if (Model.tokenUser.model.image != null)
+                                        {
+                                            <img src="@Model.tokenUser.model.image" id="Edit123" class="img-circle" alt="User Image" style=" object-fit: cover;    z-index: 5;height: 90px;width: 90px;border: 0.5px solid rgba(63, 12, 12, 0.2);margin-top: 10px;display: block;">
+                                        }
+                                        else
+                                        {
+                                            <img src="~/images/NoUserImage.png" id="Edit123" class="img-circle" alt="User Image" style="object-fit: cover;     z-index: 5;height: 90px;width: 90px;border: 0.5px solid rgba(63, 12, 12, 0.2);margin-top: 10px;display: block;">
+
+                                        }
+                                    </center>
+                                </li>
+                                <li style="margin-top: 10px;">
+                                    <center><a href="#" onclick="opendialog123()" style="color:#000000;text-transform:uppercase">Update Photo</a></center>
+                                    @Html.TextBoxFor(model => model.member.user.image, null, new { type = "file", name = "file123", @class = "form-control", id = "file123", onchange = "changeAdminImage()", style = "display: none", accept = "image/*" })
+                                </li>
+                                <li id="txt_boxes" style=" margin-top: 15px;">
+                                    <center>
+                                        <span style="color:red" class="indexTextbox" id="error"></span><br />
+
+                                        @*<input type="hidden" id="userID" style="width: 226px;display:none" disabled value="@Model.tokenUser.model.userID" />*@
+                                        <div style="border: 1px solid #C5C5C6;width: 83%;background-color: #E9E9E9">
+                                            <input id="emailID" type="text" style="border: transparent;width: 226px;padding-left: 8px;background-color:transparent;    text-transform: lowercase;" value="@Model.tokenUser.model.emailID" placeholder="Email ID" />
+                                        </div>
+                                        @*<input type="text" id="communitySecretCode" style="border: 1px solid #C5C5C6;width: 83%;width: 226px;margin-top: 14px;padding-left: 8px;" value="@Model.community.secretCode" placeholder="Secret Code" />*@
+                                        <input type="password" id="oldCommunityPassword" style="border: 1px solid #C5C5C6;width: 83%;width: 226px;margin-top: 14px;padding-left: 8px;" placeholder="Old Password" />
+                                        <input type="password" id="newCommunityPassword" style="border: 1px solid #C5C5C6;width: 83%;margin-top: 14px;width: 226px;padding-left: 8px;" placeholder="New Password" />
+                                        <input type="password" id="confirmPassword" style="border: 1px solid #C5C5C6;width: 83%;margin-top: 14px;width: 225px;padding-left: 8px;" placeholder="Confirm Password" />
+                                        <img id="ajax-loading" src="~/images/ajax-loader.gif" style=" height: 44px;display:none" />
+                                        <button id="updatePasswordButton" type="submit" style="color: #ffffff;background-color: #1d486a;border-radius: 5px;border: transparent;margin-top: 14px;width: 39%;height: 30px;" onclick="changePassword()">Update</button>
+
+                                        <form action="../Home/logout">
+
+                                            <button type="submit" class="btn btn-link" style=" margin-top: 16px;color:#A0A0A0"><img src="~/images/logout11.png" style=" height: 17px; margin-right: 4px;" />Logout</button>
+                                        </form>
+                                    </center>
+
+                                    <div id="google_translate_element" style="display:none"></div>
+                                    @*<h3 style="color: #1d486a;">Add new Services</h3>
+                                        <select id="selectedService" onchange="ChangeLang(this.value)" style="width: 70%;">
+                                            <option id="selctedService" style="display:none">Select Services</option>
+                                            <option value="hi" onclick="">Hindi</option>
+                                        </select>*@
+                                    <center>
+                                        @*<div class="dropdown">
+                                                <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" style="background-color: transparent;width: 225px;color: black;border-color: #0376b0;box-shadow: 0px 0px 3px #0376b0;">
+                                                    <span style="float:left">Select Language</span>
+                                                    <span class="caret" style="float: right; margin-top: 8px;"></span>
+                                                </button>
+
+                                                <ul class="dropdown-menu" style="left: 10%;width: 220px;">
+                                                    <li><a id="en" onclick="ChangeLang(this.id)" href="#">English<img id="image_en" src="~/images/flags/circle-selected-2x.png" class="selcetImage" style="height: 17px;float: right;"><img src="~/images/flags/England.jpg" style=" height: 12px; width: 17px;    float: right;margin-right: 40px;margin-top: 3px;" /><img src="~/images/flags/amercia.png" style=" height: 12px; width: 17px;    float: right;margin-right: -40px;margin-top: 3px;" /></a></li>
+                                                    <li><a id="ms" onclick="ChangeLang(this.id)" href="#">Malay<img id="image_ms" src="~/images/flags/circle-empty-2x.png" class="selcetImage" style="height: 17px;float: right;"><img src="~/images/flags/Malay.png" style=" height: 12px; width: 17px;    float: right;margin-right: 40px;margin-top: 3px;" /></a></li>
+                                                    <li><a id="zh-TW" onclick="ChangeLang(this.id)" href="#">Chinese<img id="image_zh-TW" src="~/images/flags/circle-empty-2x.png" class="selcetImage" style="height: 17px;float: right;"><img src="~/images/flags/China-flag.gif" style=" height: 12px; width: 17px;    float: right;margin-right: 40px;margin-top: 3px;" /></a></li>
+                                                    <li><a id="hi" onclick="ChangeLang(this.id)" href="#">Hindi<img id="image_hi" src="~/images/flags/circle-empty-2x.png" class="selcetImage" style="height: 17px;float: right;"><img src="~/images/flags/indian-flag-graphic.png" style=" height: 12px; width: 17px;    float: right;margin-right: 40px;margin-top: 3px;" /></a></li>
+
+                                                </ul>
+                                            </div>*@
+
+                                        @*  <h3 style="margin-left: -36%;font-size:14px;font-family:Roboto-Light">Select Language</h3>
+                                            <div>
+                                                <div style="margin-top: 2%;">         <a id="en" onclick="ChangeLang(this.id)" href="#" style=" margin-left: -4%;"><span>English</span><img id="image_en" src="~/images/flags/circle-selected-2x.png" class="selcetImage" style="margin-right: 25.4%;height: 17px;float: right;"><img src="~/images/flags/England.jpg" style=" height: 12px; width: 17px;    float: right;    margin-right: 14%;margin-top: 3px;" /><img src="~/images/flags/amercia.png" style=" height: 12px; width: 17px;    float: right;margin-right: -13%;margin-top: 3px;" /></a></div>
+                                                <div style="margin-top: 2%;">     <a id="ms" onclick="ChangeLang(this.id)" href="#" style=" margin-left: -7%;"><span>Malay</span><img id="image_ms" src="~/images/flags/circle-empty-2x.png" class="selcetImage" style="margin-right: 25.4%;height: 17px;float: right;" /><img src="~/images/flags/Malay.png" style=" height: 12px; width: 17px;    float: right;margin-right: 14%;margin-top: 3px;" /></a></div>
+                                                @*<div style="margin-top: 2%;"><a id="zh-TW" onclick="ChangeLang(this.id)" href="#" style=" margin-left: -3%;"><span>Chinese</span><img id="image_zh-TW" src="~/images/flags/circle-empty-2x.png" class="selcetImage" style="margin-right: 25.4%;height: 17px;float: right;"><img src="~/images/flags/China-flag.gif" style=" height: 12px; width: 17px;    float: right;margin-right: 14%;margin-top: 3px;" /></a></div>
+                                                <div style="margin-top: 2%;"><a id="hi" onclick="ChangeLang(this.id)" href="#" style=" margin-left: -7%;"><span>Hindi</span><img id="image_hi" src="~/images/flags/circle-empty-2x.png" class="selcetImage" style="margin-right: 25.4%;height: 17px;float: right;"><img src="~/images/flags/indian-flag-graphic.png" style=" height: 12px; width: 17px;    float: right;margin-right: 14%;margin-top: 3px;" /></a></div>*@
+                                        @* </div>
+                                                                        <form action="../Home/logout">
+
+                                                                            <button type="submit"  class="btn btn-link" style=" margin-top: 37px;color:#A0A0A0" ><img src="~/images/logout11.png" style=" height: 17px; margin-right: 4px;" />Logout</button>
+                                                                        </form>
+                                                                             </center>
+                                                                        @*<select id="serviceAdd" style="width: 70%;display:none;margin-left: 3px;" size="5">
+                                                    <option id=des onclick="selectedService(this.id)"></option>
+
+                                            </select>*@
+
+                                        <br />
+
+                                </li>
+                            </ul>
+
+                        </li>
+                        <!-- <li style="box-shadow: 0px 3px 10px #888888;">
+                            inner menu: contains the actual data
+
+                        </li>
+                        <li class="footer" style="box-shadow: 0px 3px 10px #888888;"><a href="../Home/Complaints">View all</a></li> -->
+
+
+                    </ul>
+                </li>
+                <!-- User Account: style can be found in dropdown.less -->
+
+            </ul>
+
+
+
+        </div>
+    </nav>
+
+</header>
+
+<div class="main-sidebar" style=" left: -30px;z-index: 1050;background-color: #1d486a;box-shadow: -2px 0px 10px #000000;">
+    <!-- sidebar: style can be found in sidebar.less -->
+    <section class="sidebar" style="    margin-top: -54px;margin-left: 25px;">
+        <!-- sidebar menu: : style can be found in sidebar.less -->
+        <ul class="sidebar-menu">
+            <li class="header">
+                <a href="#" class="logo">
+                    <div id="logodiv" style=" margin-left: 35px;">
+                        @if (@Model.tokenUser.model.image != null)
+                        {
+                            <img src="@Model.tokenUser.model.image" alt="Admin Image" id="sideBarImage" class="img-circle" alt="User Image" style="object-fit: cover; z-index: 5;height: 90px;width: 90px;border: 0.5px solid;border-color: rgba(63, 12, 12, 0.2);margin-left: -5px;" />
+                        }
+                        else
+                        {
+                            <img src="~/images/NoUserImage.png" alt="Admin Image" id="sideBarImage" class="img-circle" alt="User Image" style="object-fit: cover; z-index: 5;height: 90px;width: 90px;border: 0.5px solid;border-color: rgba(63, 12, 12, 0.2);margin-left: -5px;" />
+                        }
+
+                    </div>
+                    <!-- mini logo for sidebar mini 50x50 pixels -->
+                    <!--<span class="logo-mini"></span>
+                         logo for regular state and mobile devices
+                    <span class="logo-lg"><img src="images/Ratius-logo-white-big.png" height="50" width="200">
+                         <p>Admin Dashboard</p></span>-->
+                </a>
+                <p style="     color: #ffffff;   text-align: center;    margin-left: 8px;font-size: 18px;    width: 100% !important;white-space: normal;">System Admin</p>
+            </li>
+
+
+
+
+
+
+
+            @*.............................Dont Change the IDs these are use in there respective page in script Tab..................................*@
+            <li id="SystemAmdin_Dashboard" class="treeview">
+                <a href="../SystemAdminHome/home" onclick="$.spin('true');">
+                    <span id="Admin_dashboard" style="color:#ffffff ;margin-left: 35px;" class="sideBarMenu">Home<i class="glyphicon glyphicon-chevron-right" style="margin-right: 10px; margin-left:40%;color: rgb(60, 141, 188);"></i></span>
+                </a>
+            </li>
+            <li id="SystemAmdin_AddCommunity" class="treeview">
+                <a href="../SystemAdminHome/addcommunity" onclick="$.spin('true');">
+                    <span id="AddCommunity" style="color:#ffffff ;margin-left: 35px;" class="sideBarMenu">Add Community<i class="glyphicon glyphicon-chevron-right" style="margin-right: 10px; margin-left:7%;color: rgb(60, 141, 188);"></i></span>
+                </a>
+            </li>
+            <li id="SystemAmdin_CommunitySettings" class="treeview">
+                <a href="../SystemAdminHome/communitysettings" onclick="$.spin('true');" style="margin-left: 35px;">
+                    <span id="CommunitySettings" style="color:#ffffff;">Communities<br /> Setting</span><i class="glyphicon glyphicon-chevron-right" style="color: rgb(60, 141, 188);margin-right: 10px; margin-left:46%;    top: -4px;"></i>
+                </a>
+            </li>
+            <li id="SystemAmdin_Directory" class="treeview">
+                <a href="../SystemAdminHome/Services" onclick="$.spin('true');">
+                    <span id="Directory" style="color:#ffffff;    margin-left: 35px;">Directory<i class="glyphicon glyphicon-chevron-right" style="color: rgb(60, 141, 188);margin-right: 10px; margin-left:31%;"></i></span> <span class="label label-primary pull-right"></span>
+                </a>
+            </li>
+         
+         
+            <li id="SystemAmdin_Smstest" class="treeview">
+                <a href="../systemadminhome/smstestfeature" onclick="$.spin('true');">
+                    <span id="SmsTest" style="color:#ffffff ;margin-left: 35px;" class="sideBarMenu">SMS Test<i class="glyphicon glyphicon-chevron-right" style="margin-right: 10px; margin-left:29%;color: rgb(60, 141, 188);"></i></span>
+                </a>
+            </li>
+         
+
+         
+            @*.............................Dont Change the IDs these are use in there respective page in script Tab..................................*@
+        </ul>
+
+    </section>
+    <!-- /.sidebar -->
+</div>
+
+<style>
+    .arrow_box {
+        position: relative;
+        background: #ffffff;
+        border: 2px solid #ffffff;
+        border-radius: 6px;
+    }
+
+        .arrow_box:after, .arrow_box:before {
+            bottom: 100%;
+            left: 255px;
+            border: solid transparent;
+            content: " ";
+            height: 0;
+            width: 0;
+            position: absolute;
+            pointer-events: none;
+        }
+
+        .arrow_box:after {
+            border-color: rgba(255, 255, 255, 0);
+            border-bottom-color: #ffffff;
+            border-width: 6px;
+            margin-left: -6px;
+        }
+
+        .arrow_box:before {
+            border-color: rgba(196, 196, 196, 0);
+            border-bottom-color: #ffffff;
+            border-width: 7px;
+            margin-left: -7px;
+        }
+</style>
+<script type="text/javascript">
+    setInterval(function () { AlertNotification(); }, 10000);
+    function AlertNotification() {
+        $.ajax({
+            url: '@Url.Action("_GetUnreadAlertsCount", "home")',
+            type: 'POST',
+            //data: { "selectedValue": comp, "message": mes },
+            dataType: 'json',
+
+            success: function (response) {
+                var items = "";
+                $("#UnreadAlertCounter").children().remove();
+                if (response.UnreadAlertCount > 0) {
+                    items = "<i class='fa fa-bell-o' style='color:#1D486A;'></i>" +
+                         "<span class='label label-success' style='border-radius: 8px;    top: 25px;right: 24px;background-color: #F31212 !important;height: 16px;padding-top: 4px;width: 16px;'>" + response.UnreadAlertCount + "</span>";
+                    $("#UnreadAlertCounter").append(items);
+                }
+                else {
+                    items = "<i class='fa fa-bell-o' style='color:#1D486A;'></i>" +
+               "<span class='label label-success' style='border-radius: 8px;    top: 25px;right: 24px;background-color: #F31212 !important;height: 16px;padding-top: 4px;width: 16px;'>" + "</span>";
+                    $("#UnreadAlertCounter").append(items);
+                }
+            },
+            error: function (error) {
+            }
+        });
+    }
+    $(function () {
+        AlertNotification();
+
+    });
+    function ReadAlerts() {
+
+        $.ajax({
+            url: '@Url.Action("_SetAlertAsRead", "home")',
+            type: 'POST',
+            //data: { "selectedValue": comp, "message": mes },
+            dataType: 'json',
+
+            success: function (response) {
+                var items = "";
+                $("#UnreadAlertCounter").children().remove();
+                if (response.UnreadAlertCount > 0) {
+                    items = "<i class='fa fa-bell-o'></i>" +
+       "<span class='label label-success' style='border-radius: 8px;    top: 25px;right: 24px;background-color: #F31212 !important;height: 16px;padding-top: 4px;width: 16px;'>" + response.UnreadAlertCount + "</span>";
+                    $("#UnreadAlertCounter").append(items);
+
+
+
+                }
+                else {
+                    items = "<i class='fa fa-bell-o'></i>" +
+                "<span class='label label-success' style='border-radius: 8px;    top: 25px;right: 24px;background-color: #F31212 !important;height: 16px;padding-top: 4px;width: 16px;'>"  + "</span>";
+                    $("#UnreadAlertCounter").append(items);
+
+                }
+            },
+            error: function (error) {
+            }
+        });
+
+    }
+    function GetAlerts() {
+        $.ajax({
+            url: '@Url.Action("_GetAllUnReadAlerts", "Home")',
+            type: 'POST',
+            //data: { "selectedValue": comp, "message": mes },
+            dataType: 'json',
+
+            success: function (response) {
+                var items = "";
+                $("#messageDropDown").children().remove();
+                $.each(response.responseAlerts, function (i, item) {
+                    var date = new Date(parseInt(item.date.substr(6)));
+                    var myDate = new Date(date);
+                    var formattedDate = myDate.toLocaleString();
+                    items = " <a style='    height: 55px;' href=" + '"../Home/AlertLog"' + ">" +
+                              "<div class=" + '"pull-left"' + ">" +
+
+                                "</div>" +
+                               "<span style='color: #C3B6B6;' id=" + '"messageEmail"' + ">" +
+                                item.id + "</span>" +
+                                "<span style='    color: #C3B6B6;margin-left: 30px;'>" + item.user.firstName + "</span>" +
+                    "<small style='    color: #C3B6B6;margin-left: 58px;' id=" + '"messageComplaintNumber"' + ">" + formattedDate + "</small>" +
+
+                            "<p id=" + '"messageDetail"' + ">" + "You have a New Alert" + "</p>" +
+                            "</a>";
+                    $("#messageDropDown").append(items);
+                });
+
+            },
+            error: function (error) {
+            }
+        });
+
+    }
+
+
+
+
+</script>

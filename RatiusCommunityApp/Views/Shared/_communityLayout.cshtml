@@ -1,0 +1,197 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+@*------------------------------------------------------------------------------<styles>-----------------------------------------------------*@
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!-- Bootstrap 3.3.4 -->
+    <link href="~/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <!-- Custom Styles -->
+    <link rel="stylesheet" type="text/css" href="~/Content/styles.css" />
+    <!-- FontAwesome 4.3.0 -->
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+    <!-- Ionicons 2.0.0 -->
+    <link href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet" type="text/css" />
+    <!-- Theme style -->
+    <link href="~/dist/css/AdminLTE.min.css" rel="stylesheet" type="text/css" />
+    <!-- AdminLTE Skins. Choose a skin from the css/skins
+         folder instead of downloading all of them to reduce the load. -->
+    <link href="~/dist/css/skins/_all-skins.min.css" rel="stylesheet" type="text/css" />
+    <!-- iCheck -->
+    <link href="~/plugins/iCheck/flat/blue.css" rel="stylesheet" type="text/css" />
+    <!-- Morris chart -->
+    <link href="~/plugins/morris/morris.css" rel="stylesheet" type="text/css" />
+    <!-- jvectormap -->
+    <link href="~/plugins/jvectormap/jquery-jvectormap-1.2.2.css" rel="stylesheet" type="text/css" />
+    <!-- Date Picker -->
+    <link href="~/plugins/datepicker/datepicker3.css" rel="stylesheet" type="text/css" />
+    <!-- Daterange picker -->
+    <link href="~/plugins/daterangepicker/daterangepicker-bs3.css" rel="stylesheet" type="text/css" />
+    <!-- bootstrap wysihtml5 - text editor -->
+    <link href="~/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css" rel="stylesheet" type="text/css" />
+  
+
+
+    <link href="~/Scripts/css/jquery.mCustomScrollbar.css" rel="stylesheet" />
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+        
+    </style>
+    <style>
+        @@font-face {
+            font-family: Roboto-Light;
+            src: url(../fonts/Roboto/Roboto-Light.ttf);
+        }
+        @@font-face {
+            font-family: 'Roboto-Italic';
+            src: url('../../fonts/Roboto/Roboto-Italic.ttf') format('truetype');
+        }
+        @@font-face {
+            font-family: 'Roboto-LightItalic';
+            src: url('../../fonts/Roboto/Roboto-LightItalic.ttf') format('truetype');
+        }
+        @@font-face {
+            font-family: 'Roboto-Medium';
+            src: url('../../fonts/Roboto/Roboto-Medium.ttf') format('truetype');
+        }
+        @@font-face {
+            font-family: 'Roboto-MediumItalic';
+            src: url('../../fonts/Roboto/Roboto-MediumItalic.ttf') format('truetype');
+        }
+        @@font-face {
+            font-family: 'Roboto-Regular';
+            src: url('../../fonts/Roboto/Roboto-Regular.ttf') format('truetype');
+        }
+        @@font-face {
+            font-family: 'Roboto-Thin';
+            src: url('../../fonts/Roboto/Roboto-Thin.ttf') format('truetype');
+        }
+        @@font-face {
+            font-family: 'Roboto-ThinItalic';
+            src: url('../../fonts/Roboto/Roboto-ThinItalic.ttf') format('truetype');
+        }
+    </style>
+    <link href="~/Scripts/css/main.css" rel="stylesheet" />
+    <link href="~/Scripts/css/animsition.css" rel="stylesheet" />
+    @RenderSection("mystyles", false)
+@*------------------------------------------------------------------------------<scripts>-----------------------------------------------------*@
+    <script src="~/plugins/jQuery/jQuery-2.1.4.min.js" type="text/javascript"></script>
+    <!-- Bootstrap 3.3.2 JS -->
+    <script src="~/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+    <!-- DATA TABES SCRIPT -->
+    <script src="~/plugins/datatables/jquery.dataTables.min.js" type="text/javascript"></script>
+    <script src="~/plugins/datatables/dataTables.bootstrap.min.js" type="text/javascript"></script>
+    <!-- SlimScroll -->
+    <script src="~/plugins/slimScroll/jquery.slimscroll.min.js" type="text/javascript"></script>
+    <!-- FastClick -->
+    @*<script src="~/plugins/fastclick/fastclick.min.js" type="text/javascript"></script>*@
+    <!-- AdminLTE App -->
+    <script src="~/dist/js/app.min.js" type="text/javascript"></script>
+    <!-- AdminLTE for demo purposes -->
+    <script src="~/dist/js/demo.js" type="text/javascript"></script>
+    <script src="~/Scripts/jquery.mCustomScrollbar.concat.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.9.4/css/bootstrap-select.min.css">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.9.4/js/bootstrap-select.min.js"></script>
+    <!-- page script -->
+    @*<script type="text/javascript">
+    
+        $(function () {
+            $("#example1").DataTable();
+            $('#example2').DataTable({
+                "paging": true,
+                "lengthChange": false,
+                "searching": false,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false
+            });
+        });
+    </script>*@
+
+    @*<script src="~/Scripts/jquery.mask.min.js"></script>*@
+    <script src="~/dist/jquery.maskedinput.js"></script>
+    <script src="~/dist/spin.min.js"></script>
+
+    <script>
+        (function ($) {
+            $.extend({
+                spin: function (spin, opts) {
+
+                    if (opts === undefined) {
+                        opts = {
+                            lines: 13, // The number of lines to draw
+                            length: 10, // The length of each line
+                            width: 10, // The line thickness
+                            radius: 30, // The radius of the inner circle
+                            corners: 1, // Corner roundness (0..1)
+                            rotate: 0, // The rotation offset
+                            direction: 1, // 1: clockwise, -1: counterclockwise
+                            color: '#000', // #rgb or #rrggbb or array of colors
+                            speed: 1, // Rounds per second
+                            trail: 56, // Afterglow percentage
+                            shadow: false, // Whether to render a shadow
+                            hwaccel: false, // Whether to use hardware acceleration
+                            className: 'spinner', // The CSS class to assign to the spinner
+                            //zIndex: 2e9, // The z-index (defaults to 2000000000)
+                            zIndex:1, // The z-index (defaults to 2000000000)
+                            top: '50%', // Top position relative to parent
+                            left: '50%' // Left position relative to parent
+                        };
+                    }
+
+                    var data = $('body').data();
+
+                    if (data.spinner) {
+                        data.spinner.stop();
+                        delete data.spinner;
+                        $("#spinner_modal").remove();
+                        return this;
+                    }
+
+                    if (spin) {
+
+                        var spinElem = this;
+
+                        $('body').append('<div id="spinner_modal" style="background-color: rgba(0, 0, 0, 0.3); width:100%; height:100%; position:fixed; top:0px; left:0px; z-index:' + (opts.zIndex - 1) + '"/>');
+                        spinElem = $("#spinner_modal")[0];
+
+                        data.spinner = new Spinner($.extend({
+                            color: $('body').css('color')
+                        }, opts)).spin(spinElem);
+                    }
+
+                }
+            });
+        })(jQuery);
+
+    </script>
+    <script src="~/Scripts/main.js"></script>
+    <script src="~/Scripts/animsition.min.js"></script>
+    @RenderSection("myscripts", false){
+</head>
+@*------------------------------------------------------------------------------<body>-----------------------------------------------------*@
+
+<body style="overflow:auto">
+    <div>
+        @RenderSection("NavbarAndSideMenu", false)
+    </div>
+
+    <div class="content-wrapper" style=" margin-top: 14px;">
+        @RenderBody()
+    </div>
+</body>
+</html>

@@ -1,0 +1,193 @@
+﻿@model  List<RatiusCommunityApp.Models.ComplaintsChartDTO>
+            <script src="~/Scripts/jquery.canvasjs.min.js"></script>
+<script type="text/javascript">
+    var array=[];
+    var graphType="stackedBar";
+    @*@foreach (var item in Model.CommunityiReports)
+      {
+
+            <text>
+    array.push("@item.iReportsName");
+    </text>
+
+      }*@
+
+
+    $(document).ready(function() {
+       
+  
+        var chart = new CanvasJS.Chart("chartContainer",
+        {
+            animationEnabled: true,
+            title: {
+                text: "iReports Status"
+
+            },
+            data: [
+            @*{
+                type: "stackedBar",
+                showInLegend: true,
+                name: "Update",
+                color: "#DD4B39",
+                dataPoints: [
+              @foreach (var item in Model)
+        {
+
+            <text>
+
+
+                       { y: @item.totalUpdateiReport, label: "@item.iReportName" },
+
+
+            </text>
+
+        }
+                ]
+            },*@
+             {
+                 type: graphType,
+                 showInLegend: true,
+                 name: "Received",
+                 color: "#00A65A",
+                 dataPoints: [
+      @foreach (var item in Model)
+         {
+
+             <text>
+
+
+                        { y: @item.totalReceivediReport, label: "@item.iReportName" },
+
+
+             </text>
+
+         }
+                 ]
+             },
+            {
+                type: graphType,
+                showInLegend: true,
+                name: "Closed",
+                color: "#00C0EF",
+                dataPoints: [
+         @foreach (var item in Model)
+        {
+
+            <text>
+
+
+                       { y: @item.totalClosediReport, label: "@item.iReportName" },
+
+
+            </text>
+
+        }
+                ]
+            }
+
+            ]
+
+        });
+
+        chart.render();
+    });
+    function SetGraph(elem){
+        graphType=elem;
+      
+        var chart = new CanvasJS.Chart("chartContainer",
+        {
+            animationEnabled: true,
+            title: {
+                text: "iReports Status"
+
+            },
+            data: [
+            @*{
+                type: "stackedBar",
+                showInLegend: true,
+                name: "Update",
+                color: "#DD4B39",
+                dataPoints: [
+              @foreach (var item in Model)
+        {
+
+            <text>
+
+
+                       { y: @item.totalUpdateiReport, label: "@item.iReportName" },
+
+
+            </text>
+
+        }
+    ]
+        },*@
+         {
+             type: graphType,
+             showInLegend: true,
+             name: "Received",
+             color: "#00A65A",
+             dataPoints: [
+  @foreach (var item in Model)
+             {
+
+         <text>
+
+
+                    { y: @item.totalReceivediReport, label: "@item.iReportName" },
+
+
+         </text>
+
+         }
+         ]
+         },
+        {
+            type: graphType,
+            showInLegend: true,
+            name: "Closed",
+            color: "#00C0EF",
+            dataPoints: [
+     @foreach (var item in Model)
+            {
+
+        <text>
+
+
+                   { y: @item.totalClosediReport, label: "@item.iReportName" },
+
+
+        </text>
+
+        }
+        ]
+        }
+
+    ]
+
+    });
+
+    chart.render();
+    }
+</script>
+
+
+
+
+<div id="chartContainer" style="height: 200px; width: 100%;"></div>
+<div class="row" style="display:none">
+    <div class="col-md-1"><a href="#" id="stackedBar"  onclick="SetGraph(this.id)">stackedBar</a></div>
+    <div class="col-md-1"><a href="#" id="bar" onclick="SetGraph(this.id)">bar</a></div>
+    <div class="col-md-1"><a href="#" id="column" onclick="SetGraph(this.id)">column</a></div>
+    <div class="col-md-1"><a href="#" id="area" onclick="SetGraph(this.id)">area</a></div>
+    <div class="col-md-1"><a href="#" id="spline" onclick="SetGraph(this.id)">spline</a></div>
+    <div class="col-md-1"><a href="#" id="line" onclick="SetGraph(this.id)">line</a></div>
+    <div class="col-md-1"><a href="#" id="stepLine" onclick="SetGraph(this.id)">stepLine</a></div>
+    <div class="col-md-2"><a href="#" id="stackedColumn" onclick="SetGraph(this.id)">stackedColumn</a></div>
+    <div class="col-md-1"><a href="#" id="scatter" onclick="SetGraph(this.id)">scatter</a></div>
+    <div class="col-md-1"><a href="#" id="splineArea" onclick="SetGraph(this.id)">splineArea</a></div>
+    <div class="col-md-1"><a href="#" id="stackedArea" onclick="SetGraph(this.id)">stackedArea</a></div>
+
+    
+
+</div>

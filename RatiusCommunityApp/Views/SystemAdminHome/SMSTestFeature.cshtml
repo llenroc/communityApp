@@ -1,0 +1,166 @@
+﻿@*@model RatiusCommunityApp.Models.ServiceStaffDTO*@
+@{
+    ViewBag.Title = "ServiceStaff";
+    Layout = "~/Views/Shared/_communityLayout.cshtml";
+}
+@section NavbarAndSideMenu{
+
+    @{ Html.RenderAction("_SystemAdminNavbarAndSideMenu"); }
+}
+
+
+
+<div >
+    <div class="row">
+        <div class="col-md-4 pull-left">
+            <h1 style="font-family:Roboto-Light;    font-size: 24px;color:#1d486a">
+SMS Test Case  
+            </h1>
+        </div>
+        <div class="col-md-8"></div>
+        @*<div class="col-md-1 pull-right">
+            <br>
+      
+            <button id="bt" class="btn btn-link" onclick="add()" style="    margin-left: -35px;
+    font-size: 18px;color:#1d486a">
+                +Add New
+            </button>
+        </div>*@
+    </div>
+    <br />
+    <style>
+        .textDecorationLine-through{
+              text-decoration: line-through;
+  color: red;
+        }
+    </style>
+    <div class="row" style="margin-top:-6px;">
+        <div class="col-md-12" style="background-color:transparent">
+            <div class="row">
+                <div class="col-md-4">
+                    <h4>Rules</h4>
+                    <ul>
+                        <li>
+                            Add Country Code before your Number 
+                        </li>
+                        <li>
+                            Don't Add + before Country Code <span class="textDecorationLine-through"><br /><span style="color:black">+60123456789</span></span><span style="color:red">&nbsp; Fail</span>  <br /><span style="color:green">60123456789</span> <span style="color:green">&nbsp; Success</span>
+                        </li>
+                        <li>
+                            Don't Add '0' before Country Code <span class="textDecorationLine-through"><br /><span style="color:black">060123456789</span></span><span style="color:red">&nbsp; Fail</span>  <br /><span style="color:green">60123456789</span> <span style="color:green">&nbsp; Success</span>
+                           
+                        </li>
+                    </ul>
+                    <span  style="display:none;color:red;font-family: Roboto-Light;" id="SMSerror"></span>
+                    <span style="display:none;color:green;font-family: Roboto-Light;" id="SMSsuccess">SMS Send Successfully</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <input type="text" id="number1" onkeypress="return isNumberKey(event,this)" placeholder="Number 1" style="width:100%;margin-top: 10px;padding: 4px;padding-left: 7px;" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <input type="text" id="number2" onkeypress="return isNumberKey(event,this)" placeholder="Number 2" style="width:100%;margin-top: 10px;padding: 4px;padding-left: 7px;" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <input type="text" id="number3" onkeypress="return isNumberKey(event,this)" placeholder="Number 3" style="width:100%;margin-top: 10px;padding: 4px;padding-left: 7px;" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <textarea id="SMSmessage" placeholder="Type Message Here..." style="width:100%;margin-top: 10px;height: 100px;"></textarea>
+                </div>
+            </div>
+        
+            <div class="row">
+                <div class="col-md-4">
+                    <center>
+                        <input onclick="SendMessage()" type="button" class="btn btn-primary" style="width:200px;background-color:#1d486a;color:#ffffff;margin-top: 4px;" value="Send" />
+                    </center>
+           
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+</div>
+
+@section mystyles{
+
+  
+
+}
+@section myscripts{
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#SystemAmdin_Smstest").css("background-color", "#ffffff");
+        $("#SmsTest").css("color", "#000000");
+    });
+    function isNumberKey(evt, obj) {
+
+        var charCode = (evt.which) ? evt.which : event.keyCode
+        var value = obj.value;
+        var dotcontains = value.indexOf(".") != -1;
+        if (dotcontains)
+            if (charCode == 46) return false;
+        if (charCode == 46) return true;
+        if (charCode > 31 && (charCode < 48 || charCode > 57))
+            return false;
+        return true;
+    }
+    function SendMessage() {
+        var number1 = $("#number1").val();
+        var number2 = $("#number2").val();
+        var number3 = $("#number3").val();
+        var SMSmessage = $("#SMSmessage").val();
+        if (number1 == "" && number2 == "" && number3 == "") {
+            $("#SMSerror").html("Please Enter Number");
+            $("#SMSerror").css("display", "");
+            $("#SMSsuccess").css("display", "none");
+            SMSsuccess
+        }
+        else if (message="") {
+            $("#SMSerror").html("Please Enter Message");
+            $("#SMSerror").css("display", "");
+        }
+        else {
+            $.ajax({
+                url: '@Url.Action("SendSms", "SystemAdminHome")',
+                type: 'POST',
+                data: { "number1": number1, "number2": number2, "number3": number3, "SMSmessage": SMSmessage },
+                dataType: 'json',
+
+                success: function (response) {
+                    if (response.status == "Success") {
+                        $("#SMSsuccess").css("display", "");
+                        $("#SMSerror").css("display", "none");
+                        $("#number1").val("");
+                         $("#number2").val("");
+                         $("#number3").val("");
+                         $("#SMSmessage").val("");
+                    }
+                    else {
+                        $("#SMSerror").html("SMS did not send Successfully");
+                        $("#SMSerror").css("display", "");
+                        $("#SMSsuccess").css("display", "none");
+                    }
+                },
+                error: function (error) {
+                }
+            });
+        }
+
+
+    }
+    </script>
+    
+
+}
+

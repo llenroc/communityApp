@@ -1,0 +1,720 @@
+﻿@model RatiusCommunityApp.Models.AnnouncementDTO
+@using PagedList.Mvc;
+@using PagedList;
+@{
+    ViewBag.Title = "Notices";
+    Layout = "~/Views/Shared/_communityLayout.cshtml";
+}
+
+
+@section NavbarAndSideMenu{
+
+    @{ Html.RenderAction("_CommunityAdminNavbarAndSideMenu"); }
+}
+@*<script type="text/javascript">
+
+    $(function () {
+      
+        $('#announcementTable').DataTable({
+            "columnDefs": [{
+                "defaultContent": "-",
+                "targets": "_all"
+            }],
+            "iDisplayLength": 15,
+            "paging": true,
+            "lengthChange": false,
+            "searching": false,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false
+        });
+    });
+</script>
+<style>
+    .dataTables_paginate {
+        margin-left: auto;
+        margin-right: auto;
+        margin: auto;
+        width: 30%;
+        /* border: 3px solid #73AD21; */
+        padding: 10px;
+    }
+
+    .dataTables_info {
+        display: none !important;
+    }
+</style>*@
+
+<style>
+        .modal-header{
+       background: #1d486a !important;
+    }
+    .close{
+        color: #FFFFFF;
+    opacity: 1;
+    }
+    .unexpanded {
+        box-shadow: none !important;
+    }
+
+    #title::-webkit-input-placeholder {
+        color: rgb(0, 84, 165);
+    }
+
+    #title::-moz-placeholder {
+        color: rgb(0, 84, 165);
+    }
+
+    .unexpanded {
+        /*box-shadow: 2px 2px 2px #ededed;*/
+  
+    }
+
+    .expanded {
+        /*box-shadow: 2px 2px 2px #ededed;*/
+    }
+</style>
+<div >
+    <div class="row">
+
+        <div class="col-md-10 pull-left">
+            <h1 style="font-family:Roboto-Light;margin-top:38px;    font-size: 24px;color:#1d486a">
+                Notices
+            </h1>
+        </div>
+        <div class="col-md-2 pull-right">
+            <br />
+            <button id="bt" class="btn btn-link" onclick="post();" style="    margin-left: -10px;
+    font-size: 18px;color:#1d486a">
+                + Post New Notice
+            </button>
+
+            @*<button id="bt" class="btn btn-circle" onclick="post();" style="float: right;">
+                   Post New Notice
+                </button>*@
+            @*<button id="postButton" onclick="post();" class="btn btn-link" style="background-color:#1d486a;margin-left: 275%;color: black;font-weight: bolder;text-decoration: initial;">Add New</button>*@
+        </div>
+    </div>
+    <br />
+    <form method="post" action="../Home/AnnouncementsPost" enctype="multipart/form-data">
+
+
+        <div id="saveAnnouncement" class="row" style="background-color:#EFEFEF;margin-right:0%;margin-left:0%;">
+            <div class="row" style="margin-top:1%;margin-bottom:1%;">
+                <div class="col-md-5 col-xs-10" style="margin-left:0%">
+
+                    @Html.TextBoxFor(model => model.announcement.title, null, new { type = "text", name = "eventName", @class = "col-md-6 form-control NewAnnouncemTitle", autocomplete = "off", id = "title", style = "color:rgb(0, 84, 165);height:150%;font-size:28px;    border: 1px solid #3C8DBC;border-color: transparent;font-family:Roboto-Regular", placeholder = "Add Title" })
+                </div>
+                <div class="col-md-4">
+                    @* <select class="SelectIcon" id="ShortDescriptionFormatDropdown" onchange="SetShortDescriptionFormat(this)" style="margin-top:-3px;height:51px;width:110%;color: #1d486a;font-size: 19px;border: 1px solid;">
+                            <option style="padding:7px;" id="0" selected value="Select Format">Select Short Description Format</option>
+                            <option style="padding:7px;" value="text">Text</option>
+                            <option style="padding:7px;" value="date">Date</option>
+                            <option style="padding:7px;" value="time">Time</option>
+                        </select>*@
+                    @*@Html.TextBoxFor(model => model.announcement.shortDescription, null, new { type = "text", name = "eventName", @class = "col-md-4 form-control", id = "shortDescription", style = "height: 49px;display: block;margin-top: -50px;margin-left: 1px;z-index: -1;font-family: Roboto-Light;font-size: 18px;padding-top: 14px;", placeholder = "Add Short Description", maxlength = "20" })*@
+                </div>
+                <div class="col-md-2" style="margin-left: 5%; margin-top: 16px;">
+
+                    <button disabled class="btn-link NewAnnouncementDelete" style="background-color:#EFEFEF;    margin-left: 22px;"><i style="padding-right:25%;font-size: 17px;color:#A4A0A0" class="glyphicon glyphicon-trash" disabled></i></button>
+                    <button disabled class="btn-link NewAnnouncementEdit" style="background-color:#EFEFEF;    margin-left: 10px;"><i style="padding-right:25%;font-size: 17px;color:#A4A0A0" class="glyphicon glyphicon-pencil" disabled></i></button>
+
+                    <i class="glyphicon glyphicon-paperclip NewAnnouncementImage" onclick="opendialog()" style=" cursor: pointer;color: #1d486a;    font-size: 17px;    float: right;margin-top:4px;"></i>
+                    @Html.TextBoxFor(model => model.announcement.image, null, new { type = "file", name = "file", @class = "form-control", id = "file", onchange = "ShowAddImage()", style = "display: none", accept = "image/*" })
+
+                </div>
+            </div>
+
+
+
+            <div class="row" style="margin-top:-1%;margin-bottom:1%;    margin-right: 1px;">
+                <div class="col-md-10 col-xs-12 NewAnnouncementTextarea">
+                    @*<input type="text" id="eventname" name="eventName" class="col-md-6 form-control" style="height:150%;font-size:150%;width:83.5%" placeholder="Announcement Name" />*@<br />
+                    @Html.TextAreaFor(model => model.announcement.message, new { type = "text", name = "eventName", @class = "col-md-12", id = "Message", style = "    height: 80px;width: 100%;border-color: transparent;background-color: rgb(255, 255, 255);color: black;font-family: Roboto-Light;resize: none;padding-top: 10px;border-radius: 9px;margin-top: -15px;border: 1px solid #3C8DBC;", placeholder = "Start Typing Here...", rows = "4", })
+
+
+                    @*@Html.TextBoxFor(model => model.announcement.dateTo, "MM/DD/YYYY", new { id = "datepicker2", @readonly = "readonly", @class = "col-md-4", required = true, style = "margin-top:1%;height: 40px;", placeholder = "To Date" })*@
+
+                    @*<input type="date" data-date="" data-date-format="DD MMM YYYY" onkeypress="return false" id="todate" name="todate" class="col-md-4" style="margin-top:1%;" placeholder="To Date" />*@
+                </div>
+                <div class="col-md-2" style="margin-top: 13px;">
+                    <div class="row">
+                        <div id="AdduploadlImage" class="NewAnnounementImageUpload"></div>
+                        <button id="AddcloseButton" type="button" onclick="removeAddImage(); return false;" style="float: left;width:23px;border-color: transparent;visibility: hidden;border: 1px solid;border-left: transparent;height: 26px;">&times;</button>
+                    </div>
+                    <div class="row">
+                        <button type="submit" onclick=" $.spin('true');" id="btn_AddAnnouncement" disabled class="btn btn-block col-md-2 NewAnnouncementSubmit" style="background-color:#EFEFEF;border-color:#dadada; font-family:Roboto-Light;font-size:17px;color:#dadada;margin-top: 3%;">Post</button><br>
+                    </div>
+                </div>
+                @*<div class="col-md-2">
+
+                        <img id="EditImg" src="" class="ImagePreviewBox" style="    width: 144px;height: 82px;margin-top:2%;margin-bottom:2%;display:none">
+                    </div>*@
+
+
+            </div>
+        </div>
+    </form>
+    <br />
+    <script type="text/javascript">
+
+    </script>
+    <div style="margin-top: -1%;">
+        <table id="announcementTable" style=" width: 100%;">
+            <thead>
+                <tr id="head1" >
+                    <th>
+                    </th>     
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.PagedannouncementList)
+                {
+                    <tr>
+                        <td>
+
+                            <div id="@(item.id+"expanded")" class="expanded" style="display:none">
+                                <div name="temp1" id="@item.id" class="row " style="padding-right:3%;padding-left:3%;margin-top: 8px;    margin-bottom: 2px;">
+                                    <div class="row" style="background-color:#EFEFEF;">
+                                        <div class="col-md-5 col-xs-7 pull-left">
+                                            <h1 style="color:#1d486a;margin-top:4%;font-size:24px;font-family:Roboto-Regular">@item.title</h1>
+                                        </div>
+                                        <div class="col-md-3 pull-left">
+                                            @*<h3 style="color:#1d486a;margin-top:9%;font-size: 18px;font-family:Roboto-Light;">@item.shortDescription</h3>*@
+                                        </div>
+
+
+                                        <div class="col-md-2 pull-right" style="font-size:150%;margin-bottom:-3%;margin-top:1%;    padding-left: 2.7%;">
+                                            <form method="post" style=" margin: -36px; margin-top: 0px; margin-left: 0px;" action="../Home/AnnouncementsDelete" enctype="multipart/form-data">
+                                                @Html.HiddenFor(model => model.announcement.id, new { Value = item.id })
+                                                <button class="btn-link" onclick=" $.spin('true');" type="submit" style="background-color:#EFEFEF;margin-left:-10px;"><i style="padding-right:25%;font-size: 17px;" class="glyphicon glyphicon-trash"></i></button>
+                                            </form>
+                                            <button class="btn-link" style="background-color:#EFEFEF;    margin-left: 34px;" onclick="editAnnouncement(@item.id)"><i style="padding-right:25%;font-size: 17px;" class="glyphicon glyphicon-pencil"></i></button>
+
+
+
+
+
+
+                                            @if (item.image != null)
+                                            {
+                                                <button class="btn-link" style="background-color:#EFEFEF" disabled><i class="glyphicon glyphicon-paperclip" style="color: #A4A0A0;font-size: 17px;"></i></button>
+
+                                            }
+                                            else
+                                            {
+
+                                                <form method="post" class="withoutImageEditAnnouncement" action="../Home/AnnouncementsEdit" enctype="multipart/form-data">
+                                                    @Html.HiddenFor(model => model.announcement.id, new { Value = item.id })
+                                                    @Html.HiddenFor(model => model.announcement.shortDescription, new { Value = item.shortDescription })
+                                                    @Html.HiddenFor(model => model.announcement.date, new { Value = item.date })
+                                                    @Html.HiddenFor(model => model.announcement.message, new { Value = item.message })
+                                                    @Html.HiddenFor(model => model.announcement.title, new { Value = item.title })
+
+                                                    <i class="glyphicon glyphicon-paperclip col-md-1" onclick="opendialogEdit(@(item.id))" style=" margin-top:-26px;margin-left:65px;cursor: pointer;color: #1d486a;    font-size: 17px;"></i>
+                                                    @Html.TextBoxFor(model => model.announcement.image, null, new { type = "file", name = "file", @class = "form-control", id = item.id + "fileEdit", onchange = " $.spin('true');this.form.submit()", style = "display: none", accept = "image/*" })
+                                                </form>
+
+                                            }
+                                            @*<button class="btn btn-block" style="background-color:#1d486a;font-size:75%;margin-top:5%;width:100%;color:#ffffff" onclick="post();" disabled>Post</button><br />*@
+
+
+
+                                        </div>
+                                    </div>
+                                    <div class="row" style="background-color: #EFEFEF;">
+                                        <div class="col-md-10 col-md-offset-0  col-xs-10 col-xs-offset-2" style="padding-bottom:10px;">
+                                            <textarea class="col-md-12" rows="4" disabled id="@("Message_"+item.id)" style="height:80px;width:100%;border-color: transparent;background-color: white;color: black;font-family:Roboto-Light; resize: none;    padding-top: 10px;border-radius: 9px;margin-top: 8px;    margin-left: 0px;"> @item.message</textarea>
+                                            @*@Html.TextArea(item.message ,new {  name = "eventName", @class = "col-md-12", id = "Message", style = "height:120px;width:100%;border-color: transparent;background-color:#f1f2f2;font-family:Roboto-Light; resize: none;    padding-top: 10px;border-radius: 9px;margin-top: -4px;", rows = "4", disabled = true })*@
+
+
+                                        </div>
+
+                                        <div class="col-md-2 col-xs-10 ExpandedAnnouncementImage">
+                                            @if (item.image != null)
+                                            {
+
+                                                <div class="col-md-4 col-xs-4 ExpandedAnnouncemntButton&Image" style=" margin-left: -17px;">
+                                                  @if (item.image.Contains(".jpg") == true || item.image.Contains(".tiff") == true || item.image.Contains(".tif") == true || item.image.Contains(".jpeg") == true || item.image.Contains(".png") == true || item.image.Contains(".bmp") == true)
+                                                  {
+                                                        <a data-toggle="modal" href=@("#AnnouncementImage"+item.id)><img src="@item.image " id=" " class="imageAnnouncementExpanded imagepreviewbox" style="width: 50px;height: 50px;margin-bottom:2%;" /></a>
+                                                    }
+                                                    else if (item.image.Contains(".docx") == true || item.image.Contains(".doc") == true)
+                                                    {
+                                                        <a href=@item.image><img src="~/images/complaints/doxc-icon-13463.png" id=" " class="imageAnnouncementExpanded imagepreviewbox" style="width: 50px;height: 50px;margin-bottom:2%;" /></a>
+                                                    }
+                                                    else if (item.image.Contains(".pdf") == true)
+                                                    {
+                                                        <a href=@item.image><img src="~/images/complaints/pdf.png" id=" " class="imageAnnouncementExpanded imagepreviewbox" style="width: 50px;height: 50px;margin-bottom:2%;" /></a>
+                                                    }
+                                                    else if (item.image.Contains(".xlsx") == true || item.image.Contains(".xls"))
+                                                    {
+                                                        <a href=@item.image><img src="~/images/complaints/XLSX.png" id=" " class="imageAnnouncementExpanded imagepreviewbox" style="width: 50px;height: 50px;margin-bottom:2%;" /></a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <a data-toggle="modal" href=@("#AnnouncementImage"+item.id)><img src="~/images/complaints/file-text-icon.png" id=" " class="imageAnnouncementExpanded imagepreviewbox" style="width: 50px;height: 50px;margin-left:200%;margin-bottom:2%;" /></a>
+
+                                                    }
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div class="col-md-4" style=" margin-left: -17px;width: 144px;height: 48px;">
+
+                                                </div>
+                                            }
+                                            <button class="btn cke_btn_locked col-md-12 ExpendedAnnouncemnt_btn_locked" style="background-color:#DADADA;margin-top:4%;margin-bottom:2%;border-color:#DADADA" disabled>Posted</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal fade" id="@("AnnouncementImage"+item.id)" role="dialog">
+                                    <div class="modal-dialog modal-xs">
+                                        <div class="modal-content">
+                                            <div class="modal-header" id="header" style="background:#367fa9">
+                                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                <h4 style="margin-left:20px;color:white;margin-bottom:0px"><strong>Uploaded Image</strong></h4>
+                                            </div>
+
+                                            <div class="modal-body" id="modal-style">
+                                                <center>
+                                                    <img src="@item.image" style="height:50%;width:100%">
+                                                </center>
+                                            </div>
+
+
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+                            </div>
+
+                            <div id=@(item.id+"unexpanded") onclick="checkExpand(@item.id)" class="unexpanded" style="margin-top: -1%;">
+                                <div name="temp" class="row" style="padding-right:3%;padding-left:3%;">
+                                    <br />
+                                    <div style="background-color:#EFEFEF;height:auto;cursor:pointer;margin-right: 0px;margin-left: 0px; " class="row">
+                                        <div class="col-md-2 col-xs-4" style="margin-top:1.5%">
+                                            <p style="color:grey; font-size:medium">@(item.date.Day + "-" + item.date.Month + "-" + item.date.Year)</p>
+                                        </div>
+                                        <div class="col-md-5 col-xs-4" style="margin-top:1.5%">
+                                            <h3 style="    margin: 0px;color:grey;font-size:20px">@item.title</h3>
+                                        </div>
+
+
+                                        @if (item.image != null)
+                                        {
+                                            <div class="col-md-3" style="margin-top:1.5%;    margin-bottom: 24px;">
+                                                <form method="post" style=" margin: -36px; margin-top: 0px; margin-left: 0px;" action="../Home/AnnouncementsDelete" enctype="multipart/form-data">
+                                                    @Html.HiddenFor(model => model.announcement.id, new { Value = item.id })
+                                                    <button onclick=" $.spin('true');" class="btn-link" type="submit" style="background-color:#EFEFEF;padding:0px"><span style="color:#337ab7"> </span><i style="padding-right:25%;font-size: 17px;" class="glyphicon glyphicon-trash"></i></button><a href="#" onclick="editAnnouncementUnexpand(@item.id)" style=" margin-left: 15px;"><i style="padding-right:4%;font-size: 17px;" class="glyphicon glyphicon-pencil"></i></a><span style="color:#337ab7"> <i class="glyphicon glyphicon-paperclip col-md-1" style="margin-left: -11px;cursor: pointer;font-size: 17px;color: #337AB7;margin-top: 4px;float: none"></i></span>
+                                                </form>
+
+                                            </div>
+                                        }
+                                        else
+                                        {
+
+                                            <div class="col-md-3" style="margin-top:1.5%;    margin-bottom: 24px;">
+                                                <form method="post" style=" margin: -36px; margin-top: 0px; margin-left: 0px;" action="../Home/AnnouncementsDelete" enctype="multipart/form-data">
+                                                    @Html.HiddenFor(model => model.announcement.id, new { Value = item.id })
+                                                    <button onclick=" $.spin('true');" class="btn-link" type="submit" style="background-color:#EFEFEF;padding:0px"><i style="padding-right:25%;font-size: 17px;" class="glyphicon glyphicon-trash"></i></button><span style="color:#337ab7"> </span><a href="#" onclick="editAnnouncementUnexpand(@item.id)" style=" margin-left: 15px;"><i style="padding-right:4%;font-size: 17px;" class="glyphicon glyphicon-pencil"></i></a>
+                                                </form>
+                                            </div>
+
+                                        }
+                                        <div class="col-md-2 " style="margin-top:0.3%">
+                                            <button class="btn_Unexpended btn cke_btn_locked col-md-12" style="background-color:#dadada;margin-top:4%;margin-bottom:2%;border-color:#DADADA" disabled>Posted</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="@(item.id + "Edited")" class="row Edited" style="background-color:#EFEFEF;margin-right:0%;margin-left:0%;display:none;margin-top: 8px;    margin-bottom: 2px;">
+                                <form method="post" action="../Home/AnnouncementsEdit" enctype="multipart/form-data">
+                                    <div class="row" style="margin-top:1%;margin-bottom:1%;">
+
+                                        @Html.HiddenFor(model => model.announcement.id, new { Value = item.id })
+                                        @Html.HiddenFor(model => model.announcement.date, new { Value = item.date })
+                                        @*@Html.HiddenFor(model => model.announcement.message, new { Value = item.message})*@
+
+                                        <div class="col-md-5 col-xs-10" style="margin-left:0%">
+
+                                            @Html.TextBoxFor(model => model.announcement.title, null, new { type = "text", Value = item.title, name = "eventName", @class = "col-md-6 form-control", id = "title", style = "height:150%;font-size:24px;    margin-left: 14px;border-color: transparent;font-family: Roboto-Regular;border: 1px solid #3C8DBC", placeholder = "Add Title" })
+                                        </div>
+
+                                        <div class="col-md-5 " style="margin-left:0%">
+                                            @*@Html.TextBoxFor(model => model.announcement.shortDescription, item.shortDescription, new { type = "text", Value = item.shortDescription, name = "eventName", @class = "col-md-6 form-control", id = "eventname", style = "height:150%;font-size:150%;width:83.5%;    color: #1d486a;border: transparent;", placeholder = "Announcement Name", maxlength = "20" })*@
+
+                                        </div>
+                                        <div class="col-md-2 col-xs-2">
+
+                                            <i class="glyphicon glyphicon-paperclip col-md-1 EditAnnouncementClipIcon" onclick="opendialogEdit(@(item.id))" style="    margin-right: 30px !important;cursor: pointer;float: right;font-size: 17px;color: #337AB7;margin-top: 11px;"></i>
+                                            @Html.TextBoxFor(model => model.announcement.image, null, new { type = "file", name = "file", @class = "form-control", id = item.id + "fileEdit", onchange = "", style = "display: none", accept = "image/*" })
+
+                                        </div>
+
+                                        <div class="col-md-10 col-xs-12" style="margin-top:-15px">
+                                            @*<input type="text" id="eventname" name="eventName" class="col-md-6 form-control" style="height:150%;font-size:150%;width:83.5%" placeholder="Announcement Name" />*@<br />
+                                            @Html.TextAreaFor(model => model.announcement.message, new { type = "text", value = item.message, name = "eventName", @class = "col-md-12 col-xs-9 col-xs-offset-3 EditAnnouncementTextArea", id = "EditMessage_" + item.id, style = "height:80px;border-color: transparent;background-color: #ffffff;color: #000000;font-family:Roboto-Light; resize: none;    padding-top: 10px;border-radius: 9px;    border: 1px solid #1d486a;", placeholder = "START TYPING HERE", rows = "4", })
+
+
+                                            @*@Html.TextBoxFor(model => model.announcement.dateTo, "MM/DD/YYYY", new { id = "datepicker2", @readonly = "readonly", @class = "col-md-4", required = true, style = "margin-top:1%;height: 40px;", placeholder = "To Date" })*@
+
+                                            @*<input type="date" data-date="" data-date-format="DD MMM YYYY" onkeypress="return false" id="todate" name="todate" class="col-md-4" style="margin-top:1%;" placeholder="To Date" />*@
+                                        </div>
+                                        <div  class="col-md-2 col-xs-12 AnnouncementEditSendButton" style="   ">
+
+                                            @if (item.image != null)
+                                            {
+                                                <div class="col-md-12 col-xs-12 EditButtonAndimage">
+                                                    @if (item.image.Contains(".jpg") == true || item.image.Contains(".tiff") == true || item.image.Contains(".tif") == true || item.image.Contains(".jpeg") == true || item.image.Contains(".png") == true || item.image.Contains(".bmp") == true)
+                                                    {
+                                                        <img src="@item.image" id=@(item.id+"image") class="EditAnnouncementImage ImagePreviewBox" style="    width: 50px;height: 50px;margin-bottom:2%;display:block">                                                    
+                                                    }
+                                                    else if (item.image.Contains(".docx") == true || item.image.Contains(".doc") == true)
+                                                    {
+                                                           <img src="~/images/complaints/doxc-icon-13463.png" id=@(item.id+"image") class="EditAnnouncementImage ImagePreviewBox" style="    width: 50px;height: 50px;margin-bottom:2%;display:block">
+
+                                                    }
+                                                    else if (item.image.Contains(".pdf") == true)
+                                                    {
+
+    <img src="~/images/complaints/pdf.png" id=@(item.id+"image") class="EditAnnouncementImage ImagePreviewBox" style="    width: 50px;height: 50px;margin-bottom:2%;display:block">
+                                                    }
+                                                    else if (item.image.Contains(".xlsx") == true || item.image.Contains(".xls"))
+                                                    {
+
+    <img src="~/images/complaints/XLSX.png" id=@(item.id+"image") class="EditAnnouncementImage ImagePreviewBox" style="    width: 50px;height: 50px;margin-bottom:2%;display:block">
+
+                                                    }
+                                                    else
+                                                    {
+
+    <img src="~/images/complaints/file-text-icon.png" id=@(item.id+"image") class="EditAnnouncementImage ImagePreviewBox" style="    width: 50px;height: 50px;margin-bottom:2%;display:block">
+                                                    }
+
+
+
+
+
+
+                                                    
+                                                    <button c type="submit" onclick=" $.spin('true');" class="btn btn-block col-md-2 EditSubmitAnnouncement" style="background-color:#1d486a;font-size: 14px;width:100%;color:#ffffff;">Post</button><br>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div class="col-md-12 col-xs-12 EditButtonAndimage">
+                                                    <img src="" class="ImagePreviewBox EditAnnouncementImage" style="    width: 50px;height: 50px;margin-bottom:2%;visibility:hidden;margin-left:50%">
+                                                    <button type="submit" onclick=" $.spin('true');" class="btn btn-block col-md-2 EditSubmitAnnouncement" style="    font-size: 14px;background-color:#1d486a;width:100%;color:#ffffff;">Post</button><br>
+                                                </div>
+                                            }
+                                        </div>
+
+
+
+
+
+
+                                    </div>
+                                </form>
+                            </div>
+
+
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="row" align="center">
+        @*<div class="col col-xs-4">
+                Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+            </div>*@
+        <div class="" >
+            <ul class="pagination hidden-xs ">
+                @Html.PagedListPager((IPagedList)Model.PagedannouncementList, page => Url.Action("Announcements", new { page }))
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+@section mystyles{
+    <link href="~/Scripts/css/jquery-ui.min.css" rel="stylesheet" />
+    <style>
+        .btn-circle {
+            width: 40px;
+            height: 40px;
+            text-align: center;
+            padding: 2px 0px 0px 1px;
+            font-size: 15px;
+            line-height: 1.42;
+            border-radius: 30px;
+            color: #fff;
+            background-color: #1d486a;
+        }
+
+        #title::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+            color: #1d486a;
+        }
+
+        #shortDescription::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+            color: #1d486a;
+        }
+
+        #Message::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+            color: #000000;
+        }
+    </style>
+}
+
+
+@section myscripts{
+
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            document.getElementById("saveAnnouncement").style.display = 'none';
+            //document.getElementById("saveButton").style.display = 'none';
+
+            $("#datepicker,#datepicker1,#datepicker2,#datepicker3").datepicker({
+                dateFormat: 'm/d/yy',
+            });
+
+            $("#datepicker,#datepicker1,#datepicker2,#datepicker3").on('changeDate', function (ev) {
+                $(this).datepicker('hide');
+            });
+
+
+
+        });
+
+        function post() {
+
+            $(".expanded").css("display", "none");
+            $(".unexpanded").css("display", "block");
+            $(".Edited").css("display", "none");
+            $("#bt").css("background-color", "transparent");
+            $("#bt").css("color", "#1d486a");
+            document.getElementById("saveAnnouncement").style.display = 'block';
+            $("#title").get(0).focus();
+            //document.getElementByName("temp").style.display = 'block';
+        }
+
+
+
+
+
+        var editcheck = 0;
+        function editAnnouncementUnexpand(elem) {
+
+            $('#' + elem + "expanded").css("display", "none");
+            $('#' + elem + "unexpanded").css("display", "none");
+            $('#' + elem + "Edited").css("display", "block");
+            document.getElementById("saveAnnouncement").style.display = 'none';
+            var message = $("#Message_" + elem).html();
+            $("#EditMessage_" + elem).html(message);
+            //$("#" + elem + "datepickerTo").datepicker();
+            //$("#" + elem + "datepickerFrom").datepicker();
+
+            //$("#" + elem + "datepickerTo", "#" + elem + "datepickerFrom").datepicker({
+            //    dateFormat: 'm/d/yy',
+            //});
+
+            //$("#" + elem + "datepickerTo", "#" + elem + "datepickerFrom").on('changeDate', function (ev) {
+            //    $(this).datepicker('hide');
+            //});
+            editcheck = 1;
+        }
+        function editAnnouncement(elem) {
+
+            $('#' + elem + "expanded").css("display", "none");
+            $('#' + elem + "unexpanded").css("display", "none");
+            $('#' + elem + "Edited").css("display", "block");
+            document.getElementById("saveAnnouncement").style.display = 'none';
+            var message = $("#Message_" + elem).html();
+            $("#EditMessage_" + elem).html(message);
+            //$("#" + elem + "datepickerTo").datepicker();
+            //$("#" + elem + "datepickerFrom").datepicker();
+
+            //$("#" + elem + "datepickerTo", "#" + elem + "datepickerFrom").datepicker({
+            //    dateFormat: 'm/d/yy',
+            //});
+
+            //$("#" + elem + "datepickerTo", "#" + elem + "datepickerFrom").on('changeDate', function (ev) {
+            //    $(this).datepicker('hide');
+            //});
+            editcheck = 0;
+        }
+        function opendialog() {
+            $("#file").click();
+
+        }
+        function opendialogEdit(elem) {
+
+            $("#" + elem + "fileEdit").click();
+            EditImage(elem);
+        }
+
+        function checkExpand(elem) {
+            if (editcheck == 1) {
+                $(".expanded").css("display", "none");
+                $(".unexpanded").css("display", "block");
+                $(".Edited").css("display", "none");
+                $('#' + elem + "expanded").css("display", "none");
+                $('#' + elem + "unexpanded").css("display", "none");
+                $('#' + elem + "Edited").css("display", "block");
+                $("#bt").css("color", "#1d486a");
+
+                document.getElementById("saveAnnouncement").style.display = 'none';
+                editcheck = 0;
+            }
+            else {
+                $(".expanded").slideUp();
+                $(".unexpanded").css("display", "block");
+                $(".Edited").css("display", "none");
+                //$('#' + elem + "expanded").css("display", "block");
+                $('#' + elem + "expanded").slideDown();
+
+                $('#' + elem + "unexpanded").css("display", "none");
+                $('#' + elem + "Edited").css("display", "none");
+                $("#bt").css("color", "#1d486a");
+
+                document.getElementById("saveAnnouncement").style.display = 'none';
+                editcheck = 0;
+            }
+
+
+
+        }
+        function EditImage(elem) {
+            $("#" + elem + "fileEdit").change(function (event) {
+
+                var tmppath = URL.createObjectURL(event.target.files[0]);
+                $("#" + elem + "image").fadeIn("fast").attr('src', tmppath);
+                $("#" + elem + "image").css("display", "block");
+            });
+        }
+        $(function () {
+
+            $('#file').change(function (event) {
+
+                var tmppath = URL.createObjectURL(event.target.files[0]);
+                $("#EditImg").fadeIn("fast").attr('src', tmppath);
+                $("#EditImg").css("display", "block");
+            });
+
+        });
+
+    </script>
+    <script src="~/dist/jquery.maskedinput.js"></script>
+    <script type="text/javascript">
+
+        function SetShortDescriptionFormat(elem) {
+            var select1 = document.getElementById("ShortDescriptionFormatDropdown");
+            var option1 = select1.options[select1.selectedIndex];
+            if (option1.value == "text") {
+                //$("#shortDescription").mask("", { placeholder: "Add Short Description" });
+                $("#shortDescription").val("");
+                $("#shortDescription").unmask();
+                $("#shortDescription").css("display", "block");
+                $("#shortDescription").css("z-index", "0");
+                //$("#ShortDescriptionFormatDropdown").css("display", "none")
+
+                $("#shortDescription").focus();
+
+            }
+            if (option1.value == "date") {
+                $.mask.definitions['y'] = '[12]';
+                $.mask.definitions['m'] = '[01]';
+                $.mask.definitions['d'] = '[0-3]';
+                $("#shortDescription").val("");
+                $("#shortDescription").mask("d9/m9/y999 - d9/m9/y999", { placeholder: "dd/mm/yyyy - dd/mm/yyyy" });
+                $("#shortDescription").css("display", "block");
+                $("#shortDescription").css("z-index", "0");
+                $("#shortDescription").focus();
+                //$("#ShortDescriptionFormatDropdown").css("display", "none")
+
+            }
+            if (option1.value == "time") {
+                //only Enter 1 and 2
+                $.mask.definitions['H'] = '[12]';
+                //only Enter 0,1,2,3,4
+                $.mask.definitions['h'] = '[01234]';
+                $.mask.definitions['M'] = '[12345]';
+                $("#shortDescription").val("");
+                $("#shortDescription").mask("Hh:M9 - Hh:M9", { placeholder: "HH:MM - HH:MM (24 hour Format)" });
+                $("#shortDescription").css("z-index", "0");
+                $("#shortDescription").css("display", "block");
+                //$("#ShortDescriptionFormatDropdown").css("display", "none")
+                $("#shortDescription").focus();
+
+            }
+        }
+
+
+        $(document).ready(function () {
+            $("#Community_Announcements").css("background-color", "#ffffff");
+            $("#Announcements").css("color", "#000000");
+            $("#title").keyup(function () {
+                var textValue = $("#title").val();
+                if (textValue == null || textValue == "") {
+                    $("#btn_AddAnnouncement").attr('disabled', true)
+                    $("#btn_AddAnnouncement").css('background-color', 'white');
+                    $("#btn_AddAnnouncement").css('border-color', '#DADADA');
+                    $("#btn_AddAnnouncement").css('color', '#DADADA');
+                }
+                else {
+                    $("#btn_AddAnnouncement").attr('disabled', false);
+                    $("#btn_AddAnnouncement").css('background-color', '#1d486a');
+                    $("#btn_AddAnnouncement").css('color', '#ffffff');
+
+                }
+            })
+
+        });
+
+        function ShowAddImage() {
+            var filename = event.target.files[0].name;
+            filename = filename.substring(0, 10);
+            filename = filename + "...";
+            $("#AdduploadlImage").html(filename);
+            $("#AdduploadlImage").css("margin-top", "0px");
+            $("#AdduploadlImage").css("background-color", "#DDDDDD");
+            $("#AdduploadlImage").css("color", "#000000");
+            $("#AdduploadlImage").css("width", "");
+            $("#AdduploadlImage").css("border", "1px solid");
+            $("#AdduploadlImage").css("border-right", "transparent");
+            $("#AdduploadlImage").css("height", "26px");
+            $("#AdduploadlImage").css("float", "left");
+            $("#AdduploadlImage").css("padding-left", "8px");
+            $("#AdduploadlImage").css("padding-top", "4px");
+            $("#AdduploadlImage").css("font-family", "Roboto-Light");
+            $("#AddcloseButton").css("visibility", "visible");
+
+        }
+        function removeAddImage() {
+            document.getElementById('file').files[0] = null;
+            document.getElementById('file').value = null;
+            $("#AdduploadlImage").html('');
+            $("#AdduploadlImage").css("border", "transparent");
+            $("#AdduploadlImage").css("background-color", "transparent");
+            $("#AddcloseButton").css("visibility", "hidden");
+
+        }
+    </script>
+}
+

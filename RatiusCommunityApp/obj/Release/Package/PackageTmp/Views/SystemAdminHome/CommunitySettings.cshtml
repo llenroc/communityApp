@@ -1,0 +1,655 @@
+﻿@model RatiusCommunityApp.Models.CommunitySettingsDTO
+@{
+    ViewBag.Title = "Dashboard";
+    Layout = "~/Views/Shared/_communityLayout.cshtml";
+    int index = 1;
+}
+
+@section NavbarAndSideMenu{
+
+    @{ Html.RenderAction("_SystemAdminNavbarAndSideMenu"); }
+
+}
+<div >
+    <div class="my-modal sub-community-modal">
+        <div class="modal-inner modal-sm" >
+            <div class="sub-community-wrapper">
+                <a href="#" class="close-modal"><i class="fa fa-close"></i></a>
+                <input id="subCommunityName" class="add-community-name" type="text" placeholder="Add Sub Community Name">
+                <div class="button-group clearfix">
+                    <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown"><span>Select streets/floors</span> <span class="caret"></span></button>
+                    <ul class="dropdown-menu">
+                        @foreach (var item in Model.allStreetFloors)
+                        {
+                            if (Model.selectedStreetFloorsIDs.Contains(item.id) == false)
+                            {
+                              
+                                @*<li><a href="#" class="small" data-value="option1" tabindex="-1" onclick="CheckboxCheck(this.id)" id="@item.id"><input id="@("CheckboxStreetfloor_"+item.id)" type="checkbox" class="CheckboxStreetfloor" />&nbsp;@item.streetFloor</a></li>*@
+                            @*<li><input id="@("CheckboxStreetfloor_"+item.id)" type="checkbox" onclick="CheckboxCheck(this.name)" name="@item.id" class="CheckboxStreetfloor" /><label href="#" for="@("CheckboxStreetfloor_"+item.id)" class="small" data-value="option1" tabindex="-1">&nbsp;@item.streetFloor</label></li>*@
+
+    <li>
+        <div id="@item.id" class="custom-form-wid check ">
+            <input onclick="CheckboxCheck(this.name)" id="@("CheckboxStreetfloor_"+item.id)" class="CheckboxStreetfloor" name="@item.id" type="checkbox" value="">
+            <label for="@("CheckboxStreetfloor_"+item.id)"><i class="fa"></i>@item.streetFloor</label>
+        </div>
+    </li>
+
+                            }
+                            else
+                            {
+                                @*<li><a href="#" disabled="disabled" class="small" data-value="option1" tabindex="-1" id="@item.id"><input id="@("CheckboxStreetfloor"+item.id)" disabled checked type="checkbox" />&nbsp;@item.streetFloor</a></li>*@
+    <li>
+        <div id="@item.id" class="custom-form-wid check disabled">
+            <input onclick="CheckboxCheck(this.name)" disabled checked id="@("CheckboxStreetfloor_"+item.id)" name="@item.id" type="checkbox" value="">
+            <label for="@("CheckboxStreetfloor_"+item.id)"><i class="fa"></i>@item.streetFloor</label>
+        </div>
+    </li>
+                            }
+
+                        }
+                        
+                        @*<li><a href="#" class="small" data-value="option2" tabindex="-1"><input type="checkbox" />&nbsp;Option 2</a></li>
+                        <li><a href="#" class="small" data-value="option3" tabindex="-1"><input type="checkbox" />&nbsp;Option 3</a></li>
+                        <li><a href="#" class="small" data-value="option4" tabindex="-1"><input type="checkbox" />&nbsp;Option 4</a></li>
+                        <li><a href="#" class="small" data-value="option5" tabindex="-1"><input type="checkbox" />&nbsp;Option 5</a></li>
+                        <li><a href="#" class="small" data-value="option6" tabindex="-1"><input type="checkbox" />&nbsp;Option 6</a></li>*@
+                    </ul>
+                </div>
+            </div>
+            <a id="btn_CreateSubCommunity" class="btn-primary" style=" margin-top: 7px;" onclick="CreateSubCommunity()">Add</a>
+        </div>
+    </div>
+
+    <!--=========================
+     Header
+    ===========================-->
+
+    <div class="community-settings clearfix" style="position: relative;">
+        <div class="select-community">
+            <p style="color: #1d486a;margin-top: 2px;">Select Community</p>
+            <select onchange="GetCommunitySettings()" id="communitiesList" class="dropdown" style="    width: 184px;color: black;height: 24px;font-size: 12px;float: right;margin-right: 16px;background-color: rgb(255, 255, 255);">
+                @foreach (var item in Model.communityList)
+                {
+                    <option value="@item.communityID">@item.name</option>
+                }
+
+            </select>
+
+        </div>
+
+        <a href="#" class="btn-primary addSubCommunityTrigger">+Add New</a>
+        <br><br><br>
+        @foreach (var item in Model.subCommunityList)
+        {
+
+
+
+            if (index == 1)
+            {
+                <div class="subAccorWrapper active">
+                    <a href="#" class="subAccorTrigger">@item.name</a>
+                    @{ Html.RenderAction("SubCommunityEmergencyContactPartialView", new { SubcommunityId = item.id }); }
+                </div>
+            }
+            else
+            {
+                <div class="subAccorWrapper ">
+                    <a href="#" class="subAccorTrigger">@item.name</a>
+                    @{ Html.RenderAction("SubCommunityEmergencyContactPartialView", new { SubcommunityId = item.id }); }
+                </div>
+            }
+            index++;
+        }
+    </div>
+
+    <!--//header-->
+</div>
+
+<input type="hidden" id="SelectedCommunityID" value="@Session["logincommunityid"].ToString()" />
+       @section myscripts{><script type="text/javascript">
+        $(document).ready(function () {
+         
+            var option = $("#SelectedCommunityID").val();
+            $('#communitiesList').val(option);
+
+        });
+
+        function CheckboxCheck(elem) {
+            if ($('#checkboxstreetfloor_' + elem).is(":checked")) {
+                //alert(elem + " is checked")
+                $('#checkboxstreetfloor_' + elem).prop('checked', true);
+            }
+            else {
+                $('#checkboxstreetfloor_' + elem).prop('checked', false);
+            }
+          
+        }
+
+
+        function GetCommunitySettings() {
+            $.spin('true');
+            var select1 = document.getElementById("communitiesList");
+            var option1 = select1.options[select1.selectedIndex];
+            var CommunityId = option1.value;
+            window.location.href = ('@Url.Action("CommunitySettings", "SystemAdminHome")?communityId=' + CommunityId);
+            $.spin('false');
+        }
+        //function AddStreetFloorToList(elem) {
+           
+        //    if ($('#CheckboxStreetfloor' + elem).is(":checked")) {
+        //        alert(elem+" is checked")
+        //    }
+        //    else {
+        //        //if not check
+        //        alert(elem + " is not checked")
+        //    }
+        //}
+
+           function CreateSubCommunity() {
+               $("#btn_CreateSubCommunity").attr("disabled", true)
+               $("#btn_CreateSubCommunity").css("background-color", "#CBCBCB");
+            var select1 = document.getElementById("communitiesList");
+            var option1 = select1.options[select1.selectedIndex];
+            var CommunityId = option1.value;
+            var subCommunityName = $("#subCommunityName").val();
+            var selectedStreetFloorIDArray = new Array();
+            $(".CheckboxStreetfloor").each(function () {
+                if ($("#" + this.id).is(":checked")) {
+                    var id = this.id.split("_")[1];
+                    selectedStreetFloorIDArray.push(id);
+                        }
+                        else {
+                            //if not check
+                            //alert(this.id + " is not checked")
+                }
+            });
+                if (subCommunityName != "" && selectedStreetFloorIDArray.length != 0) {
+
+                    $.ajax({
+                        url: '@Url.Action("CreateSubCommunity", "SystemAdminHome")',
+                        type: 'POST',
+                        data: { "subCommunityName": subCommunityName, "selectedStreetFloorIDArray": selectedStreetFloorIDArray, "CommunityId": CommunityId },
+                        dataType: 'json',
+                        //traditional: true,
+                        success: function (response) {
+                            if (response.Status == "Success") {
+                                window.location.reload();
+                            }
+
+                            else {
+                               
+                            }
+
+
+                        },
+                        error: function (error) {
+                        }
+                    });
+                }
+               $("#btn_CreateSubCommunity").attr("disabled", false)
+               $("#btn_CreateSubCommunity").css("background-color", "#0054a6");
+        }
+    </script>
+<script>
+
+
+
+    function randomString(length, chars) {
+        var result = '';
+        for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
+        return result;
+    }
+</script>
+
+<script type="text/javascript">
+
+    function AddStreetFloorToList(elem) {
+        //$.spin('true');
+        var selectedSubCommunityId = elem.split("_")[1];
+        var streetFloorId = elem.split("_")[0];
+        if ($('#CheckboxStreetfloor_' + elem).is(":checked")) {
+            //alert(elem + " is checked")
+            $('#CheckboxStreetfloor_' + elem).prop('checked', true);
+
+        
+            $.ajax({
+                url: '@Url.Action("AddStreetFloor", "SystemAdminHome")',
+                type: 'POST',
+                data: { "subCommunityId": selectedSubCommunityId, "streetFloorId": streetFloorId },
+                dataType: 'json',
+
+                success: function (response) {
+                    if (response.Status == "Success") {
+                        $(".subAccorContent").each(function () {
+                            var subCommunityId = this.id;
+                            if (selectedSubCommunityId != subCommunityId) {
+                                //    $("#" + streetFloorId).addClass("disabled");
+
+                                //    $("#" + streetFloorId).removeClass("checkboxstreetfloor");
+                                //    $("#" + streetFloorId + "_" + subCommunityId).addClass("disabled");
+
+                                //    $('#CheckboxStreetfloor_' + streetFloorId).prop('checked', true);
+                                //    $('#CheckboxStreetfloor_' + streetFloorId).removeClass("CheckboxStreetfloor");
+                                //    $("#CheckboxStreetfloor_" + streetFloorId).attr("disabled", true);
+
+                                //    $("#CheckboxStreetfloor_" + streetFloorId + "_" + subCommunityId).attr("disabled", true);
+                                //    $("#CheckboxStreetfloor_" + streetFloorId + "_" + subCommunityId).prop("checked", true);
+                                //}
+
+
+                                $("#" + streetFloorId).addClass("disabled");
+                                $("#" + streetFloorId).removeClass("checkboxstreetfloor");
+                                $("#" + streetFloorId + "_" + subCommunityId).addClass("disabled");
+
+
+                                $('#CheckboxStreetfloor_' + streetFloorId).prop('checked', true);
+                                $('#CheckboxStreetfloor_' + streetFloorId).removeClass("CheckboxStreetfloor");
+                                $("#CheckboxStreetfloor_" + streetFloorId).attr("disabled", true);
+
+                                $("#CheckboxStreetfloor_" + streetFloorId + "_" + subCommunityId).attr("disabled", true);
+                                $("#CheckboxStreetfloor_" + streetFloorId + "_" + subCommunityId).prop("checked", true);
+                            }
+
+                        });
+                        //$.spin('false');
+                    }
+                    else {
+
+                    }
+                },
+                error: function (error) {
+                }
+            });
+          
+        }
+        else {
+            //if not check
+            //alert(elem + " is not checked")
+            $('#CheckboxStreetfloor_' + elem).prop('checked', false);
+
+       
+
+
+
+            $.ajax({
+                url: '@Url.Action("RemoveStreetFloor", "SystemAdminHome")',
+                type: 'POST',
+                data: { "streetFloorId": streetFloorId },
+                dataType: 'json',
+
+                success: function (response) {
+                    if (response.Status == "Success") {
+
+                        $(".subAccorContent").each(function () {
+                            var subCommunityId = this.id;
+
+
+
+                            $("#" + streetFloorId).removeClass("disabled");
+                            $("#" + streetFloorId + "_" + subCommunityId).removeClass("disabled");
+
+                            $('#CheckboxStreetfloor_' + streetFloorId).prop('checked', false);
+                            $('#CheckboxStreetfloor_' + streetFloorId).addClass("CheckboxStreetfloor");
+                            $("#CheckboxStreetfloor_" + streetFloorId).attr("disabled", false);
+
+                            $("#CheckboxStreetfloor_" + streetFloorId + "_" + subCommunityId).attr("disabled", false);
+                            $("#CheckboxStreetfloor_" + streetFloorId + "_" + subCommunityId).prop("checked", false);
+
+
+                            //$("#" + streetFloorId).removeClass("disabled");
+                            ////$('#CheckboxStreetfloor_' + elem).prop('checked', false);
+                            //$("#CheckboxStreetfloor" + streetFloorId).attr("disabled", false);
+                            //$("#CheckboxStreetfloor" + streetFloorId).prop("checked", false);
+                            //$("#" + streetFloorId + "_" + subCommunityId).attr("disabled", false);
+                            //$("#CheckboxStreetfloor_" + streetFloorId + "_" + subCommunityId).attr("disabled", false);
+                            //$("#CheckboxStreetfloor_" + streetFloorId + "_" + subCommunityId).prop("checked", false);
+
+
+                        });
+                        //$.spin('false');
+                    }
+                    else {
+
+                    }
+                },
+                error: function (error) {
+                }
+            });
+      
+        }
+    }
+
+
+    function SaveEmergencyContacts(elem) {
+        $("#communityEmergencyContacts" + elem).find("tr").addClass("emergrncyContacts" + elem);
+        var availableHoursFlag = new Array();
+        for (var i = 1; i <= 24; i++) {
+            availableHoursFlag[i] = "false";
+        }
+        $(".emergrncyContacts" + elem).each(function () {
+
+            var id = this.id.split("_")[1];
+            //var select1 = document.getElementById("SelectedWorkinghoursTo");
+            //var option1 = select1.options[select1.selectedIndex];
+            //var select2 = document.getElementById("SelectedWorkinghoursFrom");
+            //var option2 = select2.options[select2.selectedIndex];
+
+            var SelectedWorkinghoursTo = $("#txt_workingHourTo_" + id + "_" + elem).text();
+            var SelectedWorkinghoursFrom = $("#txt_workingHourFrom_" + id + "_" + elem).text();
+            var IntSelectedWorkinghoursFrom = parseInt(SelectedWorkinghoursFrom);
+            var IntSelectedWorkinghoursTo = parseInt(SelectedWorkinghoursTo)
+            if (IntSelectedWorkinghoursFrom == IntSelectedWorkinghoursTo) {
+                for (var i = 1; i <= 24; i++) {
+                    availableHoursFlag[i] = "true";
+                }
+            }
+            else if (IntSelectedWorkinghoursFrom < IntSelectedWorkinghoursTo) {
+                for (var j = IntSelectedWorkinghoursFrom ; j <= IntSelectedWorkinghoursTo ; j++) {
+                    IntSelectedWorkinghoursFrom = j;
+                    if (j > 24) {
+                        IntSelectedWorkinghoursFrom = j - 24;
+                    }
+                    availableHoursFlag[IntSelectedWorkinghoursFrom] = "true";
+                }
+            }
+            else {
+                IntSelectedWorkinghoursTo = IntSelectedWorkinghoursTo + 24;
+                for (var j = IntSelectedWorkinghoursFrom ; j < IntSelectedWorkinghoursTo ; j++) {
+                    IntSelectedWorkinghoursFrom = j;
+                    if (j > 24) {
+                        IntSelectedWorkinghoursFrom = j - 24;
+                    }
+                    availableHoursFlag[IntSelectedWorkinghoursFrom] = "true";
+                }
+            }
+
+        });
+        var hoursFlag = true;
+        for (var i = 1; i <= 24; i++) {
+            if (availableHoursFlag[i] == "false") {
+                hoursFlag = false;
+            }
+        }
+        if (hoursFlag == true) {
+            $(".emergrncyContacts" + elem).each(function () {
+                var id = this.id.split("_")[1];
+                //var select1 = document.getElementById("SelectedWorkinghoursTo");
+                //var option1 = select1.options[select1.selectedIndex];
+                //var select2 = document.getElementById("SelectedWorkinghoursFrom");
+                //var option2 = select2.options[select2.selectedIndex];
+
+                var SelectedWorkinghoursTo = $("#txt_workingHourTo_" + id + "_" + elem).text();
+                var SelectedWorkinghoursFrom = $("#txt_workingHourFrom_" + id + "_" + elem).text();
+
+
+                var EmergencyContactsLength = $('.txt_emergencyContact').length;
+                var EmergencyContact = $("#txt_EmergencyContact_" + id + "_" + elem).text();
+                var EmergencyContactName = $("#txt_EmergencyContactName_" + id + "_" + elem).text();
+                //var item = "";
+
+
+                var val = id.toString();
+                var matches = val.match(/\d+/g);
+                if (matches == null) {
+                    $.ajax({
+                        url: '@Url.Action("AddCommunityEmergencyContact", "SystemAdminHome")',
+                        type: 'POST',
+                        data: { "SelectedWorkinghoursFrom": SelectedWorkinghoursFrom, "SelectedWorkinghoursTo": SelectedWorkinghoursTo, "EmergencyContact": EmergencyContact, "EmergencyContactsLength": EmergencyContactsLength, "EmergencyContactName": EmergencyContactName, "SubCommunityId": elem },
+                        dataType: 'json',
+
+                        success: function (response) {
+                            if (response.Status == "Success") {
+                                $("#txt_workingHourTo_" + id).attr("id", "txt_workingHourTo_" + response.ResponceCommunityEmergencyContact.model.id + "_" + elem);
+                                $("#txt_workingHourFrom_" + id).attr("id", "txt_workingHourFrom_" + response.ResponceCommunityEmergencyContact.model.id + "_" + elem);
+                                $("#txt_EmergencyContact_" + id).attr("id", "txt_EmergencyContact_" + response.ResponceCommunityEmergencyContact.model.id + "_" + elem);
+                                $("#txt_EmergencyContactName_" + id).attr("id", "txt_EmergencyContactName_" + response.ResponceCommunityEmergencyContact.model.id + "_" + elem);
+                                $("#btn_EditEmergencyContact_" + id).attr("id", "btn_EditEmergencyContact_" + response.ResponceCommunityEmergencyContact.model.id + "_" + elem);
+                                $("#btn_DeleteEmergencyContact_" + id).attr("id", "txt_EmergencyContactName_" + response.ResponceCommunityEmergencyContact.model.id + "_" + elem);
+                                $("#EmergencyContact_" + id).attr("id", "EmergencyContact_" + response.ResponceCommunityEmergencyContact.model.id + "_" + elem);
+
+
+                            }
+                            else {
+                                //$("#EmergencyContactError").fadeIn("slow");
+                                //$("#EmergencyContactError").fadeOut(7000);
+                                //alert("limited Range Reached");
+                            }
+
+                        },
+                        error: function (error) {
+                        }
+                    });
+                }
+                else {
+                    UpdateEmergencyContact(id,elem);
+                }
+            });
+        }
+        else {
+            alert("24 hours did not complete")
+        }
+
+        //$("#communityEmergencyContacts"+elem).prepend(item);
+        $('#txt_AddEmergencyContact' + elem).val("");
+        $('#txt_AddEmergencyName' + elem).val("");
+        $('#txt_AddEmergencyName' + elem).focus();
+    }
+
+
+
+
+
+    function UpdateEmergencyContact(id,elem) {
+        var SelectedWorkinghoursTo = $("#txt_workingHourTo_" + id + "_" + elem).text();
+        var SelectedWorkinghoursFrom = $("#txt_workingHourFrom_" + id + "_" + elem).text();
+
+
+        var EmergencyContactsLength = $('.txt_emergencyContact').length;
+        var EmergencyContact = $("#txt_EmergencyContact_" + id + "_" + elem).text();
+        var EmergencyContactName = $("#txt_EmergencyContactName_" + id + "_" + elem).text();
+        var item = "";
+        $.ajax({
+            url: '@Url.Action("UpdateCommunityEmergencyContact", "SystemAdminHome")',
+            type: 'POST',
+            data: { "SelectedWorkinghoursFrom": SelectedWorkinghoursFrom, "SelectedWorkinghoursTo": SelectedWorkinghoursTo, "EmergencyContact": EmergencyContact, "Id": id, "EmergencyContactName": EmergencyContactName },
+            dataType: 'json',
+
+            success: function (response) {
+                if (response.success == "Success") {
+                    //EmergencyContact = EmergencyContact.split("+")[1];
+                    //$('#EmergencyContact_' + elem).css('background', '#ededed');
+                    //$('#txt_EmergencyContact_' + elem).val(EmergencyContact);
+                    //$('#txt_EmergencyContact_' + elem).prop("disabled", true);
+
+                    //$('#txt_EmergencyContactName_' + elem).val(EmergencyContactName);
+                    //$('#txt_EmergencyContactName_' + elem).prop("disabled", true);
+
+                    //$('#btn_EditEmergencyContact_' + elem).css("display", "inline");
+                    //$('#btn_DeleteEmergencyContact_' + elem).css("display", "inline");
+                    //$('#btn_UpdateEmergencyContact_' + elem).css("display", "none");
+
+                    //$('#txt_EmergencyContact_' + elem).css('width', '44.9%');
+                    //$('#txt_EmergencyContact_' + elem).css('background', '#ededed');
+
+                    //$('#txt_EmergencyContactName_' + elem).css('width', '44.9%');
+                    //$('#txt_EmergencyContactName_' + elem).css('background', '#ededed');
+
+                }
+            },
+            error: function (error) {
+            }
+        });
+
+
+    }
+
+
+
+
+
+
+    function AddEmergencyContact(elem) {
+        var EmergencyContactsLength = $('.txt_emergencyContact').length;
+        var EmergencyContact = $('#txt_AddEmergencyContact' + elem).val();
+        var EmergencyContactName = $('#txt_AddEmergencyName' + elem).val();
+        var select1 = document.getElementById("SelectedWorkinghoursTo" + elem);
+        var option1 = select1.options[select1.selectedIndex];
+        var select2 = document.getElementById("SelectedWorkinghoursFrom" + elem);
+        var option2 = select2.options[select2.selectedIndex];
+        var SelectedWorkinghoursTo = option1.value;
+        var SelectedWorkinghoursFrom = option2.value;
+        if (EmergencyContactName == "") {
+            alert("Please Add Name");
+            return false;
+        }
+        if (EmergencyContact == "") {
+            alert("Please Add Number");
+            return false;
+        }
+        if (SelectedWorkinghoursTo == "To") {
+            alert("Please Select To");
+            return false;
+        }
+        if (SelectedWorkinghoursFrom == "From") {
+            alert(SelectedWorkinghoursFrom);
+            return false;
+        }
+
+
+        var item = "";
+
+        if ($('#txt_AddEmergencyContact').val() != "" && $('#txt_AddEmergencyName').val() != "") {
+
+
+
+            var workingHourStart;
+            var workingHourEnd;
+            if (parseInt(SelectedWorkinghoursFrom) > 12) {
+                workingHourStart = (parseInt(SelectedWorkinghoursFrom) - 12).toString() + "pm";
+            }
+            else {
+                workingHourStart = SelectedWorkinghoursFrom + "am";
+
+            }
+            if (parseInt(SelectedWorkinghoursTo) > 12) {
+                workingHourEnd = (parseInt(SelectedWorkinghoursTo) - 12).toString() + "pm";
+            }
+            else {
+                workingHourEnd = SelectedWorkinghoursTo + "am";
+
+            }
+            var randomNumber = randomString(6, 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
+            item = " <tr id=EmergencyContact_" + randomNumber + "_" + elem + " class='table-body emergrncyContacts'>" +
+                "<td><span class='name' id='txt_EmergencyContactName_" + randomNumber + "_" + elem + "'>" + EmergencyContactName + "</span><span id='txt_EmergencyContact_" + randomNumber + "_" + elem + "'>" + EmergencyContact + "</span></td>" +
+                "<td></td>" +
+                "<td><span class='workingHourTo' id='txt_workingHourFrom12Hrs_" + randomNumber + "_" + elem + "'>" + workingHourStart + "</span> <span id='txt_workingHourFrom_" + randomNumber + "_" + elem + "' style='display:none'>" + SelectedWorkinghoursFrom + "</span>" + "- <span id='txt_workingHourTo12Hrs_" + randomNumber + "_" + elem + "' class='workingHourFrom' >" + workingHourEnd + "</span><span id='txt_workingHourTo_" + randomNumber + "_" + elem + "' style='display:none'>" + SelectedWorkinghoursTo + "</span>" + "</td>" +
+                "<td>" +
+                    "<div class='edit-btns'><a   id='btn_EditEmergencyContact_" + randomNumber + "_" + elem + "' onclick=EditEmergencyContact(this.id)>Edit</a> - <a   id='btn_DeleteEmergencyContact_" + randomNumber + "_" + elem + "' onclick=DeleteEmergencyContact(this.id) class='delete-item-trigger'>Delete</a></div>" +
+                "</td>" +
+            "</tr>";
+
+
+
+            $("#communityEmergencyContacts" + elem).prepend(item);
+            $('#txt_AddEmergencyContact' + elem).val("");
+            $('#txt_AddEmergencyName' + elem).val("");
+            $('#txt_AddEmergencyName' + elem).focus();
+            $("#spanOperationalFrom" + elem).text("From");
+            $("#spanOperationalTo" + elem).text("To");
+            $("#SelectedWorkinghoursTo" + elem).val("To");
+            $("#SelectedWorkinghoursFrom" + elem).val("From");
+        }
+    }
+
+
+
+
+
+    function UpdateEmergencyContactInList(elem) {
+        var id = EditEmergencyContactID;
+        var select1 = document.getElementById("SelectedWorkinghoursTo" + elem);
+        var option1 = select1.options[select1.selectedIndex];
+        var select2 = document.getElementById("SelectedWorkinghoursFrom" + elem);
+        var option2 = select2.options[select2.selectedIndex];
+        var SelectedWorkinghoursTo = option1.value;
+        var SelectedWorkinghoursFrom = option2.value;
+        $("#txt_EmergencyContactName_" + id + "_" + elem).text($("#txt_AddEmergencyName" + elem).val());
+        $("#txt_EmergencyContact_" + id + "_" + elem).text($("#txt_AddEmergencyContact" + elem).val());
+        $("#txt_workingHourFrom12Hrs_" + id + "_" + elem).text($("#SelectedWorkinghoursFrom" + elem + " option:selected").text());
+        $("#txt_workingHourTo12Hrs_" + id + "_" + elem).text($("#SelectedWorkinghoursTo" + elem + " option:selected").text());
+        $("#txt_workingHourTo_" + id + "_" + elem).text(SelectedWorkinghoursTo);
+        $("#txt_workingHourFrom_" + id + "_" + elem).text(SelectedWorkinghoursFrom);
+        $("#btn_UpdateEditEmergencyContact" + elem).css("display", "none");
+        $("#btn_AddEmergencyContact" + elem).css("display", "");
+
+
+
+
+        $('#txt_AddEmergencyContact' + elem).val("");
+        $('#txt_AddEmergencyName' + elem).val("");
+        $('#txt_AddEmergencyName' + elem).focus();
+        $("#spanOperationalFrom" + elem).text("From");
+        $("#spanOperationalTo" + elem).text("To");
+        $("#SelectedWorkinghoursTo" + elem).val("To");
+        $("#SelectedWorkinghoursFrom" + elem).val("From");
+
+    }
+
+
+
+
+
+
+    function EditEmergencyContact(elem) {
+        id = elem.split("_")[2];
+        elem = elem.split("_")[3];
+        $("#txt_AddEmergencyName" + elem).val($("#txt_EmergencyContactName_" + id + "_" + elem).text());
+        $("#txt_AddEmergencyContact" + elem).val($("#txt_EmergencyContact_" + id + "_" + elem).text());
+        $("#spanOperationalFrom" + elem).text($("#txt_workingHourFrom12Hrs_" + id + "_" + elem).text());
+        $("#spanOperationalTo" + elem).text($("#txt_workingHourTo12Hrs_" + id + "_" + elem).text());
+        $("#SelectedWorkinghoursTo" + elem).val($("#txt_workingHourTo_" + id + "_" + elem).text());
+        $("#SelectedWorkinghoursFrom" + elem).val($("#txt_workingHourFrom_" + id + "_" + elem).text());
+        EditEmergencyContactID = id;
+        $("#btn_UpdateEditEmergencyContact" + elem).css("display", "");
+        $("#btn_AddEmergencyContact" + elem).css("display", "none");
+        //$("#EmergencyContact_" + id).attr("id", "EmergencyContact_" + id+"Updated");
+
+    }
+
+
+
+    function DeleteEmergencyContact(elem) {
+        var id = elem.split("_")[2];
+        elem = elem.split("_")[3]
+        var val = id.toString();
+        var matches = val.match(/\d+/g);
+        if (matches != null) {
+            $.ajax({
+                url: '@Url.Action("DeleteEmergencyContact", "SystemAdminHome")',
+                type: 'POST',
+                data: { "Id": id },
+                dataType: 'json',
+
+                success: function (response) {
+                    if (response.success == "Success") {
+                        $("#EmergencyContact_" + id + "_" + elem).remove();
+
+                    }
+                },
+                error: function (error) {
+                }
+            });
+        }
+        else {
+
+            $("#EmergencyContact_" + id + "_" + elem).remove();
+        }
+
+
+    }
+</script>
+    }
+
+
+
+

@@ -1,0 +1,81 @@
+﻿@model RatiusCommunityApp.Models.CreateCommunityDTO
+@{
+    Layout = null;
+}
+
+
+
+<html>
+<head>
+    <title>Welcome to Community App</title>
+
+
+    <link href="~/Content/IndexStyleSheet.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <style type="text/css">
+        .row {
+            margin-right: 0;
+            margin-left: 0;
+        }
+    </style>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+</head>
+<body class="indexBody">
+    <div class="row indexheadingMargin">
+        <div class="col-md-offset-4 col-md-8 col-sm-offset-3 col-sm-9">
+            <p class="indexHeading" style="margin-left:11%">Create Community</p>
+        </div>
+    </div>
+    <br />
+    @if (TempData["error"].ToString() != "Null")
+    {
+        <div class="row">
+            <center>
+                <div>
+                    <span style="color:red;    font-family: Roboto-Light;" class="indexTextbox">@TempData["error"].ToString()</span>
+                </div>
+            </center>
+        </div>
+    }
+    <div class="row">
+        <div class="col-md-offset-4 col-md-8 col-sm-offset-3 col-sm-9">
+            <p class="indexAdminParagraph">Please fill the following fields</p>
+        </div>
+    </div>
+    <br />
+
+    <form enctype="multipart/form-data" method="post" action="/Home/CreateCommunity">
+    
+        <div class="row">
+            <div class="col-md-offset-4 col-md-8 col-sm-offset-3 col-sm-9">
+                @Html.TextBoxFor(m => m.community.name, null, new { @class = "indexTextbox", placeholder = "Community Name" })
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-offset-4 col-md-8 col-sm-offset-3 col-sm-9">
+                @Html.TextBoxFor(m => m.community.communityPassword, null, new { style = "background-color: #ffffff;padding-top: 8px;", @class = "indexTextbox", placeholder = "Password" })
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-offset-4 col-md-8 col-sm-offset-3 col-sm-9">
+                @Html.TextBoxFor(m => m.staticPassword, null, new { style = "background-color: #ffffff;padding-top: 8px;", @class = "indexTextbox", placeholder = "Required Password For Create Community" })
+
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-offset-4 col-md-8 col-sm-offset-3 col-sm-9">
+                <input type="submit" class="btn btn-info indexSignInButton" style="border-radius:0px" value="Create Community" />
+            </div>
+        </div>
+    </form>
+   
+</body>
+</html>
+
+
+
+

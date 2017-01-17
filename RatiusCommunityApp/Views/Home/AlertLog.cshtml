@@ -1,0 +1,315 @@
+﻿@*@model List<RatiusCommunityApp.Models.Alert>*@
+@using PagedList.Mvc;
+@using PagedList;
+@model PagedList.IPagedList<RatiusCommunityApp.Models.Alert>
+@{
+    ViewBag.Title = "AlertLog";
+    Layout = "~/Views/Shared/_communityLayout.cshtml";
+}
+
+
+
+
+@section NavbarAndSideMenu{
+
+    @{ Html.RenderAction("_CommunityAdminNavbarAndSideMenu"); }
+}
+
+@*<script type="text/javascript">
+
+    $(function () {
+ 
+        $('#AlertLogTable').DataTable({
+            "columnDefs": [{
+                "defaultContent": "-",
+                "targets": "_all"
+            }],
+            "iDisplayLength": 15,
+            "paging": true,
+            "lengthChange": false,
+            "searching": false,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "destroy": true,
+        });
+    });
+</script>*@
+@*<style>
+        .dataTables_paginate  {
+       margin-left: auto;
+    margin-right: auto;
+    margin: auto;
+    width: 30%;
+    /* border: 3px solid #73AD21; */
+    padding: 10px
+}
+    .dataTables_info{
+        display:none !important
+    }
+</style>*@
+<style>
+   .popover-title {
+        display: none;
+    }
+
+    #profileName {
+            font-weight: normal;
+    }
+
+    #profileAddress {
+           font-weight: normal;
+    }
+
+    #profileNo {
+            font-weight: normal;
+    }
+
+    .popover {
+        /*width: 300px;
+        height: 300px;*/
+        width: 200px;
+        height: auto;
+    }
+</style>
+<script>
+
+    //$(document).ready(function () {
+
+    //    var image = '<div class="profilePopover" style=""><center><div class="profilepic" style="margin-top:2%;width:120px;height:120px;border-radius:60px;border:2px solid #ebebeb;"><img src="" width:100% height:100%;/></div></center>'
+    //          + '<center><label id="profileName" style="font-family:Roboto-Regular;font-size:18px;margin-top:1%;">Taylor Phillipi</label><br></center>' +
+    //          '<center><label id="profileOwner" style="font-family:Roboto-Light;font-size:14px;;margin-top:6%;">Owner</label><br></center>' +
+    //          '<center><label id="profileEmail" style="font-family:Roboto-Light;font-size:14px;margin-top:2%;">Email ID</label><br></center>' +
+    //          '<center><label id="profileNo"  style="font-family:Roboto-Light;font-size:14px;margin-top:2%;">Mobile Number</label><br>' +
+    //          '<center><label id="profileAddress"  style="font-family:Roboto-Light;font-size:14px;margin-top:2%;margin-bottom:2%;">Address</label><br></center>' +
+    //          '</div> ';
+    //    $('.profileLink').popover({ placement: 'right', content: image, html: true });
+
+    //});
+
+    function showUserDetail(id, userImage, name, userType, emailID, contact, address) {
+
+        var image = '<div class="profilePopover" style=""><center><div class="profilepic" style="margin-top:2%;width:100px;height:100px;border-radius:60px;"><img src=' + userImage + ' style="object-fit: cover;width: 100px;    height: 100px;" class="img-circle" /></div></center>'
+       + '<center><label id="profileName" style="font-family:Roboto-Regular;font-size:16px;margin-top:5%;">' + name + '</label><br></center>' +
+       //'<center><label id="profileOwner" style="font-family:Roboto-Light;font-size:14px;;margin-top:6%;">' + userType + '</label><br></center>' +
+       //'<center><label id="profileEmail" style="font-family:Roboto-Light;font-size:14px;margin-top:2%;">' + emailID + '</label><br></center>' +
+       '<center><label id="profileAddress"  style="font-family:Roboto-Light;font-size:14px;margin-top:2%;margin-bottom:-1%;">' + address + '</label><br></center>' +
+       '<center><label id="profileNo"  style="font-family:Roboto-Light;font-size:14px;margin-top:-1%;">' + contact + '</label><br>' +
+       '</div> ';
+        $('#profileLink' + id).popover({ placement: 'right', content: image, html: true });
+    }
+
+
+
+
+
+
+
+
+
+    function initializeUserDetail(id, userImage, name, userType, emailID, contact, address) {
+
+        var image = '<div class="profilePopover" style=""><center><div class="profilepic" style="margin-top:2%;width:100px;height:100px;border-radius:60px;"><img src=' + userImage + ' style="object-fit: cover;width: 100px;    height: 100px;" class="img-circle" /></div></center>'
+     + '<center><label id="profileName" style="font-family:Roboto-Regular;font-size:16px;margin-top:5%;">' + name + '</label><br></center>' +
+     //'<center><label id="profileOwner" style="font-family:Roboto-Light;font-size:14px;;margin-top:6%;">' + userType + '</label><br></center>' +
+     //'<center><label id="profileEmail" style="font-family:Roboto-Light;font-size:14px;margin-top:2%;">' + emailID + '</label><br></center>' +
+     '<center><label id="profileAddress"  style="font-family:Roboto-Light;font-size:14px;margin-top:2%;margin-bottom:-1%;">' + address + '</label><br></center>' +
+     '<center><label id="profileNo"  style="font-family:Roboto-Light;font-size:14px;margin-top:-1%;">' + contact + '</label><br>' +
+     '</div> ';
+        $('#profileLink' + id).popover({ placement: 'right', content: image, html: true }).prop("");
+    }
+
+    $('[data-toggle="popover"]').popover();
+
+    $('body').on('click', function (e) {
+        $('[data-toggle="popover"]').each(function () {
+            //the 'is' for buttons that trigger popups
+            //the 'has' for icons within a button that triggers a popup
+            if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
+                $(this).popover('hide');
+            }
+        });
+    });
+
+</script>
+
+<div >
+    <div class="row">
+
+        <div class="col-md-3 pull-left">
+            <h1 style="font-family:Roboto-Light;    font-size: 24px;color:#1d486a">
+                Alert Log
+            </h1>
+        </div>
+    </div>
+    <br />
+@if (Model.Count != 0)
+    {
+    <div class="">
+        <table id="AlertLogTable" class=" table table-bordered" style="text-align:center;margin-top: -1px;">
+            <thead>
+                <tr id="head1" style="background-color:#1d486a;border-color:#1d486a;color:#fff">
+                    <th style="    border-left-color: #1d486a;border-right-color: #1d486a;font-family:Roboto-Light;text-transform:uppercase"><center>Date</center></th>
+                    <th style="border-right-color: #1d486a;font-family:Roboto-Light;text-transform:uppercase"><center>User</center></th>
+                    <th style="border-right-color: #1d486a;font-family:Roboto-Light;text-transform:uppercase"><center>Address</center></th>
+                    <th style="border-right-color: #1d486a;font-family:Roboto-Light;text-transform:uppercase"><center>Contact</center></th>
+                    <th style="border-right-color: #1d486a;font-family:Roboto-Light;text-transform:uppercase"><center>Timestamp</center></th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                @foreach (var item in Model)
+                {
+                    <tr id="row" class="expand" style="background-color:#ffffff;">
+                        <td style="font-family:Roboto-Light;">
+                            @*@item.memberID*@
+                            @(item.date.Day + "-" + item.date.Month+"-"+item.date.Year)
+                        </td>
+                       
+                        <td style="font-family:Roboto-Light;">
+                            <a style="cursor:pointer;" id="@("profileLink"+item.id)" class="profileLink" rel="popover" data-toggle="popover" data-content="" title="Popover with image" onmouseover="initializeUserDetail('@item.id', '@item.user.image', '@(item.user.firstName+" "+@item.user.lastName)', '@item.user.userType', '@item.user.emailID', '@item.user.contact', '@(item.member.address+" , "+item.member.streetFloor)')" onclick="showUserDetail('@item.id','@item.user.image','@(item.user.firstName+" "+item.user.lastName)','@item.user.userType','@item.user.emailID','@item.user.contact','@(item.member.address+" , "+item.member.streetFloor)')">@item.user.firstName&nbsp;@item.user.lastName</a>
+  </td>
+                        <td style="font-family:Roboto-Light;">
+                            @(item.member.address+" , "+item.member.streetFloor)
+                        </td>
+                        <td style="font-family:Roboto-Light;">
+                            @item.user.contact
+                        </td>
+                        <td style="font-family:Roboto-Light;">
+                            @item.date.ToString("hh:mm tt")
+                        </td>
+                        @*@if (item.isViewed != true)
+                        {
+                            <td>
+                                <button id="@(item.id+"_btnView")" onclick="ReadAlert(this.id)" class="btn btn-xs btn-block" style="color:#ffffff; background-color:#F50B0B">
+                                    View Alert
+                                </button>
+                            </td>
+                        }
+                        else
+                        {
+                            <td>
+                                <button id="@(item.id+"_btnView")" disabled class="btn btn-xs btn-block" style="color:#ffffff; background-color:#A4A0A0">
+                                    Viewed
+                                </button>
+                            </td>
+
+                        }*@
+                        
+                    </tr>
+                    @*<div class="modal fade" id="@item.complaintID" role="dialog">
+                        <div class="modal-dialog modal-xs">
+                            <div class="modal-content">
+                                <div class="modal-header" id="header" style="background:#367fa9">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h4 style="margin-left:20px;color:white;margin-bottom:0px"><strong>Image</strong></h4>
+                                </div>
+
+                                <div class="modal-body" id="modal-style">
+                                    <center>
+                                        <img src="@item.image1" id="@("modalImage_"+item.complaintID)" style="height:50%;width:50%">
+                                    </center>
+                                </div>
+                                <div class="modal-footer">
+                                    <center>
+                                        <img src="@item.image1" id="@("image1_"+item.complaintID)" class="img-thumbnail" onclick="SetModalBodyImage(this.id);" style="border:1px solid #367FA9;height:44px;width:59px;cursor: pointer;">
+                                        @if (item.image2 != null)
+                                        {
+                                            <img src="@item.image2" id="@("image2_"+item.complaintID)" class="img-thumbnail" onclick="SetModalBodyImage(this.id);" style="border:1px solid #367FA9;height:44px;width:59px;cursor: pointer;">
+                                        }
+                                        @if (item.image3 != null)
+                                        {
+                                            <img src="@item.image3" id="@("image3_"+item.complaintID)" class="img-thumbnail" onclick="SetModalBodyImage(this.id);" style="border:1px solid #367FA9;height:44px;width:59px;cursor: pointer;">
+                                        }
+                                    </center>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>*@
+
+
+
+  
+                }
+
+            </tbody>
+        </table>
+    </div>
+    <div class="row" align="center">
+        @*<div class="col col-xs-4">
+            Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+        </div>*@
+        <div class="">
+            <ul class="pagination hidden-xs">
+                @Html.PagedListPager(Model, page => Url.Action("AlertLog", new {page}))
+            </ul>
+        </div>
+    </div>
+    }
+    @if (Model.Count == 0)
+    {
+        <div id=unexpanded class="unexpanded" style="margin-top: -1%;">
+            <div name="temp" class="row" style="padding-right:3%;padding-left:3%;">
+                <br />
+                <div style="background-color:#ffffff;height:auto" class="row">
+                    <div class="col-md-4" style="margin-top:1.5%">
+
+                    </div>
+                    @*<div class="col-md-5" style="margin-top:1.5%">
+
+                        </div>*@
+
+
+
+                    <div class="col-md-7">
+                        <h3 style="text-transform:none"> NO ALERT in COMMUNITY</h3>
+
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section mystyles{
+    <style>
+           .userModallabel{
+        margin-top:10px;
+    }
+    </style>
+}
+@section myscripts{
+    @*<script type="text/javascript">
+        function ReadAlert(elem) {
+            var id = elem.split("_")[0];
+            $.ajax({
+                url: '@Url.Action("ChangeAlertStatus", "Home")',
+                type: 'POST',
+                data: { "alertID": id },
+                dataType: 'json',
+
+                success: function (response) {
+                    if (response.success == "Success") {
+
+                        $("#" +elem).css("background-color", "#A4A0A0");
+                        $("#" +elem).prop('disabled', true);
+                        $("#" +elem).text("Viewed");
+                    }
+                },
+                error: function (error) {
+                }
+            });
+        }
+    </script>*@
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $("#Community_AlertLog").css("background-color", "#ffffff");
+        $("#AlertLog").css("color", "#000000");
+    });
+</script>
+
+}
+

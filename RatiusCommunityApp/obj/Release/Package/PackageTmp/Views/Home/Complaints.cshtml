@@ -1,0 +1,1407 @@
+﻿@*@model List<RatiusCommunityApp.Models.Complaint>*@
+@*@using PagedList.Mvc;
+@using PagedList;*@
+@model RatiusCommunityApp.Models.ComplaintCatagoryTypeDTO
+@{
+    ViewBag.Title = " iReports";
+    Layout = "~/Views/Shared/_communityLayout.cshtml";
+}
+@section NavbarAndSideMenu{
+
+    @{ Html.RenderAction("_CommunityAdminNavbarAndSideMenu"); }
+}
+@section mystyles{
+    <style>
+        #report_wrapper{
+            overflow-x: hidden;
+        }
+        #report td {
+            border: 1px solid #1d486a;
+        }
+
+        #report th {
+            border: 1px solid #1d486a;
+        }
+
+        .userModallabel {
+            margin-top: 10px;
+        }
+    </style>
+}
+@section myscripts{
+@*<script src="http://mrrio.github.io/jsPDF/dist/jspdf.debug.js"></script>
+
+    <script>
+        $(document).ready(function () {
+
+            var doc = new jsPDF('p','pt','letter');
+            var specialElementHandlers = {
+                '#editor': function (element, renderer) {
+                    return true;
+                }
+            };
+
+            $('#cmd').click(function () {
+                doc.fromHTML($('#content').html(), 15, 15, {
+                    'width': 370,
+                    'elementHandlers': specialElementHandlers
+                });
+                doc.save('Pdf file.pdf');
+            });
+
+        });
+  
+    </script>*@
+    <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false">
+    </script>
+    <script type="text/javascript">
+        function showMap(lat, lng, complaintID) {
+            $("#map_" + complaintID).attr("src", "http://maps.google.com/maps?q=" + lat + "," + lng + "&z=15&output=embed");
+
+        }
+
+    </script>
+
+
+
+    @*display modal in center*@
+    <script type="text/javascript">
+        $(document).ready(function () {
+            function alignModal() {
+                var modalDialog = $(this).find(".modal-dialog");
+                /* Applying the top margin on modal dialog to align it vertically center */
+                modalDialog.css("margin-top", Math.max(0, ($(window).height() - modalDialog.height()) / 2));
+            }
+            // Align modal when it is displayed
+            $(".modal").on("shown.bs.modal", alignModal);
+
+            // Align modal when user resize the window
+            $(window).on("resize", function () {
+                $(".modal:visible").each(alignModal);
+            });
+        });
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+
+    <script type="text/javascript">
+    var modalCheck = 0;
+    var btnPopoverID = null;
+
+    function showUserDetail(id, userImage, name, emailID, contact, address) {
+
+        btnPopoverID = id;
+        var image = '<div class="profilePopover" style=""><center><div class="profilepic" style="margin-top:2%;width:100px;height:100px;border-radius:60px;"><img src=' + userImage + ' style="object-fit: cover;width: 100px;    height: 100px;" class="img-circle" /></div></center>'
+     + '<center><label id="profileName" style="font-family:Roboto-Regular;font-size:16px;margin-top:5%;">' + name + '</label><br></center>' +
+     //'<center><label id="profileOwner" style="font-family:Roboto-Light;font-size:14px;;margin-top:6%;">' + userType + '</label><br></center>' +
+     //'<center><label id="profileEmail" style="font-family:Roboto-Light;font-size:14px;margin-top:2%;">' + emailID + '</label><br></center>' +
+     '<center><label id="profileAddress"  style="font-family:Roboto-Light;font-size:14px;margin-top:2%;margin-bottom:-1%;">' + address + '</label><br></center>' +
+     '<center><label id="profileNo"  style="font-family:Roboto-Light;font-size:14px;margin-top:-1%;">' + contact + '</label><br>' +
+     '</div> ';
+        $('#profileLink' + id).popover({ placement: 'right', content: image, html: true });
+    }
+
+    function initializeUserDetail(id, userImage, name, emailID, contact, address) {
+        btnPopoverID = id;
+        var image = '<div class="profilePopover" style=""><center><div class="profilepic" style="margin-top:2%;width:100px;height:100px;border-radius:60px;"><img src=' + userImage + ' style="object-fit: cover;width: 100px;    height: 100px;" class="img-circle" /></div></center>'
+     + '<center><label id="profileName" style="font-family:Roboto-Regular;font-size:16px;margin-top:5%;">' + name + '</label><br></center>' +
+     //'<center><label id="profileOwner" style="font-family:Roboto-Light;font-size:14px;;margin-top:6%;">' + userType + '</label><br></center>' +
+     //'<center><label id="profileEmail" style="font-family:Roboto-Light;font-size:14px;margin-top:2%;">' + emailID + '</label><br></center>' +
+     '<center><label id="profileAddress"  style="font-family:Roboto-Light;font-size:14px;margin-top:2%;margin-bottom:-1%;">' + address + '</label><br></center>' +
+     '<center><label id="profileNo"  style="font-family:Roboto-Light;font-size:14px;margin-top:-1%;">' + contact + '</label><br>' +
+     '</div> ';
+        $('#profileLink' + id).popover({ placement: 'right', content: image, html: true }).prop("");
+    }
+
+
+
+    function showUserDetailJavaScript(id, userImage, firstName, lastName, emailID, contact, addressArray, StreetFloorArray) {
+        var address;
+        var StreetFloor;
+        if (addressArray == undefined) {
+            address = "";
+        }
+        else {
+            var addressSplitArray = addressArray.split(",");
+            address = addressSplitArray[0];
+            for (i = 1; i < addressSplitArray.length; i++) {
+
+                address = address + " " + addressSplitArray[i];
+            }
+        }
+
+
+        if (StreetFloorArray == undefined) {
+            StreetFloor = "";
+        }
+        else {
+            var streetFloorSplitArray = StreetFloorArray.split(",");
+            StreetFloor = streetFloorSplitArray[0];
+            for (i = 1; i < streetFloorSplitArray.length; i++) {
+
+                StreetFloor = StreetFloor + " " + streetFloorSplitArray[i];
+            }
+
+        }
+
+        btnPopoverID = id;
+        var image = '<div class="profilePopover" style=""><center><div class="profilepic" style="margin-top:2%;width:100px;height:100px;border-radius:60px;"><img src=' + userImage + ' style="object-fit: cover;width: 100px;    height: 100px;" class="img-circle" /></div></center>'
+     + '<center><label id="profileName" style="font-family:Roboto-Regular;font-size:16px;margin-top:5%;">' + firstName + ' ' + lastName + '</label><br></center>' +
+     //'<center><label id="profileOwner" style="font-family:Roboto-Light;font-size:14px;;margin-top:6%;">' + userType + '</label><br></center>' +
+     //'<center><label id="profileEmail" style="font-family:Roboto-Light;font-size:14px;margin-top:2%;">' + emailID + '</label><br></center>' +
+     '<center><label id="profileAddress"  style="font-family:Roboto-Light;font-size:14px;margin-top:2%;margin-bottom:-1%;">' + address + ' , ' + StreetFloor + '</label><br></center>' +
+     '<center><label id="profileNo"  style="font-family:Roboto-Light;font-size:14px;margin-top:-1%;"> ' + contact + '</label><br>' +
+     '</div> ';
+        $('#profileLink' + id).popover({ placement: 'right', content: image, html: true });
+    }
+
+    function initializeUserDetailJavaScript(id, userImage, firstName, lastName, emailID, contact, addressArray, StreetFloorArray) {
+
+        var address;
+        var StreetFloor;
+        if (addressArray == undefined) {
+            address = "";
+        }
+        else {
+            var addressSplitArray = addressArray.split(",");
+            address = addressSplitArray[0];
+            for (i = 1; i < addressSplitArray.length; i++) {
+
+                address = address + " " + addressSplitArray[i];
+            }
+        }
+
+
+        if (StreetFloorArray == undefined) {
+            StreetFloor = "";
+        }
+        else {
+            var streetFloorSplitArray = StreetFloorArray.split(",");
+            StreetFloor = streetFloorSplitArray[0];
+            for (i = 1; i < streetFloorSplitArray.length; i++) {
+
+                StreetFloor = StreetFloor + " " + streetFloorSplitArray[i];
+            }
+
+        }
+
+        btnPopoverID = id;
+        var image = '<div class="profilePopover" style=""><center><div class="profilepic" style="margin-top:2%;width:100px;height:100px;border-radius:60px;"><img src=' + userImage + ' style="object-fit: cover;width: 100px;    height: 100px;" class="img-circle" /></div></center>'
+     + '<center><label id="profileName" style="font-family:Roboto-Regular;font-size:16px;margin-top:5%;">' + firstName + ' ' + lastName + '</label><br></center>' +
+     //'<center><label id="profileOwner" style="font-family:Roboto-Light;font-size:14px;;margin-top:6%;">' + userType + '</label><br></center>' +
+     //'<center><label id="profileEmail" style="font-family:Roboto-Light;font-size:14px;margin-top:2%;">' + emailID + '</label><br></center>' +
+     '<center><label id="profileAddress"  style="font-family:Roboto-Light;font-size:14px;margin-top:2%;margin-bottom:-1%;">' + address + ' , ' + StreetFloor + '</label><br></center>' +
+     '<center><label id="profileNo"  style="font-family:Roboto-Light;font-size:14px;margin-top:-1%;"> ' + contact + '</label><br>' +
+     '</div> ';
+        $('#profileLink' + id).popover({ placement: 'right', content: image, html: true });
+    }
+
+
+    $(document).on('change', '.changeStatus', function () {
+
+        bid = this.id;
+        var id = bid.split("_")[0];
+        statusId = $("#" + bid).val();
+        var value = $("#" + bid).children("option").filter(":selected").html();
+ 
+        $.ajax({
+            url: '@Url.Action("ComplaintChangeStatus", "Home")',
+            type: 'POST',
+            data: { "complaintID": id, "statusID": statusId },
+            dataType: 'json',
+
+            success: function (response) {
+                if (response.success == "Success") {
+                    $("#chartPartialViewContainer").load('@Url.Action("_ComplaintsChartPartialView", "home")');
+                        //$("#" + id + "_btnReceived").css("background-color", "#65B71D");
+                        //$("#" + id + "_btnReceived").prop('disabled', true);
+                        //$("#" + id + "_btnReceived").html('Received');
+
+                        //$("#" + id + "Status").text("Updated");
+                    }
+                },
+                error: function (error) {
+                    alert("error");
+                }
+            });
+        });
+
+        function Initialize() {
+            $("#report tr:even").addClass("even");
+            $("#report tr:not(.even)").hide();
+            $("#report tr:first-child").show();
+            $("#head2").hide();
+            var bid = null;
+            btnPopoverID = null;
+            $(".changeStatus").click(function () {
+                bid = this.id;
+                //btnReceivedClick(bid);
+            });
+
+
+
+
+            @*function btnReceivedClick(elem) {
+            bid = elem;
+            var select1 = document.getElementById(elem);
+            var option1 = select1.options[select1.selectedIndex];
+            var statusId = option1.value;
+            var id = bid.split("_")[0];
+            $.ajax({
+                url: '@Url.Action("ComplaintChangeStatus", "Home")',
+                type: 'POST',
+                data: { "complaintID": id,"statusID":statusId },
+                dataType: 'json',
+
+                success: function (response) {
+                    if (response.success == "Success") {
+
+                        $("#" + id + "_btnReceived").css("background-color", "#65B71D");
+                        $("#" + id + "_btnReceived").prop('disabled', true);
+                        $("#" + id + "_btnReceived").html('Received');
+
+                        $("#" + id + "Status").text("Updated");
+                    }
+                },
+                error: function (error) {
+                }
+            });
+
+
+        }*@
+            $("#tableBody tr.even").click(function () {
+                var trid = $(this).closest('tr').attr('id');
+
+
+
+                if (bid == null && btnPopoverID == null) {
+                    $(".expand").css("display", "none");
+                    $(".unexpand").css("display", "");
+                    if (trid === "head1") {
+                    }
+                    if (trid !== "head1") {
+                        $(this).next("tr").fadeIn();
+                        $(this).hide();
+                        $("#head1").css("display", "none");
+                        $("#head2").css("display", "");
+                    }
+                }
+                else {
+                    bid = null;
+                    btnPopoverID = null;
+                }
+            });
+            $("#tableBody tr:not(.even)").click(function () {
+
+                var trid = $(this).closest('tr').attr('id');
+
+                if (modalImageID == null) {
+
+
+                    if (trid == "head2") {
+
+                    }
+                    else {
+                        if (modalCheck == 0)
+                            $()
+
+                        $("#head" + 2).css("display", "none");
+
+                        $("#head1").css("display", "")
+                        $(this).prev("tr").toggle();
+                        $(this).hide()
+
+                    }
+                }
+                else {
+                    modalImageID = null;
+                }
+            });
+
+    }
+    var modalImageID = null;
+    function setModalImageID(elem) {
+        modalImageID = elem;
+
+
+    }
+    //$(document).ready(function () {
+
+    //    Initialize();
+
+    //});
+
+
+    @*$("#complaintCatagory").click(function () {
+
+            $.ajax({
+                url: '@Url.Action("ComplaintChangeStatus", "Home")',
+                type: 'POST',
+                data: { "complaintID": id },
+                dataType: 'json',
+
+                success: function (response) {
+                    if (response.success == "Success") {
+
+                        $("#" + id + "_btnReceived").css("background-color", "#65B71D");
+                        $("#" + id + "_btnReceived").prop('disabled', true);
+
+
+                        $("#" + id + "Status").text("Updated");
+                    }
+                },
+                error: function (error) {
+                }
+            });
+        });*@
+        function RefreshGraph() {
+            var select1 = document.getElementById("RefreshComplaintGraph");
+            var option1 = select1.options[select1.selectedIndex];
+            var GraphType = option1.value;
+            $("#" + GraphType).click();
+        }
+
+    //...................................Sorting Complaints......................................................
+
+    function SearchbyDate() {
+        $.spin('true');
+        var select1 = document.getElementById("ComplaintByDate");
+        var option1 = select1.options[select1.selectedIndex];
+
+
+        var ComplaintsiReportID = option1.value;
+
+        $("#complaitsPartialView").load('@Url.Action("ComplaintSearch", "home")?ComplaintsiReportID=' + ComplaintsiReportID + '&page=1');
+        $.spin('false');
+
+        @*$.ajax({
+            url: '@Url.Action("ComplaintSearch", "Home")',
+            type: 'POST',
+            data: { "ComplaintsiReportID": ComplaintsiReportID, "currentPage": 1 },
+            dataType: 'json',
+
+            success: function (response) {
+
+
+                $("#tableBody").children().remove();
+                $(".modals").children().remove();
+                $(".modals").remove();
+                var items = "";
+                var items2 = "";
+                var items3 = "";
+
+
+
+                $.each(response.ComplaintCatagoryDTO.complaints, function (i, item) {
+                    var addressArray;
+                    var streetFloorArray;
+                    if (item.member.address == null) {
+                        addressArray = " ";
+                    }
+                    else {
+                        addressArray = item.member.address.split(" ");
+                    }
+                    if (item.member.streetFloor == null) {
+                        streetFloorArray = " ";
+                    }
+                    else {
+                        streetFloorArray = item.member.streetFloor.split(" ");
+                    }
+
+
+                    if (item.complaint.user.image == null) {
+                        item.complaint.user.image = "";
+                    }
+                    if (item.complaint.user.firstName == null) {
+                        item.complaint.user.firstName = "";
+                    }
+                    if (item.complaint.user.lastName == null) {
+                        item.complaint.user.lastName = "";
+                    }
+                    if (item.complaint.user.userType == null) {
+                        item.complaint.user.userType = "";
+                    }
+                    if (item.complaint.user.emailID == null) {
+                        item.complaint.user.emailID = "";
+                    }
+                    if (item.complaint.user.contact == null) {
+                        item.complaint.user.contact = "";
+                    }
+                    items = "<tr id='row1' class=" + "unexpand" + " style='background-color:#fff;cursor: pointer;display:grid'>" +
+                "<td style='width: 80px;font-family:Roboto-Light;'>" + "<a style='cursor:pointer;' id='profileLink" + item.complaint.complaintID + "' class='profileLink' rel='popover' data-toggle='popover' data-content='' title='Popover with image' onmouseover=initializeUserDetailJavaScript('" + item.complaint.complaintID + "','" + item.complaint.user.image + "','" + item.complaint.user.firstName.trim() + "','" + item.complaint.user.lastName.trim() + "','" + item.complaint.user.emailID.trim() + "','" + item.complaint.user.contact.trim() + "','" + addressArray + "','" + streetFloorArray + "')  onclick=showUserDetailJavaScript(" + item.complaint.complaintID + "," + item.complaint.user.image + "," + item.complaint.user.firstName.trim() + "','" + item.complaint.user.lastName.trim() + "," + item.complaint.user.emailID + "," + item.complaint.user.contact.trim() + "," + addressArray + "','" + streetFloorArray + "') >" + item.complaint.user.firstName + " " + item.complaint.user.lastName + "</a></td>" +
+                           "<td style='width:10px;font-family:Roboto-Light'>" + item.complaint.CommunityiReports.iReportsName + "</td>" +
+                            "<td style='width: 40%;font-family:Roboto-Light'>" + item.complaint.desc.substring(0, 30) + "</td>";
+
+
+
+                    var i = 0;
+                    if (item.complaint.image1 != null) {
+                        i++;
+                    }
+                    if (item.complaint.image2 != null) {
+                        i++;
+                    }
+                    if (item.complaint.image3 != null) {
+                        i++;
+                    }
+                    var date = new Date(parseInt(item.complaint.Date.substr(6)));
+                    var myDate = new Date(date);
+                    //var formattedDate = myDate.toLocaleString();
+                    //var month = (date.getUTCMonth()+1);
+                    //var formattedTime = myDate.toLocaleString();
+
+                    items += "<td>" + i + " <i class='glyphicon glyphicon-paperclip'></i></td><td>" + date.getDate() + "/" + (date.getUTCMonth() + 1) + "/" + date.getFullYear() + " " + date.toLocaleTimeString() + "</td>";
+
+                    if (item.complaint.complaintStatusID == 1) {
+                        items += " <td>" +
+                                  "<center>" +
+                                      "<select id='" + item.complaint.complaintID + "_btnReceived' onchange='btnReceivedClick(this.id)' class='dropdown changeStatus' style='width: 100%;color:black; height:24px; font-size:12px;background-color:white;float:right;margin-right: 2px;'>" +
+                                          //"<option value='1' style='font-family: Roboto-Light' selected>Update</option>" +
+                                          "<option value='2' style='font-family: Roboto-Light'>Received</option>" +
+                                          "<option value='3' style='font-family: Roboto-Light'>Closed</option>" +
+
+
+                                      "</select>" +
+                                  "</center>" +
+                              "</td>";
+                    }
+                    if (item.complaint.complaintStatusID == 2) {
+                        items += " <td>" +
+                                       "<center>" +
+                                           "<select id='" + item.complaint.complaintID + "_btnReceived' onchange='btnReceivedClick(this.id)' class='dropdown changeStatus' style='width: 100%;color:black; height:24px; font-size:12px;background-color:white;float:right;margin-right: 2px;'>" +
+                                               //"<option value='1' style='font-family: Roboto-Light' >Update</option>" +
+                                               "<option value='2' style='font-family: Roboto-Light' selected>Received</option>" +
+                                               "<option value='3' style='font-family: Roboto-Light'>Closed</option>" +
+
+
+                                           "</select>" +
+                                       "</center>" +
+                                   "</td>";
+                    }
+                    if (item.complaint.complaintStatusID == 3) {
+                        items += " <td>" +
+                                "<center>" +
+                                    "<select id='" + item.complaint.complaintID + "_btnReceived' onchange='btnReceivedClick(this.id)' class='dropdown changeStatus' style='width: 100%;color:black; height:24px; font-size:12px;background-color:white;float:right;margin-right: 2px;'>" +
+                                        //"<option value='1' style='font-family: Roboto-Light' >Update</option>" +
+                                        "<option value='2' style='font-family: Roboto-Light' >Received</option>" +
+                                        "<option value='3' style='font-family: Roboto-Light'selected>Closed</option>" +
+
+
+                                    "</select>" +
+                                "</center>" +
+                            "</td>";
+                    }
+
+
+
+
+
+
+
+                    items += "<tr id='row2' class=" + "expand" + " style=background-color:#DADADA;display:none>" +
+                            "<td style='font-family:Roboto-Light'>" + item.complaint.user.firstName + " " + item.complaint.user.lastName + "</td>" +
+                            "<td colspan='2' style='font-family:Roboto-Light' width='45%'>" + item.complaint.desc + "</td>" +
+                            "<td colspan='2'>" +
+                            "<a data-toggle='modal' href='#mapDialog_" + item.complaint.complaintID + "' onclick='showMap(" + item.complaint.lat + "," + item.complaint.lng + "," + item.complaint.complaintID + ")'>" + item.complaint.address + "</a>" +
+                            "</td>";
+
+                    if (item.complaint.image1 != null) {
+                        items += "<td colspan='3'>" +
+                            "<a data-toggle='modal' href='#Modal" + item.complaint.complaintID + "' id='ahref" + item.complaint.complaintID + "' onclick='setModalImageID('ahref" + item.complaint.complaintID + "')' ><img src='" + item.complaint.image1 + "' class=ImagePreviewBox id='image" + item.complaint.complaintID + "' style=width:80%;margin-top:1%;margin-bottom:2%; /></a></td></tr>";
+
+
+                    }
+                    else {
+                        items += "<td colspan='3'></td></tr>";
+                    }
+
+
+
+                    items3 = "<div class='modals'><div class='modal fade' id='Modal" + item.complaint.complaintID + "' role='dialog'>" +
+                        "<div class='modal-dialog modal-xs'>" +
+                            "<div class='modal-content'>" +
+                                "<div class='modal-header' id='header' style='background:#367fa9'>" +
+                                    "<button type='button' class='close' data-dismiss='modal'>&times;</button>" +
+                                    "<h4 style='margin-left:20px;color:white;margin-bottom:0px'><strong>Uploaded Image</strong></h4>" +
+                                "</div>" +
+
+                               "<div class='modal-body' id='modal-style'>" +
+                                    "<center>" +
+                                        "<img src='" + item.complaint.image1 + "' id='modalImage_" + item.complaint.complaintID + "' style='height:50%;width:50%'>" +
+                                    "</center>" +
+                                "</div>" +
+                                "<div class='modal-footer'>" +
+                                    "<center>" +
+                                        "<img src='" + item.complaint.image1 + "' id='image1_" + item.complaint.complaintID + "' class='img-thumbnail' onclick='SetModalBodyImage(this.id);' style='border:1px solid #367FA9;height:44px;width:59px;cursor: pointer;'>";
+                    if (item.complaint.image2 != null) {
+                        items3 += "<img src='" + item.complaint.image2 + "' id='image2_" + item.complaint.complaintID + "' class='img-thumbnail' onclick='SetModalBodyImage(this.id);' style='border:1px solid #367FA9;height:44px;width:59px;cursor: pointer;'>";
+                    }
+                    if (item.complaint.image3 != null) {
+                        items3 += "<img src='" + item.complaint.image3 + "' id='image3_" + item.complaint.complaintID + "' class='img-thumbnail' onclick='SetModalBodyImage(this.id);' style='border:1px solid #367FA9;height:44px;width:59px;cursor: pointer;'>";
+                    }
+                    items3 += "</center>" +
+"</div>" +
+
+"</div>" +
+"</div>" +
+"</div>";
+
+
+                    items3 += "<div class=modal fade id=mapDialog_" + item.complaint.complaintID + " role=dialog>" +
+                                        "<div class=modal-dialog modal-xs>" +
+                                            "<div class=modal-content>" +
+                                               "<div class=modal-header id=header style=background:#367fa9>" +
+                                                    "<button type=button class=close data-dismiss=modal>&times;</button>" +
+                                                    "<h4 style=margin-left:20px;color:white;margin-bottom:0px><strong>Map</strong></h4>" +
+                                                "</div>" +
+
+                                                "<div class=modal-body id=modal-style>" +
+                                                    "<center><iframe id=map_" + item.complaint.complaintID + " style=height: 450px;width:100% src=''></iframe></center>" +
+                                                "</div></div></div>";
+
+
+
+
+                    $("#tableBody").append(items);
+                    $("#tableBody").append(items3);
+
+
+                });
+          
+                Initialize();
+               
+            },
+            error: function (error) {
+            }
+        });*@
+    }
+
+        @*$(function() {
+            $('#myPager').on('click', 'a', function (e) {
+                alert("xxx");
+            //prevent action link normal functionality
+            e.preventDefault();
+
+            //ajax call index controller action
+            $.ajax({
+                url: this.href,
+                type: 'GET',
+                cache: false,
+                success: function (result) {
+                    //load returned data inside contentFrame DIV
+                    $("#complaitsPartialView").load('@Url.Action("ComplaintSearch", "home")?ComplaintsiReportID=' + ComplaintsiReportID + '&page=1');
+
+                }
+            });
+        });
+        });*@
+
+    function SearchComplaints() {
+        $.spin('true');
+        var select1 = document.getElementById("ComplaintCatagory");
+        var option1 = select1.options[select1.selectedIndex];
+      
+
+        var ComplaintsiReportID = option1.value;
+        if (ComplaintsiReportID != -1) {
+            $('#ComplaintByDate').val('-1');
+            $("#ComplaintByDate").attr("disabled", true);
+            $("#ComplaintByDate").css("background-color", "#C7C7C7");
+
+        }
+        else {
+            $("#ComplaintByDate").attr("disabled", false);
+            $("#ComplaintByDate").css("background-color", "#ffffff");
+        }
+        $("#complaitsPartialView").load('@Url.Action("ComplaintSearch", "home")?ComplaintsiReportID=' + ComplaintsiReportID + '&page=1');
+        $.spin('false');
+        @*$.ajax({
+            url: '@Url.Action("ComplaintSearch", "Home")',
+            type: 'POST',
+            data: { "ComplaintsiReportID": ComplaintsiReportID ,"currentPage": 1},
+            dataType: 'json',
+
+            success: function (response) {
+
+
+                $("#tableBody").children().remove();
+                $(".modals").children().remove();
+                $(".modals").remove();
+                var items = "";
+                var items2 = "";
+                var items3 = "";
+                if (ComplaintsiReportID == -1) {
+                    $("#CatagoryHeading").html("All iReports");
+                }
+                else {
+                    $("#CatagoryHeading").html(option1.id);//it set the name because in id the name is in id.
+                }
+
+                //$("#iReportUpdateHidden").val(response.ComplaintCatagoryDTO.totalUpdatedComplaintsPercentage);
+                //$("#iReportReceivedHidden").val(response.ComplaintCatagoryDTO.totalReceivedComplaintsPercentage);
+                //$("#iReportCloseHidden").val(response.ComplaintCatagoryDTO.totalClosedComplaintsPercentage);
+                $("#totalSelectedCatagoryComplaintsPercentageNumber").html(response.ComplaintCatagoryDTO.totalSelectedCatagoryComplaintsPercentage + "%");
+                $("#totalSelectedCatagoryComplaintsPercentageBar").css("width", response.ComplaintCatagoryDTO.totalSelectedCatagoryComplaintsPercentage + "%");
+
+                //$("#totalUpdatedComplaintsPercentageNumber").html(response.ComplaintCatagoryDTO.totalUpdatedComplaintsPercentage + "%");
+                //$("#totalUpdatedComplaintsPercentageBar").css("width", response.ComplaintCatagoryDTO.totalUpdatedComplaintsPercentage + "%");
+
+                $("#totalReceivedComplaintsPercentageNumber").html(response.ComplaintCatagoryDTO.totalReceivedComplaintsPercentage + "%");
+                $("#totalReceivedComplaintsPercentageBar").css("width", response.ComplaintCatagoryDTO.totalReceivedComplaintsPercentage + "%");
+
+                $("#totalClosedComplaintsPercentageNumber").html(response.ComplaintCatagoryDTO.totalClosedComplaintsPercentage + "%");
+                $("#totalClosedComplaintsPercentageBar").css("width", response.ComplaintCatagoryDTO.totalClosedComplaintsPercentage + "%");
+
+               
+                $.each(response.ComplaintCatagoryDTO.complaints, function (i, item) {
+                    var addressArray;
+                    var streetFloorArray;
+                    if (item.member.address == null) {
+                        addressArray = " ";
+                    }
+                    else {
+                        addressArray = item.member.address.split(" ");
+                    }
+                    if (item.member.streetFloor == null) {
+                        streetFloorArray = " ";
+                    }
+                    else {
+                        streetFloorArray = item.member.streetFloor.split(" ");
+                    }
+
+
+                    if (item.complaint.user.image == null) {
+                        item.complaint.user.image = "";
+                    }
+                    if (item.complaint.user.firstName == null) {
+                        item.complaint.user.firstName = "";
+                    }
+                    if (item.complaint.user.lastName == null) {
+                        item.complaint.user.lastName = "";
+                    }
+                    if (item.complaint.user.userType == null) {
+                        item.complaint.user.userType = "";
+                    }
+                    if (item.complaint.user.emailID == null) {
+                        item.complaint.user.emailID = "";
+                    }
+                    if (item.complaint.user.contact == null) {
+                        item.complaint.user.contact = "";
+                    }
+                    items = "<tr id='row1' class=" + "unexpand" + " style='background-color:#fff;cursor: pointer;display:grid'>" +
+                "<td style='width: 80px;font-family:Roboto-Light;'>" + "<a style='cursor:pointer;' id='profileLink" + item.complaint.complaintID + "' class='profileLink' rel='popover' data-toggle='popover' data-content='' title='Popover with image' onmouseover=initializeUserDetailJavaScript('" + item.complaint.complaintID + "','" + item.complaint.user.image + "','" + item.complaint.user.firstName.trim() + "','" + item.complaint.user.lastName.trim() + "','" + item.complaint.user.emailID.trim() + "','" + item.complaint.user.contact.trim() + "','" + addressArray + "','" + streetFloorArray + "')  onclick=showUserDetailJavaScript(" + item.complaint.complaintID + "," + item.complaint.user.image + "," + item.complaint.user.firstName.trim() + "','" + item.complaint.user.lastName.trim() + "," + item.complaint.user.emailID + "," + item.complaint.user.contact.trim() + "," + addressArray + "','" + streetFloorArray + "') >" + item.complaint.user.firstName + " " + item.complaint.user.lastName + "</a></td>" +
+                           "<td style='width:10px;font-family:Roboto-Light'>" + item.complaint.CommunityiReports.iReportsName + "</td>" +
+                            "<td style='width: 40%;font-family:Roboto-Light'>" + item.complaint.desc.substring(0, 30) + "</td>";
+
+
+
+                    var i = 0;
+                    if (item.complaint.image1 != null) {
+                        i++;
+                    }
+                    if (item.complaint.image2 != null) {
+                        i++;
+                    }
+                    if (item.complaint.image3 != null) {
+                        i++;
+                    }
+                    var date = new Date(parseInt(item.complaint.Date.substr(6)));
+                    var myDate = new Date(date);
+                    //var formattedDate = myDate.toLocaleString();
+                    //var month = (date.getUTCMonth()+1);
+                    //var formattedTime = myDate.toLocaleString();
+
+                    items += "<td>" + i + " <i class='glyphicon glyphicon-paperclip'></i></td><td>" + date.getDate() + "/" + (date.getUTCMonth() + 1) + "/" + date.getFullYear() + " " + date.toLocaleTimeString() + "</td>";
+
+                    if (item.complaint.complaintStatusID == 1) {
+                        items += " <td>" +
+                                  "<center>" +
+                                      "<select id='" + item.complaint.complaintID + "_btnReceived' onchange='btnReceivedClick(this.id)' class='dropdown changeStatus' style='width: 100%;color:black; height:24px; font-size:12px;background-color:white;float:right;margin-right: 2px;'>" +
+                                          //"<option value='1' style='font-family: Roboto-Light' selected>Update</option>" +
+                                          "<option value='2' style='font-family: Roboto-Light'>Received</option>" +
+                                          "<option value='3' style='font-family: Roboto-Light'>Closed</option>" +
+
+
+                                      "</select>" +
+                                  "</center>" +
+                              "</td>";
+                    }
+                    if (item.complaint.complaintStatusID == 2) {
+                        items += " <td>" +
+                                       "<center>" +
+                                           "<select id='" + item.complaint.complaintID + "_btnReceived' onchange='btnReceivedClick(this.id)' class='dropdown changeStatus' style='width: 100%;color:black; height:24px; font-size:12px;background-color:white;float:right;margin-right: 2px;'>" +
+                                               //"<option value='1' style='font-family: Roboto-Light' >Update</option>" +
+                                               "<option value='2' style='font-family: Roboto-Light' selected>Received</option>" +
+                                               "<option value='3' style='font-family: Roboto-Light'>Closed</option>" +
+
+
+                                           "</select>" +
+                                       "</center>" +
+                                   "</td>";
+                    }
+                    if (item.complaint.complaintStatusID == 3) {
+                        items += " <td>" +
+                                "<center>" +
+                                    "<select id='" + item.complaint.complaintID + "_btnReceived' onchange='btnReceivedClick(this.id)' class='dropdown changeStatus' style='width: 100%;color:black; height:24px; font-size:12px;background-color:white;float:right;margin-right: 2px;'>" +
+                                        //"<option value='1' style='font-family: Roboto-Light' >Update</option>" +
+                                        "<option value='2' style='font-family: Roboto-Light' >Received</option>" +
+                                        "<option value='3' style='font-family: Roboto-Light'selected>Closed</option>" +
+
+
+                                    "</select>" +
+                                "</center>" +
+                            "</td>";
+                    }
+
+
+
+
+
+
+
+                    items += "<tr id='row2' class=" + "expand" + " style=background-color:#DADADA;display:none>" +
+                            "<td style='font-family:Roboto-Light'>" + item.complaint.user.firstName + " " + item.complaint.user.lastName + "</td>" +
+                            "<td colspan='2' style='font-family:Roboto-Light' width='45%'>" + item.complaint.desc + "</td>" +
+                            "<td colspan='2'>" +
+                            "<a data-toggle='modal' href='#mapDialog_" + item.complaint.complaintID + "' onclick='showMap(" + item.complaint.lat + "," + item.complaint.lng + "," + item.complaint.complaintID + ")'>" + item.complaint.address + "</a>" +
+                            "</td>";
+
+                    if (item.complaint.image1 != null) {
+                        items += "<td colspan='3'>" +
+                            "<a data-toggle='modal' href='#Modal" + item.complaint.complaintID + "' id='ahref" + item.complaint.complaintID + "' onclick='setModalImageID('ahref" + item.complaint.complaintID + "')' ><img src='" + item.complaint.image1 + "' class=ImagePreviewBox id='image" + item.complaint.complaintID + "' style=width:80%;margin-top:1%;margin-bottom:2%; /></a></td></tr>";
+
+
+                    }
+                    else {
+                        items += "<td colspan='3'></td></tr>";
+                    }
+
+
+
+                    items3 = "<div class='modals'><div class='modal fade' id='Modal" + item.complaint.complaintID + "' role='dialog'>" +
+                        "<div class='modal-dialog modal-xs'>" +
+                            "<div class='modal-content'>" +
+                                "<div class='modal-header' id='header' style='background:#367fa9'>" +
+                                    "<button type='button' class='close' data-dismiss='modal'>&times;</button>" +
+                                    "<h4 style='margin-left:20px;color:white;margin-bottom:0px'><strong>Uploaded Image</strong></h4>" +
+                                "</div>" +
+
+                               "<div class='modal-body' id='modal-style'>" +
+                                    "<center>" +
+                                        "<img src='" + item.complaint.image1 + "' id='modalImage_" + item.complaint.complaintID + "' style='height:50%;width:50%'>" +
+                                    "</center>" +
+                                "</div>" +
+                                "<div class='modal-footer'>" +
+                                    "<center>" +
+                                        "<img src='" + item.complaint.image1 + "' id='image1_" + item.complaint.complaintID + "' class='img-thumbnail' onclick='SetModalBodyImage(this.id);' style='border:1px solid #367FA9;height:44px;width:59px;cursor: pointer;'>";
+                    if (item.complaint.image2 != null) {
+                        items3 += "<img src='" + item.complaint.image2 + "' id='image2_" + item.complaint.complaintID + "' class='img-thumbnail' onclick='SetModalBodyImage(this.id);' style='border:1px solid #367FA9;height:44px;width:59px;cursor: pointer;'>";
+                    }
+                    if (item.complaint.image3 != null) {
+                        items3 += "<img src='" + item.complaint.image3 + "' id='image3_" + item.complaint.complaintID + "' class='img-thumbnail' onclick='SetModalBodyImage(this.id);' style='border:1px solid #367FA9;height:44px;width:59px;cursor: pointer;'>";
+                    }
+                    items3 += "</center>" +
+"</div>" +
+
+"</div>" +
+"</div>" +
+"</div>";
+
+
+                    items3 += "<div class=modal fade id=mapDialog_" + item.complaint.complaintID + " role=dialog>" +
+                                        "<div class=modal-dialog modal-xs>" +
+                                            "<div class=modal-content>" +
+                                               "<div class=modal-header id=header style=background:#367fa9>" +
+                                                    "<button type=button class=close data-dismiss=modal>&times;</button>" +
+                                                    "<h4 style=margin-left:20px;color:white;margin-bottom:0px><strong>Map</strong></h4>" +
+                                                "</div>" +
+
+                                                "<div class=modal-body id=modal-style>" +
+                                                    "<center><iframe id=map_" + item.complaint.complaintID + " style=height: 450px;width:100% src=''></iframe></center>" +
+                                                "</div></div></div>";
+
+
+
+
+                    $("#tableBody").append(items);
+                    $("#tableBody").append(items3);
+
+
+                });
+                 Initialize();
+                $.spin('false');
+            },
+            error: function (error) {
+            }
+        });*@
+    }
+
+    function SetModalBodyImage(elem) {
+        var id = elem.split("_");
+        modalCheck = 1;
+        modalImageID = id[1];
+
+        var imageSrc = $("#" + elem).attr("src");
+        $("#modalImage_" + modalImageID).attr("src", imageSrc);
+
+        //var item = "<img src=" + imageSrc + " style=height:50%;width:50%>";
+
+        //$(".modal-body").html('').append(item);
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //--------------------------------------------------------------CommunityiReport----------------------------------------------------------
+    $(document).ready(function () {
+        $("#txt_AddiReportCatagory").keyup(function (e) {
+            if (e.keyCode == 13) {
+                $('#btn_AddiReportCatagory').click();
+            }
+        });
+        $('#btn_AddiReportCatagory').click(function () {
+
+            var iReportCatagory = $('#txt_AddiReportCatagory').val();
+            var item = "";
+            if ($('#txt_AddiReportCatagory').val() != "") {
+                $.ajax({
+                    url: '@Url.Action("AddiReportCatagory", "Home")',
+                    type: 'POST',
+                    data: { "iReportCatagory": iReportCatagory },
+                    dataType: 'json',
+
+                    success: function (response) {
+                        item = "<div class='row' style='margin-left:0px;margin-right: 0px;width:100%;background-color: #ededed;' id=iReportCatagory_" + response.responceCommunityiReports.model.CommunityiReportsID + " >" +
+                                   "<input id='txt_iReportCatagory_" + response.responceCommunityiReports.model.CommunityiReportsID + "' type='text' value='" + response.responceCommunityiReports.model.iReportsName + "' disabled='' class='txt_streetFloor' style='  font-family: Roboto-Light;background: transparent;width: 90.8%;border-color: transparent;padding-left: 12px;color: #2d2d2d;'>" +
+                                    "<button id='btn_EditiReportCatagory_" + response.responceCommunityiReports.model.CommunityiReportsID + "'class='btn_EditStreetFloor' style='margin-right: -5px;border: transparent;margin-left: -2%;background-color: transparent;' onclick=EditiReportCatagory(" + response.responceCommunityiReports.model.CommunityiReportsID + ")><i class='glyphicon glyphicon-pencil'></i></button>" +
+                                     "<button id='btn_DeleteiReportCatagory_" + response.responceCommunityiReports.model.CommunityiReportsID + "' class='btn_DeleteStreetFloor' style='    border-color: transparent;background-color: transparent;margin-left: -2px;' onclick=DeleteiReportCatagory(" + response.responceCommunityiReports.model.CommunityiReportsID + ")><i class='glyphicon glyphicon-trash' style=''></i></button>" +
+                                      "<button id='btn_UpdateiReportCatagory_" + response.responceCommunityiReports.model.CommunityiReportsID + "' class='btn_UpdateStreetFloor' style='display:none;border-right-color: transparent;border-left-color: transparent;border-bottom-color: transparent;margin-left: -1px;float: right;background-color: rgb(255, 255, 255);border-top-color: transparent;' onclick=UpdateiReportCatagory(" + response.responceCommunityiReports.model.CommunityiReportsID + ")><i class='glyphicon glyphicon-ok' style=''></i></button>" +
+                                  "</div>  <hr style='margin-top: 0px;margin-bottom: 0px;border-top: 1px solid rgb(220, 220, 220);' />";
+                        $("#communityStreetFloor").prepend(item);
+                        $('#txt_AddiReportCatagory').val("");
+                    },
+                    error: function (error) {
+                    }
+                });
+            }
+        });
+    });
+
+    function EditiReportCatagory(elem) {
+        $(".txt_streetFloor").prop("disabled", true);
+        $('.btn_EditStreetFloor').css("display", "inline");
+        $('.btn_DeleteStreetFloor').css("display", "inline");
+        $('.btn_UpdateStreetFloor').css("display", "none");
+        $('.txt_streetFloor').css('width', '91%');
+
+
+        $('#txt_iReportCatagory_' + elem).prop("disabled", false);
+        $('#btn_EditiReportCatagory_' + elem).css("display", "none");
+        $('#btn_DeleteiReportCatagory_' + elem).css("display", "none");
+        $('#btn_UpdateiReportCatagory_' + elem).css("display", "block");
+        $('#txt_iReportCatagory_' + elem).css('width', '93.785%');
+        $('#txt_iReportCatagory_' + elem).css('background', '#ffffff');
+    }
+    function UpdateiReportCatagory(elem) {
+
+        var iReportCatagory = $('#txt_iReportCatagory_' + elem).val();
+        var item = "";
+        $.ajax({
+            url: '@Url.Action("UpdateiReportCatagory", "Home")',
+            type: 'POST',
+            data: { "iReportCatagory": iReportCatagory, "iReportCatagoryId": elem },
+            dataType: 'json',
+
+            success: function (response) {
+                if (response.success == "Success") {
+                    $('#txt_iReportCatagory_' + elem).prop("disabled", true);
+                    $('#btn_EditiReportCatagory_' + elem).css("display", "inline");
+                    $('#btn_DeleteiReportCatagory_' + elem).css("display", "inline");
+                    $('#btn_UpdateiReportCatagory_' + elem).css("display", "none");
+                    $('#txt_iReportCatagory_' + elem).css('width', '91%');
+                    $('#txt_iReportCatagory_' + elem).css('background', '#ededed');
+                    rgb(235, 235, 228)
+                }
+            },
+            error: function (error) {
+            }
+        });
+
+    }
+    function DeleteiReportCatagory(elem) {
+        $.ajax({
+            url: '@Url.Action("DeleteiReportCatagory", "Home")',
+            type: 'POST',
+            data: { "iReportCatagoryId": elem },
+            dataType: 'json',
+
+            success: function (response) {
+                if (response.success == "Success") {
+                    $("#iReportCatagory_" + elem).remove();
+                }
+            },
+            error: function (error) {
+            }
+        });
+
+    }
+
+
+
+
+
+
+
+    </script>
+
+    <script type="text/javascript">
+    @*set  sidebar selected tab color*@
+        $(document).ready(function () {
+            $("#Community_Complaints").css("background-color", "#ffffff");
+            $("#Complaints").css("color", "#000000");
+        });
+    </script>
+}
+<style>
+    .canvasjs-chart-canvas{
+            /*width: 55% !important;*/
+    }
+    .modal-header{
+       background: #1d486a !important;
+    }
+    .close{
+        color: #FFFFFF;
+    opacity: 1;
+    }
+    .popover-title {
+        display: none;
+    }
+
+    #profileName {
+        font-weight: normal;
+    }
+
+    #profileAddress {
+        font-weight: normal;
+    }
+
+    #profileNo {
+        font-weight: normal;
+    }
+
+    .popover {
+        /*width: 300px;
+        height: 300px;*/
+        width: 200px;
+        height: auto;
+    }
+</style>
+<script>
+
+    //$(document).ready(function () {
+
+    //    var image = '<div class="profilePopover" style=""><center><div class="profilepic" style="margin-top:2%;width:120px;height:120px;border-radius:60px;border:2px solid #ebebeb;"><img src="" width:100% height:100%;/></div></center>'
+    //          + '<center><label id="profileName" style="font-family:Roboto-Regular;font-size:18px;margin-top:1%;">Taylor Phillipi</label><br></center>' +
+    //          '<center><label id="profileOwner" style="font-family:Roboto-Light;font-size:14px;;margin-top:6%;">Owner</label><br></center>' +
+    //          '<center><label id="profileEmail" style="font-family:Roboto-Light;font-size:14px;margin-top:2%;">Email ID</label><br></center>' +
+    //          '<center><label id="profileNo"  style="font-family:Roboto-Light;font-size:14px;margin-top:2%;">Mobile Number</label><br>' +
+    //          '<center><label id="profileAddress"  style="font-family:Roboto-Light;font-size:14px;margin-top:2%;margin-bottom:2%;">Address</label><br></center>' +
+    //          '</div> ';
+    //    $('.profileLink').popover({ placement: 'right', content: image, html: true });
+
+    //});
+
+
+
+
+
+    $('[data-toggle="popover"]').popover();
+
+    $('body').on('click', function (e) {
+        $('[data-toggle="popover"]').each(function () {
+            //the 'is' for buttons that trigger popups
+            //the 'has' for icons within a button that triggers a popup
+            if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
+                $(this).popover('hide');
+            }
+        });
+    });
+
+
+</script>
+<script>
+    $(document).ready(function () {
+        
+        var dropdownselectedindex = $("#dropdownselectedindex").val();
+        if (dropdownselectedindex == -1 || dropdownselectedindex == -2 || dropdownselectedindex == -3) {
+            $('#ComplaintByDate').val(dropdownselectedindex);
+            $("#ComplaintByDate").attr("disabled", false);
+            $("#ComplaintByDate").css("background-color", "#ffffff");
+        
+         
+        }
+        else {
+            $('#ComplaintByDate').val('-1');
+            $("#ComplaintByDate").attr("disabled", true);
+            $("#ComplaintByDate").css("background-color", "rgb(199, 199, 199)");
+        }
+       
+
+        //alert(option);
+
+    });
+    function GeneratePDG() {
+        var isImageInclude = $('#checkbox_Images').is(":checked")
+        var isLocationInclude = $('#checkbox_Locations').is(":checked")
+    
+        if (isImageInclude == true && isLocationInclude == true) {
+            var href = "../Home/PdfiReport?isImageInclude=" + isImageInclude + "&isLocationInclude=" + isLocationInclude; //Change "index.php" to the name of the page you want to navigate to.
+            $("#btn_GeneratePDF").attr("href", href);
+            $("#PdfOptions .close").click()
+            $("#btn_GeneratePDF").click();
+            
+            return;
+        }
+       else if (isImageInclude == true) {
+            var href = "../Home/PdfiReport?isImageInclude=" + isImageInclude; //Change "index.php" to the name of the page you want to navigate to.
+            $("#btn_GeneratePDF").attr("href", href);
+            $("#PdfOptions .close").click()
+            $("#btn_GeneratePDF").click();
+        
+            return;
+       }
+       else if (isLocationInclude == true) {
+           var href = "../Home/PdfiReport?isLocationInclude=" + isLocationInclude; //Change "index.php" to the name of the page you want to navigate to.
+           $("#btn_GeneratePDF").attr("href", href);
+           $("#PdfOptions .close").click()
+           $("#btn_GeneratePDF").click();
+      
+           return;
+       }
+       else {
+           var href = "../Home/PdfiReport"; 
+           $("#btn_GeneratePDF").attr("href", href);
+           $("#PdfOptions .close").click()
+           $("#btn_GeneratePDF").click();
+       
+           return;
+       }
+        
+       
+
+    }
+</script>
+
+
+   
+@*<script type="text/javascript">
+
+    $(function () {
+       
+        $('.iReportTable').DataTable({
+            "columnDefs": [{
+                "defaultContent": "-",
+                "targets": "_all"
+            }],
+            // it will display 15 rows (2 rows is equal to 1 row one is expanded and other is unexpanded)
+            "iDisplayLength": 30,
+            "paging": true,
+            "lengthChange": false,
+            "searching": false,
+            "ordering": false,
+            "info": true,
+            "autoWidth": false,
+             "destroy": true,
+        });
+    });
+</script>*@
+
+<style>
+    /*.dataTables_paginate  {
+       margin-left: auto;
+    margin-right: auto;
+    margin: auto;
+    width: 30%;
+  
+    padding: 10px
+}*/
+    .dataTables_info{
+        display:none !important
+    }
+    #report td {
+        border: 1px solid #f4f4f4;
+    }
+
+    #report tr {
+        border: 1px solid #f4f4f4;
+    }
+</style>
+@*<input type="hidden" id="iReportUpdateHidden" value="@Model.totalUpdatedComplaintsPercentage" />
+<input type="hidden" id="iReportReceivedHidden" value="@Model.totalReceivedComplaintsPercentage" />
+<input type="hidden" id="iReportCloseHidden" value="@Model.totalClosedComplaintsPercentage" />*@
+<div >
+    <div class="row">
+
+        <div class="col-md-2 pull-left">
+            <h1 style="font-family:Roboto-Light;font-size: 24px;text-transform:none;color:#1d486a">
+                iREPORTS
+            </h1>
+        </div>
+        <div class="col-md-7 pull-right">
+            <br />
+
+            @*<select class="dropdown" style="color:#ffffff; width:20%; background-color:#1d486a;float:right">
+                    <option selected>Sort</option>
+                </select>*@
+
+            <input type="hidden" id="dropdownselectedindex" value="@Convert.ToInt32(TempData["dropdownselectedindex"].ToString())" />
+        
+
+            <select id="ComplaintByDate" onchange="SearchbyDate()" class="dropdown" style="color:black; height:24px; font-size:12px;background-color:white;float:right;margin-right: 2px;">
+                <option value="-1" style="font-family: Roboto-Light" selected>Sort by Date</option>
+                <option style="font-family: Roboto-Light" value="-2">Ascending</option>
+                <option  value="-3" style="font-size:10px;color:black;font-family: Roboto-Light">Descending</option>
+
+
+            </select>
+         
+            
+            <select id="ComplaintCatagory" onchange="SearchComplaints()" class="dropdown" style="font-size:12px;height:24px;color:black; background-color:white;float:right;">
+                <option value="-1"   style="font-size:10px;font-family: Roboto-Light">All Categories</option>
+                @foreach (var item in Model.CommunityiReports)
+                {
+                    if (item.iReportsName != "Panding")
+                    {
+                        if (Convert.ToInt32(TempData["DropDownSelectedIndex"].ToString())== item.CommunityiReportsID)
+                        {
+                            <option selected style="font-family: Roboto-Light;font-size:10px;" id="@(item.iReportsName)" value="@(item.CommunityiReportsID)">@item.iReportsName</option>
+
+                        }
+                        else
+                        {
+                            <option style="font-family: Roboto-Light;font-size:10px;" id="@(item.iReportsName)" value="@(item.CommunityiReportsID)">@item.iReportsName</option>
+
+                        }
+
+                    }
+                }
+
+            </select>
+            <select id="RefreshComplaintGraph" onchange="RefreshGraph()" class="dropdown" style="color:black; height:24px; font-size:12px;background-color:white;float:right;margin-right: 2px;">
+                <option value="stackedBar" style="font-family: Roboto-Light" selected>stackedBar</option>
+                <option value="bar" style="font-family: Roboto-Light" selected>bar</option>
+                <option value="column" style="font-family: Roboto-Light" selected>column</option>
+                <option value="area" style="font-family: Roboto-Light" selected>area</option>
+                <option value="spline" style="font-family: Roboto-Light" selected>spline</option>
+                <option value="line" style="font-family: Roboto-Light" selected>line</option>
+                <option value="stepLine" style="font-family: Roboto-Light" selected>stepLine</option>
+                <option value="stackedColumn" style="font-family: Roboto-Light" selected>stackedColumn</option>
+                <option value="scatter" style="font-family: Roboto-Light" selected>scatter</option>
+                <option value="splineArea" style="font-family: Roboto-Light" selected>splineArea</option>
+                <option value="stackedArea" style="font-family: Roboto-Light" selected>stackedArea</option>
+
+
+            </select>
+            <a class="addNewiReportCatagory" data-toggle="modal" style="    color: #1d486a;margin-right: 15px;" href="#addiReportModalCatagory">+Add iReport Category</a>
+@if (Model.complaints.Count() != 0)
+{
+    <div class="row">
+        <div class="col-md-12">
+            <a class="btn btn-primary ComplaintsPDFGenerate " data-toggle="modal" style="    width: 125px;background-color: #1d486a;border-color: #1d486a;margin-bottom: 4px;" @*href="../Home/PdfiReport"*@ href="#PdfOptions">
+                Generate PDF
+            </a> 
+            <div  class="modal fade" id="PdfOptions" role="dialog">
+                <div class="modal-dialog modal-sm">
+                    <div class="modal-content" style="">
+                        <div class="modal-header" id="header" style="    height: 44px;background:#ffffff;border-bottom-color:#ffffff">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            @*<h4 style="margin-left:20px;color:white;margin-bottom:0px"><strong>Image</strong></h4>*@
+                        </div>
+                        <center><h3 style="font-family:Roboto-Light;padding-top: 0px;">Generate PDF</h3></center>
+                        @*<center><p id="AddCommunityError" style="font-family: Roboto-Light;padding-top: 0px;color: #FF1616;visibility: hidden;">Error of community</p></center>*@
+                        <div class="modal-body" id="modal-style">
+                            <center>
+                                <div class="row">
+
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <div class="col-md-12  col-sm-12">
+                                                <center>
+                                                    @*@Html.TextBoxFor(m => m.community.name, null, new { @class = "indexTextbox", placeholder = "Community Name" })*@
+                                                    <p>Please Select Option to include in PDF</p>
+                                                    </center>
+</div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6  col-sm-12">
+                                                @*@Html.TextBoxFor(m => m.community.name, null, new { @class = "indexTextbox", placeholder = "Community Name" })*@
+                                                <span style="">
+                                                    <input type="checkbox" id="checkbox_Images" value="1" />
+                                                    Images
+                                                </span>
+                                            </div>
+                                            <div class=" col-md-6 col-sm-12">
+                                                <span style="">
+                                                    <input type="checkbox" id="checkbox_Locations" value="1" />
+                                                    Locations
+                                                </span>
+                                            </div>
+                                        </div>
+                                       
+
+
+                                        @*<div class="row">
+                                    <div class="col-md-offset-4 col-md-8 col-sm-offset-3 col-sm-9">*@
+                                        <div class="row">
+                                            <div class="col-md-12  col-sm-12">
+                                                <center>
+                                                    <a class="btn btn-primary" id="btn_GeneratePDF" style="    margin-top: 13px; width: 125px;background-color: #1d486a;border-color: #1d486a;margin-bottom: 4px;" @*href="../Home/PdfiReport"*@ onclick="GeneratePDG()">
+                                                        Generate PDF
+                                                    </a>
+                                                </center>
+                                            </div>
+                                        </div>
+                                   
+                                        @*</div>
+                                    </div>*@
+                                    </div>
+                                </div>
+                            </center>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+               </div>
+       
+    </div>
+
+
+}
+
+
+
+            <div class="modal fade" id="addiReportModalCatagory" role="dialog">
+                <div class="modal-dialog modal-xs">
+                    <div class="modal-content" style="height: 340px;">
+                        @*<div class="modal-header" id="header" style="background:#367fa9">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 style="margin-left:20px;color:white;margin-bottom:0px"><strong>Image</strong></h4>
+                            </div>*@
+                        <center><h3 style="font-family:Roboto-Light;padding-top: 45px;">Category for iReports</h3></center>
+                        <div class="modal-body" id="modal-style">
+                            <center>
+                                <div class="row">
+
+                                    <div class="col-md-11" style=" margin-left: 25px;">
+                                        <div class="mCustomScrollbar" style=" height: 184px;border:2px solid #f4f4f4">
+
+                                            <div class="row" style="margin-left:0px;border: 3px solid #EBEBEb;margin-right: 0px;    width: 100%;">
+
+                                                <input id="txt_AddiReportCatagory" type="text" class="" style="font-family:Roboto-Light;width: 93%;border-color: transparent;color:#2d2d2d;padding:5px;padding-left: 4px;" placeholder="Add New Category">
+                                                <button id="btn_AddiReportCatagory" style="background-color: transparent;border-color: transparent;"><i class="glyphicon glyphicon-ok"></i></button>
+                                                @*<button style="margin-right: -5px;border-left-color: transparent;margin-left: -10px;background-color: #EBEBE4;border-right-color: transparent;border-bottom-color: rgba(221, 221, 221, 0.2);" class=""><i class="glyphicon glyphicon-pencil"></i></button>
+                                                    <button class="" style="border-right-color: rgba(221, 221, 221, 0.2);border-bottom-color: rgba(221, 221, 221, 0.2);background-color: #EBEBE4;border-left-color: transparent;margin-left: -2px;"><i class="glyphicon glyphicon-trash" style=""></i></button>*@
+                                            </div>
+
+
+
+                                            <div id="communityStreetFloor">
+                                                @foreach (var item in Model.CommunityiReports)
+                                                {
+                                                    <div class="row" id=@("iReportCatagory_"+item.CommunityiReportsID) style="margin-left:0px;width:100%;margin-right: 0px;background-color: #ededed;">
+
+                                                        <input id=@("txt_iReportCatagory_" + item.CommunityiReportsID) type="text" value="@item.iReportsName" disabled="" class="txt_streetFloor" style="  font-family: Roboto-Light;background: transparent;width: 90.8%;border-color: transparent;color: #2d2d2d;padding:5px;padding-left: 12px;">
+                                                        <button id=@("btn_EditiReportCatagory_" + item.CommunityiReportsID) style="margin-right: -5px;border: transparent;margin-left: -3%;background-color: transparent;" class="btn_EditStreetFloor" onclick="EditiReportCatagory(@item.CommunityiReportsID)"><i class="glyphicon glyphicon-pencil"></i></button>
+                                                        <button id=@("btn_DeleteiReportCatagory_" + item.CommunityiReportsID) class="btn_DeleteStreetFloor" style="    border-color: transparent;background-color: transparent;margin-left: -2px;" onclick="DeleteiReportCatagory(@item.CommunityiReportsID)"><i class="glyphicon glyphicon-trash" style=""></i></button>
+                                                        <button id=@("btn_UpdateiReportCatagory_" + item.CommunityiReportsID) class="btn_UpdateStreetFloor" style="display:none;border-right-color: transparent;border-left-color: transparent;border-bottom-color: transparent;margin-left: -1px;float: right;background-color: rgb(255, 255, 255);border-top-color: transparent;" onclick="UpdateiReportCatagory(@item.CommunityiReportsID)"><i class="glyphicon glyphicon-ok" style=""></i></button>
+
+                                                    </div>
+                                                    <hr style="margin-top: 0px;margin-bottom: 0px;border-top: 1px solid rgb(220, 220, 220);" />
+                                                }
+                                            </div>
+
+
+
+
+
+                                        </div>
+                                        <button class="btn btn-block" onclick="$.spin('true'); window.location.reload();" data-dismiss="modal" style="margin-top:10px;width:30%;background-color:#1d486a;color:white;height:42px;border-radius:6px;">Done</button>
+                                    </div>
+                                </div>
+                            </center>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+    <br />
+    <div id="chartPartialViewContainer">
+        @{ Html.RenderAction("_ComplaintsChartPartialView"); }
+    </div>
+    <div id="complaitsPartialView">
+        @Html.Partial("ComplaintSearch", Model)
+    </div>
+    @if (Model.complaints.Count() == 0)
+    {
+        <div id=unexpanded class="unexpanded" style="margin-top: -1%;">
+            <div name="temp" class="row" style="padding-right:3%;padding-left:3%;">
+                <br />
+                <div style="background-color:#ffffff;height:auto" class="row">
+                    <div class="col-md-4" style="margin-top:1.5%">
+
+                    </div>
+                    @*<div class="col-md-5" style="margin-top:1.5%">
+
+                        </div>*@
+
+
+
+                    <div class="col-md-7">
+                        <h3 style="text-transform:none"> NO iReports in COMMUNITY</h3>
+
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+
+
+@*@Html.Partial("_ComplaintsPDFPartialView",Model)*@
